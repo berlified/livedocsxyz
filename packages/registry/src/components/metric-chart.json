@@ -2,11 +2,12 @@
   "name": "metric-chart",
   "title": "Metric Chart",
   "category": "charts",
-  "description": "Large value header, series pills, and a gradient well with axes and dots.",
+  "description": "Hero metric with a delta badge, series pills, and a gradient well with axes.",
   "dependencies": ["recharts"],
   "registryDependencies": [
     "https://livedocs.xyz/r/chart.json",
     "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/badge.json",
     "https://livedocs.xyz/r/utils.json"
   ],
   "files": ["apps/docs/components/ui/metric-chart.tsx"],
@@ -16,6 +17,7 @@
   "props": [
     { "name": "title", "type": "string", "description": "Metric name" },
     { "name": "value", "type": "string", "description": "Hero figure" },
+    { "name": "delta", "type": "string", "description": "Optional change badge next to the value" },
     { "name": "series", "type": "{ key: string; label: string }[]", "description": "Selectable overlay series" }
   ],
   "ai": {

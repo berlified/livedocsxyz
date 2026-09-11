@@ -506,11 +506,15 @@ export const overlayConfig = {
 } satisfies ChartConfig;
 
 export const metricSeries = [
-  { month: "Jan 24", period: 82, today: 40 },
-  { month: "Mar 24", period: 228, today: 90 },
-  { month: "May 24", period: 248, today: 120 },
-  { month: "Jul 24", period: 264, today: 150 },
-  { month: "Sep 24", period: 272, today: 168 },
+  { month: "Jan", period: 82, today: 40 },
+  { month: "Feb", period: 118, today: 52 },
+  { month: "Mar", period: 168, today: 71 },
+  { month: "Apr", period: 214, today: 88 },
+  { month: "May", period: 236, today: 104 },
+  { month: "Jun", period: 248, today: 121 },
+  { month: "Jul", period: 258, today: 136 },
+  { month: "Aug", period: 264, today: 148 },
+  { month: "Sep", period: 272, today: 168 },
 ];
 
 export const metricConfig = {

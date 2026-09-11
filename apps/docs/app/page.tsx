@@ -4,6 +4,7 @@ import { ArrowUpRight } from "lucide-react";
 import { components } from "@frostui/registry";
 
 import { LivedocsLogo } from "@/components/livedocs-logo";
+import { BuiltBy } from "@/components/site-footer";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -29,7 +30,7 @@ const featured = components.filter((item) =>
 
 export default function HomePage() {
   return (
-    <div className="mx-auto max-w-6xl space-y-20 pb-16">
+    <div className="mx-auto max-w-6xl space-y-20 pb-8">
       <section className="space-y-8 pt-8 lg:pt-12">
         <div className="space-y-6">
           <div className="flex items-center gap-3">
@@ -57,6 +58,7 @@ export default function HomePage() {
               <Link href="/docs/agents">Install with agents</Link>
             </Button>
           </div>
+          <BuiltBy />
         </div>
         <CodeBlock language="bash" code={getShadcnAddCommand("metric-chart")} />
       </section>

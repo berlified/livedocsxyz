@@ -53,6 +53,8 @@ body {
 .docs-shell {
   min-height: 100vh;
   overflow-x: clip;
+  display: flex;
+  flex-direction: column;
 }
 
 .docs-sidebar {
