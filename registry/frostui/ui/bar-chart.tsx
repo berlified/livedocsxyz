@@ -2,8 +2,8 @@
 
 import * as React from "react";
 import {
-  Area,
-  AreaChart as RechartsAreaChart,
+  Bar,
+  BarChart as RechartsBarChart,
   Brush,
   ResponsiveContainer,
   XAxis,
@@ -23,23 +23,23 @@ import {
 } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
 
-type AreaVariant = "default" | "gradient" | "hatched";
-type StrokeVariant = "solid" | "dashed";
-type CurveType = "monotone" | "linear" | "step" | "bump" | "monotoneY";
+type BarVariant =
+  | "default"
+  | "hatched"
+  | "gradient"
+  | "duotone"
+  | "stripped";
 
-type AreaSeriesProps = {
+type BarSeriesProps = {
   dataKey: string;
-  variant?: AreaVariant;
-  strokeVariant?: StrokeVariant;
-  strokeWidth?: number;
-  curveType?: CurveType;
+  variant?: BarVariant;
   isClickable?: boolean;
   isGlowing?: boolean;
-  connectNulls?: boolean;
-  type?: CurveType;
+  stackId?: string;
+  radius?: number;
 };
 
-function AreaSeries(_props: AreaSeriesProps) {
+function BarSeries(_props: BarSeriesProps) {
   return null;
 }
 
@@ -48,9 +48,7 @@ function Grid(props: React.ComponentProps<typeof ChartGrid>) {
 }
 Grid.displayName = "CartesianGrid";
 
-function AxisX(
-  props: React.ComponentProps<typeof XAxis> & { dataKey?: string }
-) {
+function AxisX(props: React.ComponentProps<typeof XAxis>) {
   return <XAxis {...props} />;
 }
 AxisX.displayName = "XAxis";
@@ -75,7 +73,7 @@ function ChartBrush(props: React.ComponentProps<typeof Brush>) {
 }
 ChartBrush.displayName = "Brush";
 
-function ChartArea({
+function ChartBar({
   data,
   config,
   className,
@@ -84,6 +82,8 @@ function ChartArea({
   defaultSelectedDataKey,
   onSelectionChange,
   xDataKey = "month",
+  layout = "horizontal",
+  stackType,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
@@ -93,13 +93,15 @@ function ChartArea({
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
   xDataKey?: string;
+  layout?: "horizontal" | "vertical";
+  stackType?: "none" | "stacked" | "percent";
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
-    (child) => React.isValidElement(child) && child.type === AreaSeries
-  ) as React.ReactElement<AreaSeriesProps>[];
+    (child) => React.isValidElement(child) && child.type === BarSeries
+  ) as React.ReactElement<BarSeriesProps>[];
   const extras = childArray.filter(
-    (child) => !(React.isValidElement(child) && child.type === AreaSeries)
+    (child) => !(React.isValidElement(child) && child.type === BarSeries)
   );
 
   return (
@@ -110,29 +112,35 @@ function ChartArea({
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      <AreaBody
+      <BarBody
         data={data}
         xDataKey={xDataKey}
         series={series}
         extras={extras}
         isLoading={isLoading}
+        layout={layout}
+        stackType={stackType}
       />
     </ChartContainer>
   );
 }
 
-function AreaBody({
+function BarBody({
   data,
   xDataKey,
   series,
   extras,
   isLoading,
+  layout,
+  stackType,
 }: {
   data: Record<string, unknown>[];
   xDataKey: string;
-  series: React.ReactElement<AreaSeriesProps>[];
+  series: React.ReactElement<BarSeriesProps>[];
   extras: React.ReactNode[];
   isLoading?: boolean;
+  layout: "horizontal" | "vertical";
+  stackType?: "none" | "stacked" | "percent";
 }) {
   const { id, selected, setSelected } = useChart();
 
@@ -142,9 +150,17 @@ function AreaBody({
     );
   }
 
+  const stacked = stackType === "stacked" || stackType === "percent";
+  const vertical = layout === "vertical";
+
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <RechartsAreaChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+      <RechartsBarChart
+        data={data}
+        layout={vertical ? "vertical" : "horizontal"}
+        stackOffset={stackType === "percent" ? "expand" : undefined}
+        margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
+      >
         <defs>
           {series.map((item) => {
             const key = item.props.dataKey;
@@ -153,6 +169,19 @@ function AreaBody({
               <React.Fragment key={key}>
                 <GradientFill id={`${id}-${key}-fill`} color={color} />
                 <HatchPattern id={`${id}-${key}-hatch`} color={color} />
+                <linearGradient id={`${id}-${key}-duo`} x1="0" x2="0" y1="0" y2="1">
+                  <stop offset="0%" stopColor={color} stopOpacity={1} />
+                  <stop offset="100%" stopColor={color} stopOpacity={0.35} />
+                </linearGradient>
+                <pattern
+                  id={`${id}-${key}-strip`}
+                  width="8"
+                  height="8"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <rect width="8" height="8" fill={color} opacity="0.25" />
+                  <rect width="4" height="8" fill={color} />
+                </pattern>
               </React.Fragment>
             );
           })}
@@ -161,13 +190,11 @@ function AreaBody({
         {series.map((item) => {
           const {
             dataKey,
-            variant = "gradient",
-            strokeVariant = "solid",
-            strokeWidth = 2,
-            curveType = "monotone",
+            variant = "default",
             isClickable,
             isGlowing,
-            connectNulls,
+            stackId,
+            radius = 4,
           } = item.props;
           const muted = selected && selected !== dataKey;
           const fill =
@@ -175,18 +202,19 @@ function AreaBody({
               ? `url(#${id}-${dataKey}-hatch)`
               : variant === "gradient"
                 ? `url(#${id}-${dataKey}-fill)`
-                : colorVar(dataKey);
+                : variant === "duotone"
+                  ? `url(#${id}-${dataKey}-duo)`
+                  : variant === "stripped"
+                    ? `url(#${id}-${dataKey}-strip)`
+                    : colorVar(dataKey);
           return (
-            <Area
+            <Bar
               key={dataKey}
-              type={curveType}
               dataKey={dataKey}
-              stroke={colorVar(dataKey)}
               fill={fill}
-              strokeWidth={strokeWidth}
-              strokeDasharray={strokeVariant === "dashed" ? "6 4" : undefined}
-              connectNulls={connectNulls}
-              opacity={muted ? 0.2 : 1}
+              radius={radius}
+              stackId={stacked ? stackId ?? "stack" : stackId}
+              opacity={muted ? 0.25 : 1}
               style={
                 isGlowing
                   ? { filter: `drop-shadow(0 0 8px ${colorVar(dataKey)})` }
@@ -194,13 +222,23 @@ function AreaBody({
               }
               onClick={() => isClickable && setSelected(dataKey)}
               cursor={isClickable ? "pointer" : undefined}
-              activeDot={{ r: 4, strokeWidth: 2, fill: "var(--background)" }}
             />
           );
         })}
         {extras.some(
           (child) => React.isValidElement(child) && child.type === AxisX
-        ) ? null : (
+        ) ? null : vertical ? (
+          <YAxis
+            dataKey={xDataKey}
+            type="category"
+            tickLine={false}
+            axisLine={false}
+            width={48}
+            tickFormatter={(value: string) =>
+              typeof value === "string" ? value.slice(0, 3) : value
+            }
+          />
+        ) : (
           <XAxis
             dataKey={xDataKey}
             tickLine={false}
@@ -210,13 +248,14 @@ function AreaBody({
             }
           />
         )}
-      </RechartsAreaChart>
+        {vertical ? <XAxis type="number" hide /> : null}
+      </RechartsBarChart>
     </ResponsiveContainer>
   );
 }
 
-export const AreaChart = Object.assign(ChartArea, {
-  Area: AreaSeries,
+export const BarChart = Object.assign(ChartBar, {
+  Bar: BarSeries,
   Grid,
   XAxis: AxisX,
   YAxis: AxisY,

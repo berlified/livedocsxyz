@@ -62,4 +62,13 @@ Never use raw hex values in component styles.
 | `Input` | Single-line text entry |
 | `Avatar` | User / entity identity |
 | `Separator` | Visual division between sections |
-| `AreaChart` | Quiet trend graphs and empty-state balances |
+| `Sparkline` | Quiet trend graphs and empty-state balances |
+| `Chart` | Shared config, tooltip, legend, and theme tokens |
+| `AreaChart` | Compound area series with gradient, hatch, glow, brush |
+| `LineChart` | Compound lines with dashes, dots, and curve types |
+| `BarChart` | Stacked, horizontal, hatched, duotone, stripped bars |
+| `ComposedChart` | Mix bar, area, and line on one surface |
+| `PieChart` | Pie and donut with selectable glowing sectors |
+| `RadarChart` | Polar filled or stroke-only profiles |
+| `RadialChart` | Full or semi radial bars |
+| `SankeyChart` | Flow diagrams between stages |

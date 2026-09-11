@@ -119,16 +119,175 @@
       ]
     },
     {
+      "name": "chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "description": "Shared chart primitives: config, container, tooltip, legend, grid, and theme tokens.",
+      "dependencies": ["recharts"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sparkline",
+      "type": "registry:ui",
+      "title": "Sparkline",
+      "description": "Quiet SVG trend with a floating marker tooltip. No axes, no Recharts.",
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/sparkline.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/sparkline.tsx"
+        }
+      ]
+    },
+    {
       "name": "area-chart",
       "type": "registry:ui",
       "title": "Area Chart",
-      "description": "Minimal area chart with a rising line, soft fill, and a floating marker tooltip.",
-      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+      "description": "Compound area chart with gradient, hatched, glow, selection, tooltip, legend, and brush.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
       "files": [
         {
           "path": "apps/docs/components/ui/area-chart.tsx",
           "type": "registry:ui",
           "target": "components/ui/area-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "line-chart",
+      "type": "registry:ui",
+      "title": "Line Chart",
+      "description": "Compound line chart with dashed strokes, glow, curve types, dots, tooltip, and legend.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/line-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/line-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "bar-chart",
+      "type": "registry:ui",
+      "title": "Bar Chart",
+      "description": "Compound bar chart with stacked, horizontal, hatched, duotone, stripped, and gradient fills.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/bar-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/bar-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "composed-chart",
+      "type": "registry:ui",
+      "title": "Composed Chart",
+      "description": "Mix bars, areas, and lines on one cartesian surface with shared tooltip and legend.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/composed-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/composed-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pie-chart",
+      "type": "registry:ui",
+      "title": "Pie Chart",
+      "description": "Donut or pie with padding, glowing sectors, click-to-select, tooltip, and legend.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/pie-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/pie-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "radar-chart",
+      "type": "registry:ui",
+      "title": "Radar Chart",
+      "description": "Filled or outlined radar with polygon or circle grid, glow, and series selection.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/radar-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/radar-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "radial-chart",
+      "type": "registry:ui",
+      "title": "Radial Chart",
+      "description": "Full or semi radial bars with background tracks, rounded caps, tooltip, and legend.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/radial-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/radial-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sankey-chart",
+      "type": "registry:ui",
+      "title": "Sankey Chart",
+      "description": "Flow diagram with nodes, weighted links, and themed strokes.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/sankey-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/sankey-chart.tsx"
         }
       ]
     }

@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { CompositionPreview } from "@/components/previews";
-import { AreaChart } from "@/components/ui/area-chart";
+import { Sparkline } from "@/components/ui/sparkline";
 import { getShadcnAddCommand } from "@/lib/registry-url";
 
 export default function HomePage() {
@@ -55,7 +55,7 @@ export default function HomePage() {
       </section>
 
       <section className="-mx-4 md:-mx-8 lg:-mx-10">
-        <AreaChart />
+        <Sparkline />
       </section>
 
       <section className="space-y-3">
@@ -140,8 +140,8 @@ export default function HomePage() {
             Compose the pieces. Don’t restyle a div.
           </h2>
           <p className="max-w-md text-sm leading-6 text-muted-foreground">
-            Button, Badge, Card, Input, Avatar, Separator — the same set you
-            will reach for in dashboards, settings, and auth screens.
+            Button, Badge, Card, Input, Avatar, Separator, and charts — the same
+            set you will reach for in dashboards, settings, and auth screens.
           </p>
           <Button variant="outline" asChild>
             <Link href="/docs/components">Open the catalog</Link>

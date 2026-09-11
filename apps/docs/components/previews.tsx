@@ -20,8 +20,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { AreaChart } from "@/components/ui/area-chart";
-
 import {
   ComponentPreview,
   PreviewSection,
@@ -212,21 +210,6 @@ export function SeparatorPreview() {
         <span className="text-sm text-muted-foreground">Detail</span>
       </div>
     </div>
-  );
-}
-
-export function AreaChartPreview() {
-  return <AreaChart className="w-full" />;
-}
-
-export function AreaChartExamples() {
-  return (
-    <section className="space-y-6">
-      <h2 className="text-xl font-semibold">Marker</h2>
-      <ComponentPreview label="Custom label" className="p-0">
-        <AreaChart markerLabel="$12,480" markerIndex={18} />
-      </ComponentPreview>
-    </section>
   );
 }
 

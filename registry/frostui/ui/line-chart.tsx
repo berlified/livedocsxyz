@@ -2,9 +2,9 @@
 
 import * as React from "react";
 import {
-  Area,
-  AreaChart as RechartsAreaChart,
   Brush,
+  Line,
+  LineChart as RechartsLineChart,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -15,31 +15,27 @@ import {
   ChartGrid,
   ChartLegend,
   ChartTooltip,
-  GradientFill,
-  HatchPattern,
   colorVar,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
 
-type AreaVariant = "default" | "gradient" | "hatched";
 type StrokeVariant = "solid" | "dashed";
 type CurveType = "monotone" | "linear" | "step" | "bump" | "monotoneY";
 
-type AreaSeriesProps = {
+type LineSeriesProps = {
   dataKey: string;
-  variant?: AreaVariant;
   strokeVariant?: StrokeVariant;
   strokeWidth?: number;
   curveType?: CurveType;
   isClickable?: boolean;
   isGlowing?: boolean;
   connectNulls?: boolean;
-  type?: CurveType;
+  dot?: boolean;
 };
 
-function AreaSeries(_props: AreaSeriesProps) {
+function LineSeries(_props: LineSeriesProps) {
   return null;
 }
 
@@ -48,9 +44,7 @@ function Grid(props: React.ComponentProps<typeof ChartGrid>) {
 }
 Grid.displayName = "CartesianGrid";
 
-function AxisX(
-  props: React.ComponentProps<typeof XAxis> & { dataKey?: string }
-) {
+function AxisX(props: React.ComponentProps<typeof XAxis>) {
   return <XAxis {...props} />;
 }
 AxisX.displayName = "XAxis";
@@ -75,7 +69,7 @@ function ChartBrush(props: React.ComponentProps<typeof Brush>) {
 }
 ChartBrush.displayName = "Brush";
 
-function ChartArea({
+function ChartLine({
   data,
   config,
   className,
@@ -96,10 +90,10 @@ function ChartArea({
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
-    (child) => React.isValidElement(child) && child.type === AreaSeries
-  ) as React.ReactElement<AreaSeriesProps>[];
+    (child) => React.isValidElement(child) && child.type === LineSeries
+  ) as React.ReactElement<LineSeriesProps>[];
   const extras = childArray.filter(
-    (child) => !(React.isValidElement(child) && child.type === AreaSeries)
+    (child) => !(React.isValidElement(child) && child.type === LineSeries)
   );
 
   return (
@@ -110,7 +104,7 @@ function ChartArea({
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      <AreaBody
+      <LineBody
         data={data}
         xDataKey={xDataKey}
         series={series}
@@ -121,7 +115,7 @@ function ChartArea({
   );
 }
 
-function AreaBody({
+function LineBody({
   data,
   xDataKey,
   series,
@@ -130,11 +124,11 @@ function AreaBody({
 }: {
   data: Record<string, unknown>[];
   xDataKey: string;
-  series: React.ReactElement<AreaSeriesProps>[];
+  series: React.ReactElement<LineSeriesProps>[];
   extras: React.ReactNode[];
   isLoading?: boolean;
 }) {
-  const { id, selected, setSelected } = useChart();
+  const { selected, setSelected } = useChart();
 
   if (isLoading) {
     return (
@@ -144,48 +138,31 @@ function AreaBody({
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <RechartsAreaChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-        <defs>
-          {series.map((item) => {
-            const key = item.props.dataKey;
-            const color = colorVar(key);
-            return (
-              <React.Fragment key={key}>
-                <GradientFill id={`${id}-${key}-fill`} color={color} />
-                <HatchPattern id={`${id}-${key}-hatch`} color={color} />
-              </React.Fragment>
-            );
-          })}
-        </defs>
+      <RechartsLineChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
         {extras}
         {series.map((item) => {
           const {
             dataKey,
-            variant = "gradient",
             strokeVariant = "solid",
             strokeWidth = 2,
             curveType = "monotone",
             isClickable,
             isGlowing,
             connectNulls,
+            dot = false,
           } = item.props;
           const muted = selected && selected !== dataKey;
-          const fill =
-            variant === "hatched"
-              ? `url(#${id}-${dataKey}-hatch)`
-              : variant === "gradient"
-                ? `url(#${id}-${dataKey}-fill)`
-                : colorVar(dataKey);
           return (
-            <Area
+            <Line
               key={dataKey}
               type={curveType}
               dataKey={dataKey}
               stroke={colorVar(dataKey)}
-              fill={fill}
               strokeWidth={strokeWidth}
               strokeDasharray={strokeVariant === "dashed" ? "6 4" : undefined}
               connectNulls={connectNulls}
+              dot={dot ? { r: 3, fill: colorVar(dataKey) } : false}
+              activeDot={{ r: 4, fill: colorVar(dataKey) }}
               opacity={muted ? 0.2 : 1}
               style={
                 isGlowing
@@ -194,7 +171,6 @@ function AreaBody({
               }
               onClick={() => isClickable && setSelected(dataKey)}
               cursor={isClickable ? "pointer" : undefined}
-              activeDot={{ r: 4, strokeWidth: 2, fill: "var(--background)" }}
             />
           );
         })}
@@ -210,13 +186,13 @@ function AreaBody({
             }
           />
         )}
-      </RechartsAreaChart>
+      </RechartsLineChart>
     </ResponsiveContainer>
   );
 }
 
-export const AreaChart = Object.assign(ChartArea, {
-  Area: AreaSeries,
+export const LineChart = Object.assign(ChartLine, {
+  Line: LineSeries,
   Grid,
   XAxis: AxisX,
   YAxis: AxisY,

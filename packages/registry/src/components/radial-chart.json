@@ -1,0 +1,35 @@
+{
+  "name": "radial-chart",
+  "title": "Radial Chart",
+  "category": "charts",
+  "description": "Full or semi radial bars with background tracks, rounded caps, tooltip, and legend.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/radial-chart.tsx"],
+  "examples": ["full", "semi"],
+  "variants": ["full", "semi"],
+  "keywords": ["chart", "radial", "gauge", "progress", "recharts"],
+  "props": [
+    {
+      "name": "variant",
+      "type": "\"full\" | \"semi\"",
+      "default": "\"full\"",
+      "description": "Full ring or semicircle"
+    },
+    {
+      "name": "RadialBar.showBackground",
+      "type": "boolean",
+      "description": "Track behind each bar"
+    }
+  ],
+  "ai": {
+    "purpose": "Show values as concentric radial bars or a gauge.",
+    "useWhen": ["Progress toward a max", "Compact share without pie slices"],
+    "preferOver": ["Pie when ranking by length is clearer"],
+    "avoid": ["Many categories that collide at the center"],
+    "compositions": ["RadialChart.RadialBar + Tooltip"]
+  }
+}

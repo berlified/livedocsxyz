@@ -24,7 +24,16 @@ export function getShadcnAddAllCommand() {
     "input",
     "avatar",
     "separator",
+    "chart",
+    "sparkline",
     "area-chart",
+    "line-chart",
+    "bar-chart",
+    "composed-chart",
+    "pie-chart",
+    "radar-chart",
+    "radial-chart",
+    "sankey-chart",
   ];
   return `npx shadcn@latest add ${items.map(getRegistryItemUrl).join(" ")}`;
 }

@@ -1,0 +1,54 @@
+{
+  "name": "chart",
+  "title": "Chart",
+  "category": "charts",
+  "description": "Shared chart primitives: config, container, tooltip, legend, grid, and theme tokens.",
+  "dependencies": ["recharts"],
+  "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+  "files": ["apps/docs/components/ui/chart.tsx"],
+  "examples": ["config", "tooltip", "legend"],
+  "variants": ["default"],
+  "keywords": ["chart", "config", "tooltip", "legend", "recharts", "theme"],
+  "props": [
+    {
+      "name": "config",
+      "type": "ChartConfig",
+      "description": "Per-series label, icon, and light/dark colors compiled to CSS variables"
+    },
+    {
+      "name": "data",
+      "type": "Record<string, unknown>[]",
+      "description": "Rows passed to Recharts"
+    },
+    {
+      "name": "defaultSelectedDataKey",
+      "type": "string",
+      "description": "Series dimmed except this key"
+    },
+    {
+      "name": "onSelectionChange",
+      "type": "(key?: string) => void",
+      "description": "Fires when a clickable series or legend item is toggled"
+    }
+  ],
+  "ai": {
+    "purpose": "Provide the shared compound chart surface, config object, tooltip, and legend.",
+    "useWhen": [
+      "Installing any cartesian or polar chart",
+      "Theming series with CSS variables",
+      "Click-to-focus series"
+    ],
+    "preferOver": [
+      "Passing raw Recharts Tooltip markup per chart",
+      "Hardcoded hex colors on series"
+    ],
+    "avoid": [
+      "Using ChartContainer without a chart part",
+      "Mixing raw hex into series fills"
+    ],
+    "compositions": [
+      "Chart + AreaChart / LineChart / BarChart",
+      "ChartTooltip + ChartLegend with isClickable"
+    ]
+  }
+}

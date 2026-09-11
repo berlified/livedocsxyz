@@ -14,7 +14,16 @@ const uiComponents = [
   "input",
   "avatar",
   "separator",
+  "chart",
+  "sparkline",
   "area-chart",
+  "line-chart",
+  "bar-chart",
+  "composed-chart",
+  "pie-chart",
+  "radar-chart",
+  "radial-chart",
+  "sankey-chart",
 ];
 
 function syncDocsToRegistry() {
