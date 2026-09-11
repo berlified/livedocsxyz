@@ -1,0 +1,28 @@
+{
+  "name": "spotlight-chart",
+  "title": "Spotlight Chart",
+  "category": "charts",
+  "description": "Linear area with a dashed prior series and a callout on the peak.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/badge.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/spotlight-chart.tsx"],
+  "examples": ["peak"],
+  "variants": ["default"],
+  "keywords": ["chart", "callout", "peak", "dashed", "volume"],
+  "props": [
+    { "name": "markerIndex", "type": "number", "description": "Point to highlight; defaults to the max" },
+    { "name": "markerLabel", "type": "string", "description": "Label above the marker" }
+  ],
+  "ai": {
+    "purpose": "Call out a peak on a volume series against a dashed baseline.",
+    "useWhen": ["Gross volume", "Payouts over a month"],
+    "preferOver": ["MetricChart when the spike is the story"],
+    "avoid": ["Sparse series with one or two points"],
+    "compositions": ["SpotlightChart next to UsageMeter"]
+  }
+}

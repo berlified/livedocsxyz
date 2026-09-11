@@ -20,6 +20,12 @@ import metricChart from "./components/metric-chart.json";
 import comparisonChart from "./components/comparison-chart.json";
 import breakdownChart from "./components/breakdown-chart.json";
 import rangeChart from "./components/range-chart.json";
+import countryChart from "./components/country-chart.json";
+import ringMetric from "./components/ring-metric.json";
+import cashflowChart from "./components/cashflow-chart.json";
+import spotlightChart from "./components/spotlight-chart.json";
+import laneChart from "./components/lane-chart.json";
+import usageMeter from "./components/usage-meter.json";
 
 export type {
   ComponentAIGuidance,
@@ -50,6 +56,12 @@ export const components: RegistryComponent[] = [
   comparisonChart,
   breakdownChart,
   rangeChart,
+  countryChart,
+  ringMetric,
+  cashflowChart,
+  spotlightChart,
+  laneChart,
+  usageMeter,
 ] as RegistryComponent[];
 
 export const registry: RegistryIndex = {

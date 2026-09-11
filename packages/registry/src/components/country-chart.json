@@ -1,0 +1,26 @@
+{
+  "name": "country-chart",
+  "title": "Country Chart",
+  "category": "charts",
+  "description": "Ranked market bars with a last-period marker on each row.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/country-chart.tsx"],
+  "examples": ["ranked"],
+  "variants": ["default"],
+  "keywords": ["chart", "country", "region", "market", "horizontal", "rank"],
+  "props": [
+    { "name": "rows", "type": "CountryRow[]", "description": "region, current, previous, optional ISO code" }
+  ],
+  "ai": {
+    "purpose": "Rank markets as bars with a comparison tick for the prior period.",
+    "useWhen": ["Revenue by country", "Traffic by region"],
+    "preferOver": ["Maps when ranking is the story"],
+    "avoid": ["More than about eight rows without grouping"],
+    "compositions": ["CountryChart beside RingMetric"]
+  }
+}

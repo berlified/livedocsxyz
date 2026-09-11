@@ -1,0 +1,26 @@
+{
+  "name": "cashflow-chart",
+  "title": "Cashflow Chart",
+  "category": "charts",
+  "description": "Diverging bars from zero: inflow up, outflow down.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/cashflow-chart.tsx"],
+  "examples": ["monthly"],
+  "variants": ["default"],
+  "keywords": ["chart", "cashflow", "diverging", "inflow", "outflow"],
+  "props": [
+    { "name": "data", "type": "Record<string, unknown>[]", "description": "Rows with inflow and negative outflow" }
+  ],
+  "ai": {
+    "purpose": "Plot money in and money out from a shared zero line.",
+    "useWhen": ["Cash movement", "Credits vs charges"],
+    "preferOver": ["Two separate bar charts"],
+    "avoid": ["Categories that are not signed values"],
+    "compositions": ["CashflowChart under KPI totals"]
+  }
+}

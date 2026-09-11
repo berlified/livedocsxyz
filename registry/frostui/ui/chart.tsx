@@ -565,4 +565,106 @@ export const mixConfig = {
   trial: { label: "Trial", colors: { dark: ["var(--chart-5)"], light: ["var(--chart-5)"] } },
 } satisfies ChartConfig;
 
+export const marketRank = [
+  { region: "United States", code: "US", current: 58200, previous: 49400 },
+  { region: "India", code: "IN", current: 14500, previous: 16200 },
+  { region: "United Kingdom", code: "GB", current: 9800, previous: 9100 },
+  { region: "Germany", code: "DE", current: 7200, previous: 7800 },
+  { region: "Canada", code: "CA", current: 5100, previous: 4300 },
+  { region: "Australia", code: "AU", current: 3600, previous: 3900 },
+];
+
+export const marketConfig = {
+  current: {
+    label: "This period",
+    colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] },
+  },
+  previous: {
+    label: "Last period",
+    colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] },
+  },
+} satisfies ChartConfig;
+
+export const ringMembers = [
+  { key: "new", label: "New", value: 6123 },
+  { key: "existing", label: "Existing", value: 6000 },
+];
+
+export const ringPayments = [
+  { key: "captured", label: "Captured", value: 1000 },
+  { key: "refunded", label: "Refunded", value: 900 },
+  { key: "charged", label: "Chargebacks", value: 42 },
+];
+
+export const ringConfig = {
+  new: { label: "New", colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] } },
+  existing: { label: "Existing", colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] } },
+  captured: { label: "Captured", colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] } },
+  refunded: { label: "Refunded", colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] } },
+  charged: { label: "Chargebacks", colors: { dark: ["var(--chart-3)"], light: ["var(--chart-3)"] } },
+} satisfies ChartConfig;
+
+export const cashflowMonths = [
+  { month: "Feb", inflow: 78, outflow: -32 },
+  { month: "Mar", inflow: 61, outflow: -41 },
+  { month: "Apr", inflow: 112, outflow: -18 },
+  { month: "May", inflow: 58, outflow: -44 },
+  { month: "Jun", inflow: 134, outflow: -52 },
+  { month: "Jul", inflow: 141, outflow: -38 },
+  { month: "Aug", inflow: 99, outflow: -29 },
+  { month: "Sep", inflow: 118, outflow: -47 },
+  { month: "Oct", inflow: 64, outflow: -36 },
+  { month: "Nov", inflow: 31, outflow: -22 },
+  { month: "Dec", inflow: 88, outflow: -40 },
+  { month: "Jan", inflow: 42, outflow: -19 },
+];
+
+export const cashflowConfig = {
+  inflow: {
+    label: "Inflow",
+    colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] },
+  },
+  outflow: {
+    label: "Outflow",
+    colors: { dark: ["var(--chart-3)"], light: ["var(--chart-3)"] },
+  },
+} satisfies ChartConfig;
+
+export const spotlightSeries = Array.from({ length: 24 }, (_, index) => {
+  const wave = Math.sin(index / 2.4) * 18 + 42;
+  const spike = index === 16 ? 28 : index === 7 ? 14 : 0;
+  return {
+    day: `Jun ${index + 1}`,
+    current: Math.round(wave + spike + index * 1.4),
+    previous: Math.round(wave * 0.72 + 8),
+  };
+});
+
+export const spotlightConfig = {
+  current: {
+    label: "This month",
+    colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] },
+  },
+  previous: {
+    label: "Last month",
+    colors: { dark: ["var(--muted-foreground)"], light: ["var(--muted-foreground)"] },
+  },
+} satisfies ChartConfig;
+
+export const laneRows = [
+  { key: "total", label: "Total", value: 640 },
+  { key: "ok", label: "Succeeded", value: 418 },
+  { key: "issuer", label: "Issuer decline", value: 36 },
+  { key: "buyer", label: "Buyer decline", value: 22 },
+  { key: "idle", label: "Not started", value: 164 },
+];
+
+export const laneConfig = {
+  total: { label: "Total", colors: { dark: ["var(--chart-4)"], light: ["var(--chart-4)"] } },
+  ok: { label: "Succeeded", colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] } },
+  issuer: { label: "Issuer decline", colors: { dark: ["var(--destructive)"], light: ["var(--destructive)"] } },
+  buyer: { label: "Buyer decline", colors: { dark: ["var(--chart-3)"], light: ["var(--chart-3)"] } },
+  idle: { label: "Not started", colors: { dark: ["var(--muted-foreground)"], light: ["var(--muted-foreground)"] } },
+} satisfies ChartConfig;
+
 export { RechartsPrimitive };

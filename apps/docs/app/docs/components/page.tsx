@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 
 import { components, categories } from "@frostui/registry";
 
+import { LivedocsLogo } from "@/components/livedocs-logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -29,7 +30,10 @@ export default function ComponentsCatalogPage() {
     <div className="mx-auto max-w-6xl space-y-16">
       <section className="grid gap-8 pt-2 lg:grid-cols-[1fr_18rem] lg:items-start">
         <div className="space-y-6">
-          <Badge variant="outline">Component catalog</Badge>
+          <div className="flex items-center gap-3">
+            <LivedocsLogo className="h-6" />
+            <Badge variant="outline">Component catalog</Badge>
+          </div>
           <div className="space-y-4">
             <h1 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
               Browse the component library

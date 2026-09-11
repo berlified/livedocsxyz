@@ -1,5 +1,7 @@
 # livedocs
 
+<img src="apps/docs/public/logo.svg" alt="livedocs" width="37" height="48" />
+
 A shadcn component registry. Preview on [livedocs.xyz](https://livedocs.xyz), copy the command, own the source.
 
 ## Install a component

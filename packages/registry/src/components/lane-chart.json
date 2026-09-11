@@ -1,0 +1,26 @@
+{
+  "name": "lane-chart",
+  "title": "Lane Chart",
+  "category": "charts",
+  "description": "Horizontal outcome lanes compared against a shared max.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/lane-chart.tsx"],
+  "examples": ["payments"],
+  "variants": ["default"],
+  "keywords": ["chart", "horizontal", "funnel", "outcomes", "bars"],
+  "props": [
+    { "name": "rows", "type": "LaneRow[]", "description": "key, label, value" }
+  ],
+  "ai": {
+    "purpose": "Compare process outcomes as labeled horizontal lanes.",
+    "useWhen": ["Payment success vs declines", "Funnel stages"],
+    "preferOver": ["A pie when magnitude on a shared axis matters"],
+    "avoid": ["Many lanes with similar values that need grouping"],
+    "compositions": ["LaneChart beside RingMetric"]
+  }
+}
