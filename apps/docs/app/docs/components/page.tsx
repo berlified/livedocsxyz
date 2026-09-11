@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import type { Metadata } from "next";
 
 import { components, categories } from "@frostui/registry";
 
@@ -16,6 +17,11 @@ const catalogGroups = categories
   }))
   .filter((group) => group.items.length > 0);
 
+export const metadata: Metadata = {
+  title: "Components",
+  description: "Browse the component catalog and copy a shadcn install command.",
+};
+
 export default function ComponentsCatalogPage() {
   const installAll = getShadcnAddAllCommand();
 
@@ -26,7 +32,7 @@ export default function ComponentsCatalogPage() {
           <Badge variant="outline">Component catalog</Badge>
           <div className="space-y-4">
             <h1 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
-              Browse the FrostUI component library
+              Browse the component library
             </h1>
             <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
               Pick a category, open a component, preview the demo, then copy the

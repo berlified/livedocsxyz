@@ -24,7 +24,7 @@ export const components: RegistryComponent[] = [
 
 export const registry: RegistryIndex = {
   version: "0.1.0",
-  name: "frostui",
+  name: "livedocs",
   components,
 };
 

@@ -5,10 +5,7 @@ import type { RegistryComponent } from "@frostui/registry";
 import { Badge } from "@/components/ui/badge";
 import { CodeBlock } from "@/components/code-block";
 import { ComponentPreview } from "@/components/component-preview";
-import {
-  getRegistryBaseUrl,
-  getShadcnAddCommand,
-} from "@/lib/registry-url";
+import { getShadcnAddCommand } from "@/lib/registry-url";
 
 export function ComponentDocLayout({
   component,
@@ -24,7 +21,6 @@ export function ComponentDocLayout({
   examples?: ReactNode;
 }) {
   const installCommand = getShadcnAddCommand(component.name);
-  const registryUrl = getRegistryBaseUrl();
 
   return (
     <div className="mx-auto max-w-3xl space-y-12">
@@ -51,18 +47,13 @@ export function ComponentDocLayout({
       <section id="installation" className="scroll-mt-24 space-y-3">
         <h2 className="text-xl font-semibold tracking-tight">Installation</h2>
         <p className="text-sm text-muted-foreground">
-          Install with the shadcn CLI using the FrostUI registry.
+          Install with the shadcn CLI. This copies source into your project.
         </p>
         <CodeBlock language="bash" code={installCommand} />
         <CodeBlock
           language="bash"
-          title="Registry URL"
-          code={registryUrl}
-        />
-        <CodeBlock
-          language="bash"
-          title="Alternative"
-          code={`npx frostui add ${component.name}`}
+          title="Namespace (after one-time setup)"
+          code={`npx shadcn@latest add @livedocs/${component.name}`}
         />
       </section>
 

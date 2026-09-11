@@ -8,32 +8,24 @@ export default function AgentsPage() {
         <Badge variant="outline">Guides</Badge>
         <h1 className="text-4xl font-semibold tracking-tight">Agent guidance</h1>
         <p className="text-base leading-7 text-muted-foreground">
-          FrostUI ships registry metadata so agents can discover components,
-          install commands, and composition rules without guessing.
+          Registry metadata tells agents what exists, when to use it, and how to
+          install it.
         </p>
       </header>
 
       <section className="space-y-3">
-        <h2 className="text-xl font-semibold">Discovery</h2>
+        <h2 className="text-xl font-semibold">Install</h2>
         <CodeBlock
           language="bash"
-          code={`npx frostui list
-npx frostui search card
-npx frostui info button`}
+          code="npx shadcn@latest add https://livedocs.xyz/r/button.json"
         />
-      </section>
-
-      <section className="space-y-3">
-        <h2 className="text-xl font-semibold">Install</h2>
-        <CodeBlock language="bash" code="npx frostui add button" />
         <p className="text-sm text-muted-foreground">
-          Prints the shadcn CLI command that copies source into{" "}
-          <code className="text-foreground">@/components/ui</code>.
+          Source lands in <code className="text-foreground">@/components/ui</code>.
         </p>
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-xl font-semibold">Metadata location</h2>
+        <h2 className="text-xl font-semibold">Metadata</h2>
         <CodeBlock
           language="text"
           code={`packages/registry/src/components/*.json

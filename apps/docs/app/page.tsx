@@ -11,24 +11,34 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { CompositionPreview } from "@/components/previews";
 import { getShadcnAddCommand } from "@/lib/registry-url";
 
 export default function HomePage() {
   return (
-    <div className="mx-auto max-w-5xl space-y-20 pb-10">
-      <section className="space-y-6 pt-6 md:pt-12">
-        <Badge variant="outline">FrostUI registry</Badge>
-        <div className="space-y-4">
+    <div className="mx-auto max-w-5xl space-y-24 pb-16">
+      <section className="space-y-8 pt-8 md:pt-16">
+        <Badge variant="outline">shadcn registry</Badge>
+        <div className="space-y-5">
           <h1 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-6xl">
-            Dark-first components you can install with one command.
+            Copy the command. Own the source.
           </h1>
           <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
-            FrostUI is a shadcn-compatible registry. Preview a primitive, copy
-            the CLI command, and drop source into{" "}
-            <code className="text-foreground">@/components/ui</code>.
+            A component registry for real products. Preview it here, install it
+            with shadcn, then edit the files in your repo like they were always
+            yours.
           </p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <Button>Button</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="outline">Outline</Button>
+          <Badge>New</Badge>
+          <Badge variant="secondary">Shipped</Badge>
+          <Input className="h-9 w-44" placeholder="Search…" />
         </div>
         <div className="flex flex-wrap gap-3">
           <Button asChild>
@@ -38,34 +48,38 @@ export default function HomePage() {
             </Link>
           </Button>
           <Button variant="outline" asChild>
-            <Link href="/docs/installation">Installation</Link>
+            <Link href="/docs/installation">Install with shadcn</Link>
           </Button>
         </div>
       </section>
 
       <section className="space-y-3">
         <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-          Install
+          One command
         </p>
         <CodeBlock language="bash" code={getShadcnAddCommand("button")} />
+        <p className="text-sm text-muted-foreground">
+          That URL is a real registry item. Run it in any shadcn project and
+          `button.tsx` lands in `@/components/ui`.
+        </p>
       </section>
 
       <section className="grid gap-4 md:grid-cols-3">
         {[
           {
-            title: "Own the source",
+            title: "Source in your repo",
             description:
-              "Components copy into your repo. No lock-in — edit tokens and markup like any other file.",
+              "No package lock-in. Files copy in, you change them, you ship them.",
           },
           {
-            title: "shadcn CLI",
+            title: "Works with shadcn",
             description:
-              "Every primitive has a copiable install command pointed at the livedocs.xyz registry.",
+              "Same CLI you already use. Point it at livedocs.xyz and keep building.",
           },
           {
-            title: "Agent-ready",
+            title: "Reuse everywhere",
             description:
-              "Registry metadata tells coding agents when to use Button, Card, Badge, and how to compose them.",
+              "Install the same primitives into every future project from one catalog.",
           },
         ].map((item) => (
           <Card key={item.title}>
@@ -77,17 +91,52 @@ export default function HomePage() {
         ))}
       </section>
 
-      <section className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
-        <div className="space-y-3">
+      <section className="space-y-6">
+        <div className="flex items-end justify-between gap-4">
+          <div className="space-y-2">
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
+              Catalog
+            </p>
+            <h2 className="text-2xl font-semibold tracking-tight">
+              {components.length} primitives, ready to install
+            </h2>
+          </div>
+          <Button variant="outline" asChild>
+            <Link href="/docs/components">View all</Link>
+          </Button>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {components.map((item) => (
+            <Link
+              key={item.name}
+              href={`/docs/components/${item.name}`}
+              className="group rounded-xl border border-border bg-card p-5 no-underline transition-colors hover:bg-accent"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-sm font-semibold">{item.title}</p>
+                <ArrowUpRight className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+              </div>
+              <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                {item.description}
+              </p>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <Separator />
+
+      <section className="grid gap-10 lg:grid-cols-[1fr_auto] lg:items-center">
+        <div className="space-y-4">
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">
-            Composition
+            In a product
           </p>
           <h2 className="text-2xl font-semibold tracking-tight">
-            Built to stack, not to reinvent.
+            Compose the pieces. Don’t restyle a div.
           </h2>
           <p className="max-w-md text-sm leading-6 text-muted-foreground">
-            {components.length} Phase 1 primitives — Button, Badge, Card, Input,
-            Avatar, and Separator — using semantic tokens only.
+            Button, Badge, Card, Input, Avatar, Separator — the same set you
+            will reach for in dashboards, settings, and auth screens.
           </p>
           <Button variant="outline" asChild>
             <Link href="/docs/components">Open the catalog</Link>

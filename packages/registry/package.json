@@ -2,7 +2,7 @@
   "name": "@frostui/registry",
   "version": "0.1.0",
   "private": true,
-  "description": "FrostUI component registry and agent metadata",
+  "description": "Component registry metadata",
   "type": "module",
   "main": "./src/index.ts",
   "types": "./src/index.ts",

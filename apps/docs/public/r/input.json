@@ -5,7 +5,7 @@
   "title": "Input",
   "description": "Single-line text field with focus ring and disabled states.",
   "registryDependencies": [
-    "utils"
+    "https://livedocs.xyz/r/utils.json"
   ],
   "files": [
     {

@@ -1,13 +1,13 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "frostui",
+  "name": "livedocs",
   "homepage": "https://livedocs.xyz",
   "items": [
     {
       "name": "theme",
       "type": "registry:theme",
       "title": "Theme",
-      "description": "FrostUI semantic tokens — dark-first, high-contrast surfaces.",
+      "description": "Semantic color tokens for high-contrast surfaces.",
       "files": [
         {
           "path": "registry/frostui/style/theme.css",
@@ -20,7 +20,7 @@
       "name": "utils",
       "type": "registry:lib",
       "title": "Utils",
-      "description": "Tailwind class merge helper used by all FrostUI components.",
+      "description": "Tailwind class merge helper used by all components.",
       "dependencies": ["clsx", "tailwind-merge"],
       "files": [
         {
@@ -36,7 +36,7 @@
       "title": "Button",
       "description": "Action button with default, secondary, outline, ghost, destructive, and link variants.",
       "dependencies": ["@radix-ui/react-slot", "class-variance-authority"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/button.tsx",
@@ -51,7 +51,7 @@
       "title": "Badge",
       "description": "Compact status label for counts, states, and metadata.",
       "dependencies": ["class-variance-authority"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/badge.tsx",
@@ -65,7 +65,7 @@
       "type": "registry:ui",
       "title": "Card",
       "description": "Layered surface for grouped content with header, body, and footer slots.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/card.tsx",
@@ -79,7 +79,7 @@
       "type": "registry:ui",
       "title": "Input",
       "description": "Single-line text field with focus ring and disabled states.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/input.tsx",
@@ -94,7 +94,7 @@
       "title": "Avatar",
       "description": "User or entity identity with image and fallback initials.",
       "dependencies": ["@radix-ui/react-avatar"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/avatar.tsx",
@@ -109,7 +109,7 @@
       "title": "Separator",
       "description": "Horizontal or vertical divider between sections.",
       "dependencies": ["@radix-ui/react-separator"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/separator.tsx",

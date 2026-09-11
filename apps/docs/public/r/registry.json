@@ -1,19 +1,19 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "frostui",
+  "name": "livedocs",
   "homepage": "https://livedocs.xyz",
   "items": [
     {
       "name": "theme",
       "type": "registry:theme",
       "title": "Theme",
-      "description": "FrostUI semantic tokens — dark-first, high-contrast surfaces."
+      "description": "Semantic color tokens for high-contrast surfaces."
     },
     {
       "name": "utils",
       "type": "registry:lib",
       "title": "Utils",
-      "description": "Tailwind class merge helper used by all FrostUI components."
+      "description": "Tailwind class merge helper used by all components."
     },
     {
       "name": "button",

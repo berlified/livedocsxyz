@@ -17,10 +17,15 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
   const { resolvedTheme, setTheme } = useTheme();
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [searchOpen, setSearchOpen] = React.useState(false);
+  const [themeReady, setThemeReady] = React.useState(false);
   const isLanding = pathname === "/";
   const isComponentDoc =
     pathname.startsWith("/docs/components/") && pathname !== "/docs/components";
   const showToc = isComponentDoc;
+
+  React.useEffect(() => {
+    setThemeReady(true);
+  }, []);
 
   React.useEffect(() => {
     setMobileOpen(false);
@@ -55,9 +60,9 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
 
           <Link href="/" className="flex items-center gap-2.5 no-underline">
             <span className="flex size-7 items-center justify-center rounded-md border border-border bg-card text-xs font-bold">
-              F
+              L
             </span>
-            <span className="text-sm font-semibold tracking-tight">FrostUI</span>
+            <span className="text-sm font-semibold tracking-tight">livedocs</span>
           </Link>
 
           <button
@@ -110,10 +115,10 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
                 setTheme(resolvedTheme === "dark" ? "light" : "dark")
               }
             >
-              {resolvedTheme === "dark" ? (
-                <Sun className="size-4" />
-              ) : (
+              {themeReady && resolvedTheme === "light" ? (
                 <Moon className="size-4" />
+              ) : (
+                <Sun className="size-4" />
               )}
             </Button>
             <Button

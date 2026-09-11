@@ -9,7 +9,7 @@
     "class-variance-authority"
   ],
   "registryDependencies": [
-    "utils"
+    "https://livedocs.xyz/r/utils.json"
   ],
   "files": [
     {

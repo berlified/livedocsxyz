@@ -3,7 +3,7 @@
   "name": "theme",
   "type": "registry:theme",
   "title": "Theme",
-  "description": "FrostUI semantic tokens — dark-first, high-contrast surfaces.",
+  "description": "Semantic color tokens for high-contrast surfaces.",
   "files": [
     {
       "path": "app/globals.css",

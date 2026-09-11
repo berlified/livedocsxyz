@@ -1,11 +1,11 @@
 {
-  "name": "frostui",
+  "name": "livedocs",
   "version": "0.1.0",
   "private": true,
-  "description": "CLI to add FrostUI components to your project",
+  "description": "CLI that prints shadcn install commands for the livedocs registry",
   "type": "module",
   "bin": {
-    "frostui": "./src/index.ts"
+    "livedocs": "./src/index.ts"
   },
   "scripts": {
     "start": "tsx src/index.ts",
