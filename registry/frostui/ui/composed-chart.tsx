@@ -148,7 +148,7 @@ function ComposedBody({
         {extras}
         {bars.map((item) => (
           <Bar
-            key={item.props.dataKey}
+            key={`${item.props.dataKey}-bar`}
             dataKey={item.props.dataKey}
             fill={colorVar(item.props.dataKey)}
             radius={4}
@@ -158,7 +158,7 @@ function ComposedBody({
         ))}
         {areas.map((item) => (
           <Area
-            key={item.props.dataKey}
+            key={`${item.props.dataKey}-area`}
             type="monotone"
             dataKey={item.props.dataKey}
             stroke={colorVar(item.props.dataKey)}
@@ -168,7 +168,7 @@ function ComposedBody({
         ))}
         {lines.map((item) => (
           <Line
-            key={item.props.dataKey}
+            key={`${item.props.dataKey}-line`}
             type="monotone"
             dataKey={item.props.dataKey}
             stroke={colorVar(item.props.dataKey)}

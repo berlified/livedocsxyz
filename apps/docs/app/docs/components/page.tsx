@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { CatalogLink } from "@/components/docs-shell";
-import { getShadcnAddAllCommand } from "@/lib/registry-url";
+import { CodeBlock } from "@/components/code-block";
+import { getShadcnAddCommand } from "@/lib/registry-url";
 
 const catalogGroups = categories
   .map((category) => ({
@@ -24,18 +25,16 @@ export const metadata: Metadata = {
 };
 
 export default function ComponentsCatalogPage() {
-  const installAll = getShadcnAddAllCommand();
-
   return (
-    <div className="mx-auto max-w-6xl space-y-16">
-      <section className="grid gap-8 pt-2 lg:grid-cols-[1fr_18rem] lg:items-start">
-        <div className="space-y-6">
+    <div className="mx-auto w-full min-w-0 max-w-6xl space-y-12 sm:space-y-16">
+      <section className="grid min-w-0 gap-8 pt-2 lg:grid-cols-[minmax(0,1fr)_18rem] lg:items-start">
+        <div className="min-w-0 space-y-6">
           <div className="flex items-center gap-3">
             <LivedocsLogo className="h-6" />
             <Badge variant="outline">Component catalog</Badge>
           </div>
           <div className="space-y-4">
-            <h1 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-5xl">
+            <h1 className="max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
               Browse the component library
             </h1>
             <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
@@ -56,7 +55,7 @@ export default function ComponentsCatalogPage() {
           </div>
         </div>
 
-        <Card className="rounded-xl">
+        <Card className="min-w-0 rounded-xl">
           <CardContent className="space-y-3 p-5">
             <div className="flex items-baseline gap-2">
               <p className="text-3xl font-semibold tracking-tight">
@@ -70,18 +69,23 @@ export default function ComponentsCatalogPage() {
               Every item ships with live previews, install commands, usage
               snippets, and agent guidance.
             </p>
-            <pre className="overflow-x-auto rounded-md border border-border bg-card p-3 text-xs text-muted-foreground">
-              {installAll}
-            </pre>
+            <CodeBlock
+              language="bash"
+              className="[&_pre]:whitespace-pre-wrap [&_code]:break-all"
+              code={getShadcnAddCommand("button")}
+            />
           </CardContent>
         </Card>
       </section>
 
-      <section className="catalog-grid md:grid-cols-2">
+      <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {catalogGroups.map((group) => (
-          <div key={group.id} className="catalog-column">
+          <div
+            key={group.id}
+            className="min-w-0 rounded-xl border border-border bg-background p-5"
+          >
             <div className="mb-2 flex items-center justify-between gap-3">
-              <div>
+              <div className="min-w-0">
                 <p className="text-sm font-semibold">{group.title}</p>
                 <p className="text-xs text-muted-foreground">
                   {group.items.length} components

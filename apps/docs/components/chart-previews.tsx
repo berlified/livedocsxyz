@@ -7,6 +7,7 @@ import { CashflowChart } from "@/components/ui/cashflow-chart";
 import {
   cashflowConfig,
   cashflowMonths,
+  cohortMix,
   dailyOverlay,
   laneConfig,
   laneRows,
@@ -25,6 +26,7 @@ import {
   rangeConfig,
   ringConfig,
   ringMembers,
+  ringPayments,
   sankeyConfig,
   sankeyLinks,
   sankeyNodes,
@@ -55,6 +57,14 @@ import { Card } from "@/components/ui/card";
 import { TrendCard } from "@/components/ui/trend-card";
 
 import { ComponentPreview } from "@/components/component-preview";
+
+function PreviewPair({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="grid gap-3 p-4 sm:grid-cols-2 [&>*]:min-w-0 [&>*]:w-full">
+      {children}
+    </div>
+  );
+}
 
 export function ChartPreview() {
   return (
@@ -407,15 +417,25 @@ export function SparklineExamples() {
 
 export function TrendCardPreview() {
   return (
-    <TrendCard
-      className="w-full max-w-sm"
-      title="Gross volume"
-      value="$48,210"
-      baseline="$11,640"
-      delta="+$940"
-      data={dailyOverlay}
-      config={overlayConfig}
-    />
+    <PreviewPair>
+      <TrendCard
+        title="Gross volume"
+        value="$48,210"
+        baseline="$11,640"
+        delta="+$940"
+        data={dailyOverlay}
+        config={overlayConfig}
+      />
+      <TrendCard
+        title="Churn"
+        value="3.8%"
+        baseline="6.1%"
+        delta="-0.4%"
+        tone="down"
+        data={dailyOverlay}
+        config={overlayConfig}
+      />
+    </PreviewPair>
   );
 }
 
@@ -470,12 +490,15 @@ export function ComparisonChartPreview() {
 
 export function BreakdownChartPreview() {
   return (
-    <BreakdownChart
-      className="w-full max-w-md"
-      title="Settlements"
-      items={paymentMix}
-      config={mixConfig}
-    />
+    <PreviewPair>
+      <BreakdownChart title="Settlements" items={paymentMix} config={mixConfig} />
+      <BreakdownChart
+        title="Cohorts"
+        items={cohortMix}
+        config={mixConfig}
+        currency={false}
+      />
+    </PreviewPair>
   );
 }
 
@@ -503,13 +526,20 @@ export function CountryChartPreview() {
 
 export function RingMetricPreview() {
   return (
-    <RingMetric
-      className="w-full max-w-sm"
-      title="Members"
-      centerLabel="Total"
-      data={ringMembers}
-      config={ringConfig}
-    />
+    <PreviewPair>
+      <RingMetric
+        title="Members"
+        centerLabel="Total"
+        data={ringMembers}
+        config={ringConfig}
+      />
+      <RingMetric
+        title="Transactions"
+        centerLabel="Volume"
+        data={ringPayments}
+        config={ringConfig}
+      />
+    </PreviewPair>
   );
 }
 
@@ -553,13 +583,21 @@ export function LaneChartPreview() {
 
 export function UsageMeterPreview() {
   return (
-    <UsageMeter
-      className="w-full max-w-sm"
-      title="Credits remaining"
-      value={500}
-      max={1000}
-      remainingLabel="of $1,000 this cycle"
-      resetLabel="Resets Jul 1"
-    />
+    <PreviewPair>
+      <UsageMeter
+        title="Credits remaining"
+        value={500}
+        max={1000}
+        remainingLabel="of $1,000 this cycle"
+        resetLabel="Resets Jul 1"
+      />
+      <UsageMeter
+        title="Payout reserve"
+        value={186}
+        max={800}
+        remainingLabel="of $800 held"
+        resetLabel="Clears on payout"
+      />
+    </PreviewPair>
   );
 }

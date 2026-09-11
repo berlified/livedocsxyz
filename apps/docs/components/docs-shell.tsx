@@ -51,7 +51,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="lg:hidden"
               aria-label="Open navigation"
               onClick={() => setMobileOpen(true)}
             >
@@ -61,13 +61,15 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
 
           <Link href="/" className="flex items-center gap-2.5 no-underline">
             <LivedocsLogo className="h-7" />
-            <span className="text-sm font-semibold tracking-tight">livedocs</span>
+            <span className="hidden text-sm font-semibold tracking-tight sm:inline">
+              livedocs
+            </span>
           </Link>
 
           <button
             type="button"
             onClick={() => setSearchOpen(true)}
-            className="ml-2 hidden h-9 w-full max-w-md items-center gap-2 rounded-md border border-border bg-card px-3 text-left text-sm text-muted-foreground sm:flex"
+            className="ml-2 hidden h-9 min-w-0 w-full max-w-md items-center gap-2 rounded-md border border-border bg-card px-3 text-left text-sm text-muted-foreground sm:flex"
           >
             <span className="flex-1">Search documentation…</span>
             <kbd className="rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
@@ -227,7 +229,7 @@ export function CatalogLink({
 }) {
   return (
     <Link href={href} className="catalog-item group">
-      <div>
+      <div className="min-w-0">
         <p className="text-sm font-medium">{title}</p>
         <p className="mt-1 text-sm text-muted-foreground">{description}</p>
       </div>
