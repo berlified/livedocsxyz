@@ -29,6 +29,12 @@ const uiComponents = [
   "comparison-chart",
   "breakdown-chart",
   "range-chart",
+  "country-chart",
+  "ring-metric",
+  "cashflow-chart",
+  "spotlight-chart",
+  "lane-chart",
+  "usage-meter",
 ];
 
 function syncDocsToRegistry() {

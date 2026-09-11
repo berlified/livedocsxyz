@@ -137,7 +137,7 @@
       "name": "sparkline",
       "type": "registry:ui",
       "title": "Sparkline",
-      "description": "Quiet SVG trend with a floating marker tooltip. No axes, no Recharts.",
+      "description": "Smooth SVG trend with a scrubbable marker, value tooltip, and size tones. No Recharts.",
       "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
@@ -385,6 +385,117 @@
           "path": "apps/docs/components/ui/range-chart.tsx",
           "type": "registry:ui",
           "target": "components/ui/range-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "country-chart",
+      "type": "registry:ui",
+      "title": "Country Chart",
+      "description": "Ranked market bars with a last-period marker on each row.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/country-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/country-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "ring-metric",
+      "type": "registry:ui",
+      "title": "Ring Metric",
+      "description": "Donut with a total in the hole and a percent legend.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/ring-metric.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/ring-metric.tsx"
+        }
+      ]
+    },
+    {
+      "name": "cashflow-chart",
+      "type": "registry:ui",
+      "title": "Cashflow Chart",
+      "description": "Diverging bars from zero: inflow up, outflow down.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/cashflow-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/cashflow-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "spotlight-chart",
+      "type": "registry:ui",
+      "title": "Spotlight Chart",
+      "description": "Linear area with a dashed prior series and a callout on the peak.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/badge.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/spotlight-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/spotlight-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "lane-chart",
+      "type": "registry:ui",
+      "title": "Lane Chart",
+      "description": "Horizontal outcome lanes compared against a shared max.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/lane-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/lane-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "usage-meter",
+      "type": "registry:ui",
+      "title": "Usage Meter",
+      "description": "Quota remaining with a used track and a reset caption.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/usage-meter.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/usage-meter.tsx"
         }
       ]
     }

@@ -4,66 +4,120 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-const SAMPLE = Array.from({ length: 29 }, (_, index) => {
-  const trend = 16 + index * 1.35;
-  const tooth = index % 2 === 0 ? 5.4 : -2.4;
-  return trend + tooth;
+const SAMPLE = Array.from({ length: 42 }, (_, index) => {
+  const t = index / 41;
+  return (
+    38 +
+    t * 34 +
+    Math.sin(t * Math.PI * 2.6) * 8.5 +
+    Math.sin(t * Math.PI * 7.4) * 2.8 +
+    (index > 28 ? (index - 28) * 0.55 : 0)
+  );
 });
+
+const sizeClass = {
+  sm: "h-10",
+  md: "h-28",
+  lg: "h-[220px] md:h-[280px]",
+} as const;
+
+const toneClass = {
+  neutral: "text-foreground",
+  up: "text-[color:var(--chart-2)]",
+  down: "text-destructive",
+} as const;
 
 export type SparklineProps = React.ComponentProps<"div"> & {
   data?: number[];
   markerIndex?: number;
   markerLabel?: string;
   interactive?: boolean;
+  showValue?: boolean;
+  format?: (value: number) => string;
+  size?: keyof typeof sizeClass;
+  tone?: keyof typeof toneClass;
 };
 
 function toPoints(data: number[], width: number, height: number) {
   const min = Math.min(...data);
   const max = Math.max(...data);
   const span = Math.max(max - min, 1);
-  const bandTop = height * 0.36;
-  const bandBottom = height * 0.58;
+  const padX = 10;
+  const padTop = height * 0.18;
+  const padBottom = height * 0.22;
+  const usable = height - padTop - padBottom;
 
   return data.map((value, index) => {
-    const x = data.length === 1 ? 0 : (index / (data.length - 1)) * width;
-    const y = bandTop + (1 - (value - min) / span) * (bandBottom - bandTop);
+    const x =
+      data.length === 1
+        ? width / 2
+        : padX + (index / (data.length - 1)) * (width - padX * 2);
+    const y = padTop + (1 - (value - min) / span) * usable;
     return { x, y, value };
   });
 }
 
-function linePath(points: Array<{ x: number; y: number }>) {
-  return points
-    .map((point, index) => `${index === 0 ? "M" : "L"}${point.x} ${point.y}`)
-    .join(" ");
+function smoothPath(points: Array<{ x: number; y: number }>) {
+  if (points.length === 0) return "";
+  const first = points[0];
+  if (!first) return "";
+  if (points.length === 1) return `M${first.x} ${first.y}`;
+  const second = points[1];
+  if (points.length === 2 && second) {
+    return `M${first.x} ${first.y} L${second.x} ${second.y}`;
+  }
+
+  let path = `M${first.x} ${first.y}`;
+  for (let index = 0; index < points.length - 1; index++) {
+    const p0 = points[index - 1] ?? points[index] ?? first;
+    const p1 = points[index] ?? first;
+    const p2 = points[index + 1] ?? p1;
+    const p3 = points[index + 2] ?? p2;
+    const cp1x = p1.x + (p2.x - p0.x) / 6;
+    const cp1y = p1.y + (p2.y - p0.y) / 6;
+    const cp2x = p2.x - (p3.x - p1.x) / 6;
+    const cp2y = p2.y - (p3.y - p1.y) / 6;
+    path += ` C${cp1x} ${cp1y} ${cp2x} ${cp2y} ${p2.x} ${p2.y}`;
+  }
+  return path;
 }
 
 function Sparkline({
   className,
   data = SAMPLE,
   markerIndex,
-  markerLabel = "Your balance will appear here.",
+  markerLabel,
   interactive = true,
+  showValue = true,
+  format = (value) =>
+    value.toLocaleString("en-US", { maximumFractionDigits: 1 }),
+  size = "lg",
+  tone = "neutral",
   ...props
 }: SparklineProps) {
-  const defaultMarker = markerIndex ?? Math.floor(data.length * 0.56);
-  const [active, setActive] = React.useState(defaultMarker);
+  const fallbackIndex = markerIndex ?? Math.max(0, data.length - 1);
+  const [active, setActive] = React.useState(fallbackIndex);
+  const svgRef = React.useRef<SVGSVGElement>(null);
 
   React.useEffect(() => {
-    setActive(markerIndex ?? Math.floor(data.length * 0.56));
+    setActive(markerIndex ?? Math.max(0, data.length - 1));
   }, [data.length, markerIndex]);
 
   const width = 960;
   const height = 280;
-  const baseline = height * 0.9;
+  const baseline = height - 18;
   const points = toPoints(data, width, height);
-  const line = linePath(points);
-  const area = `${line} L${width} ${baseline} L0 ${baseline} Z`;
-  const marker = points[Math.min(Math.max(active, 0), points.length - 1)];
+  const line = smoothPath(points);
+  const last = points[points.length - 1];
+  const area = last
+    ? `${line} L${last.x} ${baseline} L${points[0]?.x ?? 0} ${baseline} Z`
+    : "";
+  const marker = points[Math.min(Math.max(active, 0), Math.max(points.length - 1, 0))];
 
-  const onMove = (event: React.MouseEvent<SVGSVGElement>) => {
-    if (!interactive || points.length < 2) return;
-    const rect = event.currentTarget.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * width;
+  const moveTo = (clientX: number) => {
+    if (!interactive || points.length < 2 || !svgRef.current) return;
+    const rect = svgRef.current.getBoundingClientRect();
+    const x = ((clientX - rect.left) / rect.width) * width;
     let nearest = 0;
     let best = Infinity;
     points.forEach((point, index) => {
@@ -76,61 +130,137 @@ function Sparkline({
     setActive(nearest);
   };
 
+  const reset = () => setActive(markerIndex ?? Math.max(0, data.length - 1));
+
+  const onKeyDown = (event: React.KeyboardEvent<SVGSVGElement>) => {
+    if (!interactive || points.length < 2) return;
+    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
+      event.preventDefault();
+      const delta = event.key === "ArrowLeft" ? -1 : 1;
+      setActive((current) =>
+        Math.min(points.length - 1, Math.max(0, current + delta))
+      );
+    }
+    if (event.key === "Home") {
+      event.preventDefault();
+      setActive(0);
+    }
+    if (event.key === "End") {
+      event.preventDefault();
+      setActive(points.length - 1);
+    }
+  };
+
+  const caption = markerLabel ?? (marker ? format(marker.value) : "");
+
   return (
     <div className={cn("relative w-full bg-background", className)} {...props}>
       <svg
+        ref={svgRef}
         viewBox={`0 0 ${width} ${height}`}
-        className="block h-[220px] w-full md:h-[280px]"
+        className={cn("block w-full select-none", sizeClass[size], toneClass[tone])}
         role="img"
-        aria-label={markerLabel}
-        onMouseMove={onMove}
-        onMouseLeave={() =>
-          setActive(markerIndex ?? Math.floor(data.length * 0.56))
-        }
+        aria-label={caption || "Trend"}
+        tabIndex={interactive ? 0 : undefined}
+        onPointerDown={(event) => {
+          if (!interactive) return;
+          if (event.pointerType !== "mouse") {
+            event.currentTarget.setPointerCapture(event.pointerId);
+          }
+          moveTo(event.clientX);
+        }}
+        onPointerMove={(event) => {
+          if (!interactive) return;
+          if (
+            event.pointerType === "mouse" ||
+            event.currentTarget.hasPointerCapture(event.pointerId)
+          ) {
+            moveTo(event.clientX);
+          }
+        }}
+        onPointerUp={(event) => {
+          if (event.pointerType !== "mouse") reset();
+        }}
+        onPointerLeave={reset}
+        onKeyDown={onKeyDown}
       >
-        <path d={area} className="fill-foreground/[0.09]" />
-        <path
-          d={line}
-          fill="none"
-          className="stroke-muted-foreground"
-          strokeWidth="1.5"
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
+        {area ? (
+          <path d={area} fill="currentColor" className="opacity-[0.16]" />
+        ) : null}
         <line
           x1="0"
           x2={width}
           y1={baseline}
           y2={baseline}
-          className="stroke-muted-foreground/30"
-          strokeDasharray="2.5 6"
+          className="stroke-border"
+          strokeDasharray="3 7"
         />
+        <path
+          d={line}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinejoin="round"
+          strokeLinecap="round"
+        />
+        {last ? (
+          <circle
+            cx={last.x}
+            cy={last.y}
+            r="2.5"
+            fill="currentColor"
+            className="opacity-40"
+          />
+        ) : null}
         {marker ? (
           <g>
             <line
               x1={marker.x}
               x2={marker.x}
-              y1="36"
+              y1="20"
               y2={baseline}
-              className="stroke-muted-foreground/40"
+              className="stroke-border"
               strokeWidth="1"
             />
             <circle
               cx={marker.x}
               cy={marker.y}
-              r="3.5"
-              className="fill-muted-foreground"
+              r="8"
+              fill="currentColor"
+              className="opacity-20"
+            />
+            <circle
+              cx={marker.x}
+              cy={marker.y}
+              r="3.75"
+              fill="currentColor"
+              stroke="var(--background)"
+              strokeWidth="2"
             />
           </g>
         ) : null}
       </svg>
-      {marker ? (
+      {marker && (markerLabel || showValue) ? (
         <div
-          className="pointer-events-none absolute top-1 -translate-x-1/2"
-          style={{ left: `${(marker.x / width) * 100}%` }}
+          className="pointer-events-none absolute top-1 max-w-[calc(100%-1rem)] -translate-x-1/2"
+          style={{
+            left: `${Math.min(86, Math.max(14, (marker.x / width) * 100))}%`,
+          }}
         >
-          <div className="rounded-full border border-border bg-card/90 px-2.5 py-1 text-[11px] text-muted-foreground">
-            {markerLabel}
+          <div className="rounded-full border border-border bg-card px-2.5 py-1 shadow-sm">
+            {markerLabel ? (
+              <p className="text-[11px] text-muted-foreground">{markerLabel}</p>
+            ) : null}
+            {showValue ? (
+              <p
+                className={cn(
+                  "font-mono text-[11px] font-medium text-foreground",
+                  markerLabel && "mt-0.5"
+                )}
+              >
+                {format(marker.value)}
+              </p>
+            ) : null}
           </div>
         </div>
       ) : null}

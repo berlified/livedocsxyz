@@ -24,6 +24,10 @@ export const metadata: Metadata = {
   description:
     "A shadcn component registry. Copy the command, own the source.",
   metadataBase: new URL("https://livedocs.xyz"),
+  icons: {
+    icon: [{ url: "/logo.svg", type: "image/svg+xml" }],
+    apple: [{ url: "/logo.svg", type: "image/svg+xml" }],
+  },
 };
 
 export default function RootLayout({

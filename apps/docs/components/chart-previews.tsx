@@ -3,8 +3,15 @@
 import { AreaChart } from "@/components/ui/area-chart";
 import { BarChart } from "@/components/ui/bar-chart";
 import { BreakdownChart } from "@/components/ui/breakdown-chart";
+import { CashflowChart } from "@/components/ui/cashflow-chart";
 import {
+  cashflowConfig,
+  cashflowMonths,
   dailyOverlay,
+  laneConfig,
+  laneRows,
+  marketConfig,
+  marketRank,
   metricConfig,
   metricSeries,
   mixConfig,
@@ -16,15 +23,24 @@ import {
   radialData,
   rangeBand,
   rangeConfig,
+  ringConfig,
+  ringMembers,
   sankeyConfig,
   sankeyLinks,
   sankeyNodes,
   shareConfig,
   shareData,
+  spotlightConfig,
+  spotlightSeries,
   trafficConfig,
   yearCompare,
   yearCompareConfig,
 } from "@/components/ui/chart";
+import { CountryChart } from "@/components/ui/country-chart";
+import { LaneChart } from "@/components/ui/lane-chart";
+import { RingMetric } from "@/components/ui/ring-metric";
+import { SpotlightChart } from "@/components/ui/spotlight-chart";
+import { UsageMeter } from "@/components/ui/usage-meter";
 import { ComparisonChart } from "@/components/ui/comparison-chart";
 import { ComposedChart } from "@/components/ui/composed-chart";
 import { LineChart } from "@/components/ui/line-chart";
@@ -35,6 +51,7 @@ import { RadialChart } from "@/components/ui/radial-chart";
 import { RangeChart } from "@/components/ui/range-chart";
 import { SankeyChart } from "@/components/ui/sankey-chart";
 import { Sparkline } from "@/components/ui/sparkline";
+import { Card } from "@/components/ui/card";
 import { TrendCard } from "@/components/ui/trend-card";
 
 import { ComponentPreview } from "@/components/component-preview";
@@ -331,15 +348,58 @@ export function SankeyChartPreview() {
 }
 
 export function SparklinePreview() {
-  return <Sparkline className="w-full" />;
+  return (
+    <Sparkline
+      className="w-full"
+      tone="up"
+      format={(value) =>
+        value.toLocaleString("en-US", { style: "currency", currency: "USD" })
+      }
+    />
+  );
 }
 
 export function SparklineExamples() {
   return (
     <section className="space-y-6">
-      <h2 className="text-xl font-semibold">Marker</h2>
-      <ComponentPreview label="Custom label" className="p-0">
-        <Sparkline markerLabel="$12,480" markerIndex={18} />
+      <h2 className="text-xl font-semibold">Sizes</h2>
+      <ComponentPreview label="Inline" className="p-4">
+        <div className="flex w-full items-center justify-between gap-4">
+          <div>
+            <p className="text-sm text-muted-foreground">Available balance</p>
+            <p className="font-mono text-lg font-semibold">$12,480</p>
+          </div>
+          <Sparkline
+            className="max-w-40 bg-transparent"
+            size="sm"
+            tone="up"
+            interactive={false}
+            showValue={false}
+          />
+        </div>
+      </ComponentPreview>
+      <ComponentPreview label="Card" className="p-4">
+        <Card className="w-full max-w-sm p-4">
+          <p className="text-sm text-muted-foreground">Volume</p>
+          <p className="mt-1 font-mono text-2xl font-semibold tracking-tight">$48,210</p>
+          <Sparkline
+            className="mt-3 bg-transparent"
+            size="md"
+            tone="up"
+            showValue={false}
+          />
+        </Card>
+      </ComponentPreview>
+      <h2 className="text-xl font-semibold">Callout</h2>
+      <ComponentPreview label="Labeled marker" className="p-0">
+        <Sparkline
+          markerLabel="Peak balance"
+          markerIndex={31}
+          tone="up"
+          format={(value) =>
+            value.toLocaleString("en-US", { style: "currency", currency: "USD" })
+          }
+        />
       </ComponentPreview>
     </section>
   );
@@ -426,6 +486,80 @@ export function RangeChartPreview() {
       title="Expected vs actual"
       data={rangeBand}
       config={rangeConfig}
+    />
+  );
+}
+
+export function CountryChartPreview() {
+  return (
+    <CountryChart
+      className="w-full"
+      title="Revenue by market"
+      rows={marketRank}
+      config={marketConfig}
+    />
+  );
+}
+
+export function RingMetricPreview() {
+  return (
+    <RingMetric
+      className="w-full max-w-sm"
+      title="Members"
+      centerLabel="Total"
+      data={ringMembers}
+      config={ringConfig}
+    />
+  );
+}
+
+export function CashflowChartPreview() {
+  return (
+    <CashflowChart
+      className="w-full"
+      title="Cash movement"
+      inflowValue="$967,830"
+      outflowValue="$351,420"
+      data={cashflowMonths}
+      config={cashflowConfig}
+    />
+  );
+}
+
+export function SpotlightChartPreview() {
+  return (
+    <SpotlightChart
+      className="w-full"
+      title="Gross volume"
+      value="$107,843"
+      delta="↑ 88% vs last month"
+      data={spotlightSeries}
+      config={spotlightConfig}
+      markerLabel="Peak"
+    />
+  );
+}
+
+export function LaneChartPreview() {
+  return (
+    <LaneChart
+      className="w-full"
+      title="Payment outcomes"
+      rows={laneRows}
+      config={laneConfig}
+    />
+  );
+}
+
+export function UsageMeterPreview() {
+  return (
+    <UsageMeter
+      className="w-full max-w-sm"
+      title="Credits remaining"
+      value={500}
+      max={1000}
+      remainingLabel="of $1,000 this cycle"
+      resetLabel="Resets Jul 1"
     />
   );
 }

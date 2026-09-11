@@ -3,6 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 
 import { components } from "@frostui/registry";
 
+import { LivedocsLogo } from "@/components/livedocs-logo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -12,14 +13,17 @@ import { getShadcnAddCommand } from "@/lib/registry-url";
 
 const featured = components.filter((item) =>
   [
+    "country-chart",
+    "ring-metric",
+    "cashflow-chart",
+    "spotlight-chart",
+    "lane-chart",
+    "usage-meter",
     "trend-card",
     "metric-chart",
     "comparison-chart",
     "breakdown-chart",
     "range-chart",
-    "area-chart",
-    "button",
-    "card",
   ].includes(item.name)
 );
 
@@ -28,14 +32,18 @@ export default function HomePage() {
     <div className="mx-auto max-w-6xl space-y-20 pb-16">
       <section className="space-y-8 pt-8 lg:pt-12">
         <div className="space-y-6">
-          <Badge variant="outline">Charts for product UI</Badge>
+          <div className="flex items-center gap-3">
+            <LivedocsLogo className="h-9" />
+            <Badge variant="outline">Charts for product UI</Badge>
+          </div>
           <div className="space-y-4">
             <h1 className="max-w-3xl text-4xl font-semibold tracking-tight md:text-6xl">
               Metrics that sit in a dashboard, not a demo.
             </h1>
             <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
-              Overlay this period on last. Range bands. Share stacks you can
-              click. Install with shadcn, then the files are yours.
+              Ranked markets with last-period ticks. Rings with a total in the
+              hole. Cashflow from zero. Install with shadcn, then the files are
+              yours.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">

@@ -61,7 +61,7 @@
       "name": "sparkline",
       "type": "registry:ui",
       "title": "Sparkline",
-      "description": "Quiet SVG trend with a floating marker tooltip. No axes, no Recharts."
+      "description": "Smooth SVG trend with a scrubbable marker, value tooltip, and size tones. No Recharts."
     },
     {
       "name": "area-chart",
@@ -140,6 +140,42 @@
       "type": "registry:ui",
       "title": "Range Chart",
       "description": "Forecast band from low to high with an actual line sitting in the middle."
+    },
+    {
+      "name": "country-chart",
+      "type": "registry:ui",
+      "title": "Country Chart",
+      "description": "Ranked market bars with a last-period marker on each row."
+    },
+    {
+      "name": "ring-metric",
+      "type": "registry:ui",
+      "title": "Ring Metric",
+      "description": "Donut with a total in the hole and a percent legend."
+    },
+    {
+      "name": "cashflow-chart",
+      "type": "registry:ui",
+      "title": "Cashflow Chart",
+      "description": "Diverging bars from zero: inflow up, outflow down."
+    },
+    {
+      "name": "spotlight-chart",
+      "type": "registry:ui",
+      "title": "Spotlight Chart",
+      "description": "Linear area with a dashed prior series and a callout on the peak."
+    },
+    {
+      "name": "lane-chart",
+      "type": "registry:ui",
+      "title": "Lane Chart",
+      "description": "Horizontal outcome lanes compared against a shared max."
+    },
+    {
+      "name": "usage-meter",
+      "type": "registry:ui",
+      "title": "Usage Meter",
+      "description": "Quota remaining with a used track and a reset caption."
     }
   ]
 }

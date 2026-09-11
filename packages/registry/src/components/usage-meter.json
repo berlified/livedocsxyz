@@ -1,0 +1,26 @@
+{
+  "name": "usage-meter",
+  "title": "Usage Meter",
+  "category": "charts",
+  "description": "Quota remaining with a used track and a reset caption.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/usage-meter.tsx"],
+  "examples": ["credits"],
+  "variants": ["default"],
+  "keywords": ["meter", "quota", "credits", "progress", "usage"],
+  "props": [
+    { "name": "value", "type": "number", "description": "Amount used" },
+    { "name": "max", "type": "number", "description": "Quota" }
+  ],
+  "ai": {
+    "purpose": "Show remaining credits or cap against a quota.",
+    "useWhen": ["Plan credits", "Rate limits"],
+    "preferOver": ["A pie for a single used/remaining pair"],
+    "avoid": ["Multi-series mix"],
+    "compositions": ["UsageMeter under a RingMetric"]
+  }
+}

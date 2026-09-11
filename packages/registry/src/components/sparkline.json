@@ -2,7 +2,7 @@
   "name": "sparkline",
   "title": "Sparkline",
   "category": "charts",
-  "description": "Quiet SVG trend with a floating marker tooltip. No axes, no Recharts.",
+  "description": "Smooth SVG trend with a scrubbable marker, value tooltip, and size tones. No Recharts.",
   "dependencies": [],
   "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
   "files": ["apps/docs/components/ui/sparkline.tsx"],
@@ -31,11 +31,29 @@
       "name": "interactive",
       "type": "boolean",
       "default": "true",
-      "description": "Move the marker on hover"
+      "description": "Scrub the marker with pointer or arrow keys"
+    },
+    {
+      "name": "showValue",
+      "type": "boolean",
+      "default": "true",
+      "description": "Show the numeric value in the floating tooltip"
+    },
+    {
+      "name": "size",
+      "type": "\"sm\" | \"md\" | \"lg\"",
+      "default": "\"lg\"",
+      "description": "Plot height for inline, card, or hero use"
+    },
+    {
+      "name": "tone",
+      "type": "\"neutral\" | \"up\" | \"down\"",
+      "default": "\"neutral\"",
+      "description": "Stroke and fill color from semantic tokens"
     }
   ],
   "ai": {
-    "purpose": "Show a trend as a quiet area with an optional callout on a point.",
+    "purpose": "Show a quiet, scrubbable trend with a marker and optional value.",
     "useWhen": [
       "Balance or empty-state illustrations",
       "Inline metric decoration"

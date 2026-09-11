@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { ArrowUpRight, Github, Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 
+import { LivedocsLogo } from "@/components/livedocs-logo";
 import { Button } from "@/components/ui/button";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { PageToc } from "@/components/page-toc";
@@ -59,9 +60,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
           )}
 
           <Link href="/" className="flex items-center gap-2.5 no-underline">
-            <span className="flex size-7 items-center justify-center rounded-md border border-border bg-card text-xs font-bold">
-              L
-            </span>
+            <LivedocsLogo className="h-7" />
             <span className="text-sm font-semibold tracking-tight">livedocs</span>
           </Link>
 
@@ -165,7 +164,10 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
           />
           <div className="absolute inset-y-0 left-0 flex w-[min(20rem,88vw)] flex-col border-r border-border bg-background">
             <div className="flex h-14 items-center justify-between border-b border-border px-4">
-              <span className="font-semibold">Navigation</span>
+              <span className="flex items-center gap-2 font-semibold">
+                <LivedocsLogo className="h-5" />
+                Navigation
+              </span>
               <Button
                 variant="ghost"
                 size="icon"

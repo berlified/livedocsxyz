@@ -39,6 +39,12 @@ export function getShadcnAddAllCommand() {
     "comparison-chart",
     "breakdown-chart",
     "range-chart",
+    "country-chart",
+    "ring-metric",
+    "cashflow-chart",
+    "spotlight-chart",
+    "lane-chart",
+    "usage-meter",
   ];
   return `npx shadcn@latest add ${items.map(getRegistryItemUrl).join(" ")}`;
 }

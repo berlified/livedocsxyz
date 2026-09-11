@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { LivedocsLogo } from "@/components/livedocs-logo";
 import { Badge } from "@/components/ui/badge";
 import { CodeBlock } from "@/components/code-block";
 import { getShadcnAddCommand } from "@/lib/registry-url";
@@ -8,7 +9,10 @@ export default function DocsHomePage() {
   return (
     <div className="mx-auto max-w-3xl space-y-10">
       <header className="space-y-3">
-        <Badge variant="outline">Documentation</Badge>
+        <div className="flex items-center gap-3">
+          <LivedocsLogo className="h-7" />
+          <Badge variant="outline">Documentation</Badge>
+        </div>
         <h1 className="text-4xl font-semibold tracking-tight">Docs</h1>
         <p className="text-base leading-7 text-muted-foreground">
           Preview components, copy a shadcn command, and drop the source into

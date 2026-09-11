@@ -1,0 +1,27 @@
+{
+  "name": "ring-metric",
+  "title": "Ring Metric",
+  "category": "charts",
+  "description": "Donut with a total in the hole and a percent legend.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/ring-metric.tsx"],
+  "examples": ["members"],
+  "variants": ["default"],
+  "keywords": ["chart", "donut", "ring", "center", "mix"],
+  "props": [
+    { "name": "centerLabel", "type": "string", "description": "Caption under the total" },
+    { "name": "data", "type": "RingSlice[]", "description": "Slices with key, label, value" }
+  ],
+  "ai": {
+    "purpose": "Show a mix as a ring with the total in the center.",
+    "useWhen": ["New vs existing", "Payment mix"],
+    "preferOver": ["PieChart when the total should lead"],
+    "avoid": ["Many tiny slices"],
+    "compositions": ["Two RingMetrics flanking a line chart"]
+  }
+}

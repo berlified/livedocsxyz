@@ -44,6 +44,12 @@ import {
   ComparisonChartPreview,
   BreakdownChartPreview,
   RangeChartPreview,
+  CountryChartPreview,
+  RingMetricPreview,
+  CashflowChartPreview,
+  SpotlightChartPreview,
+  LaneChartPreview,
+  UsageMeterPreview,
 } from "@/components/chart-previews";
 
 const usageByName: Record<string, string> = {
@@ -112,7 +118,15 @@ export function Example() {
   sparkline: `import { Sparkline } from "@/components/ui/sparkline"
 
 export function Example() {
-  return <Sparkline markerLabel="Your balance will appear here." />
+  return (
+    <Sparkline
+      size="lg"
+      tone="up"
+      format={(value) =>
+        value.toLocaleString("en-US", { style: "currency", currency: "USD" })
+      }
+    />
+  )
 }`,
   "area-chart": `import { monthlyData, trafficConfig } from "@/components/ui/chart"
 import { AreaChart } from "@/components/ui/area-chart"
@@ -287,6 +301,73 @@ import { RangeChart } from "@/components/ui/range-chart"
 export function Example() {
   return <RangeChart title="Expected vs actual" data={rangeBand} config={rangeConfig} />
 }`,
+  "country-chart": `import { marketRank, marketConfig } from "@/components/ui/chart"
+import { CountryChart } from "@/components/ui/country-chart"
+
+export function Example() {
+  return <CountryChart title="Revenue by market" rows={marketRank} config={marketConfig} />
+}`,
+  "ring-metric": `import { ringMembers, ringConfig } from "@/components/ui/chart"
+import { RingMetric } from "@/components/ui/ring-metric"
+
+export function Example() {
+  return (
+    <RingMetric
+      title="Members"
+      centerLabel="Total"
+      data={ringMembers}
+      config={ringConfig}
+    />
+  )
+}`,
+  "cashflow-chart": `import { cashflowMonths, cashflowConfig } from "@/components/ui/chart"
+import { CashflowChart } from "@/components/ui/cashflow-chart"
+
+export function Example() {
+  return (
+    <CashflowChart
+      title="Cash movement"
+      inflowValue="$967,830"
+      outflowValue="$351,420"
+      data={cashflowMonths}
+      config={cashflowConfig}
+    />
+  )
+}`,
+  "spotlight-chart": `import { spotlightSeries, spotlightConfig } from "@/components/ui/chart"
+import { SpotlightChart } from "@/components/ui/spotlight-chart"
+
+export function Example() {
+  return (
+    <SpotlightChart
+      title="Gross volume"
+      value="$107,843"
+      delta="↑ 88% vs last month"
+      data={spotlightSeries}
+      config={spotlightConfig}
+      markerLabel="Peak"
+    />
+  )
+}`,
+  "lane-chart": `import { laneRows, laneConfig } from "@/components/ui/chart"
+import { LaneChart } from "@/components/ui/lane-chart"
+
+export function Example() {
+  return <LaneChart title="Payment outcomes" rows={laneRows} config={laneConfig} />
+}`,
+  "usage-meter": `import { UsageMeter } from "@/components/ui/usage-meter"
+
+export function Example() {
+  return (
+    <UsageMeter
+      title="Credits remaining"
+      value={500}
+      max={1000}
+      remainingLabel="of $1,000 this cycle"
+      resetLabel="Resets Jul 1"
+    />
+  )
+}`,
 };
 
 const previewByName: Record<string, ReactNode> = {
@@ -311,6 +392,12 @@ const previewByName: Record<string, ReactNode> = {
   "comparison-chart": <ComparisonChartPreview />,
   "breakdown-chart": <BreakdownChartPreview />,
   "range-chart": <RangeChartPreview />,
+  "country-chart": <CountryChartPreview />,
+  "ring-metric": <RingMetricPreview />,
+  "cashflow-chart": <CashflowChartPreview />,
+  "spotlight-chart": <SpotlightChartPreview />,
+  "lane-chart": <LaneChartPreview />,
+  "usage-meter": <UsageMeterPreview />,
 };
 
 const examplesByName: Record<string, ReactNode> = {
@@ -352,6 +439,12 @@ const sourcePaths: Record<string, string> = {
   "comparison-chart": "apps/docs/components/ui/comparison-chart.tsx",
   "breakdown-chart": "apps/docs/components/ui/breakdown-chart.tsx",
   "range-chart": "apps/docs/components/ui/range-chart.tsx",
+  "country-chart": "apps/docs/components/ui/country-chart.tsx",
+  "ring-metric": "apps/docs/components/ui/ring-metric.tsx",
+  "cashflow-chart": "apps/docs/components/ui/cashflow-chart.tsx",
+  "spotlight-chart": "apps/docs/components/ui/spotlight-chart.tsx",
+  "lane-chart": "apps/docs/components/ui/lane-chart.tsx",
+  "usage-meter": "apps/docs/components/ui/usage-meter.tsx",
 };
 
 function readRegistrySource(name: string) {
