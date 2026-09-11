@@ -1,0 +1,34 @@
+{
+  "name": "card",
+  "title": "Card",
+  "category": "foundations",
+  "description": "Composable surface for grouping related content with optional frosted elevation.",
+  "dependencies": ["class-variance-authority"],
+  "registryDependencies": [],
+  "files": ["packages/ui/src/components/card.tsx"],
+  "examples": ["default", "variants", "with-actions"],
+  "variants": ["surface", "elevated", "muted", "outline", "frost"],
+  "keywords": ["card", "panel", "surface", "container", "widget"],
+  "props": [
+    { "name": "variant", "type": "\"surface\" | \"elevated\" | \"muted\" | \"outline\" | \"frost\"", "default": "\"surface\"", "description": "Surface treatment" },
+    { "name": "padding", "type": "\"none\" | \"sm\" | \"md\" | \"lg\"", "default": "\"md\"", "description": "Internal padding" }
+  ],
+  "ai": {
+    "purpose": "Group related content on a layered surface.",
+    "useWhen": [
+      "Dashboard widgets",
+      "Settings sections",
+      "Preview panels and summary blocks"
+    ],
+    "preferOver": ["Bare bordered divs for content grouping"],
+    "avoid": [
+      "Nesting many Cards without hierarchy",
+      "Using Card as a replacement for Dialog"
+    ],
+    "compositions": [
+      "Card + CardHeader + CardContent + CardFooter",
+      "Card + Badge + Button",
+      "Card frost variant for elevated overlays"
+    ]
+  }
+}

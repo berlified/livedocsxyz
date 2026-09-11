@@ -1,0 +1,33 @@
+{
+  "name": "avatar",
+  "title": "Avatar",
+  "category": "foundations",
+  "description": "User or entity identity with image and accessible fallback initials.",
+  "dependencies": ["@radix-ui/react-avatar", "class-variance-authority"],
+  "registryDependencies": [],
+  "files": ["packages/ui/src/components/avatar.tsx"],
+  "examples": ["default", "sizes", "fallback"],
+  "variants": ["sm", "md", "lg", "xl"],
+  "keywords": ["avatar", "user", "profile", "image", "identity"],
+  "props": [
+    { "name": "size", "type": "\"sm\" | \"md\" | \"lg\" | \"xl\"", "default": "\"md\"", "description": "Avatar size" }
+  ],
+  "ai": {
+    "purpose": "Represent a person, workspace, or entity visually.",
+    "useWhen": [
+      "User menus and lists",
+      "Comments and activity feeds",
+      "Workspace switchers"
+    ],
+    "preferOver": ["Raw img tags without fallbacks"],
+    "avoid": [
+      "Using Avatar for decorative product imagery",
+      "Omitting fallback text when image may fail"
+    ],
+    "compositions": [
+      "Avatar + Text name stack",
+      "Avatar + Badge",
+      "Avatar Group (future)"
+    ]
+  }
+}

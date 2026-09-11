@@ -1,0 +1,131 @@
+/* FrostUI design tokens — semantic CSS variables */
+
+:root {
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+  --radius: var(--radius-md);
+
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --text-0: 0.625rem;
+  --text-1: 0.75rem;
+  --text-2: 0.875rem;
+  --text-3: 1rem;
+  --text-4: 1.125rem;
+  --text-5: 1.25rem;
+  --text-6: 1.5rem;
+  --text-7: 1.75rem;
+  --text-8: 2rem;
+  --text-9: 2.5rem;
+
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+
+  --tracking-tight: -0.01em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.01em;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.08);
+  --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.12);
+  --shadow-focus: 0 0 0 2px var(--blue-8);
+
+  --duration-fast: 100ms;
+  --duration-normal: 160ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark,
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --background: var(--gray-1);
+  --surface: var(--gray-2);
+  --surface-hover: var(--gray-3);
+  --surface-active: var(--gray-4);
+  --surface-elevated: var(--gray-3);
+  --surface-muted: var(--gray-2);
+
+  --border: var(--gray-6);
+  --border-subtle: var(--gray-4);
+  --border-strong: var(--gray-7);
+  --border-focus: var(--blue-8);
+
+  --foreground: var(--gray-12);
+  --foreground-muted: var(--gray-11);
+  --foreground-subtle: var(--gray-10);
+  --foreground-disabled: var(--gray-8);
+
+  --primary: var(--blue-9);
+  --primary-hover: var(--blue-10);
+  --primary-active: var(--blue-10);
+  --primary-foreground: var(--accent-contrast);
+
+  --success: var(--green-9);
+  --warning: var(--orange-9);
+  --danger: var(--red-9);
+  --info: var(--blue-9);
+
+  --ring: var(--blue-8);
+  --overlay: rgb(0 0 0 / 0.6);
+  --code: var(--gray-3);
+  --frost: color-mix(in srgb, var(--gray-2) 88%, transparent);
+  --panel: var(--gray-2);
+  --canvas: var(--gray-1);
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.24);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.32);
+  --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.4);
+}
+
+.light,
+[data-theme="light"] {
+  color-scheme: light;
+
+  --background: var(--gray-1);
+  --surface: #ffffff;
+  --surface-hover: var(--gray-2);
+  --surface-active: var(--gray-3);
+  --surface-elevated: #ffffff;
+  --surface-muted: var(--gray-2);
+
+  --border: var(--gray-6);
+  --border-subtle: var(--gray-4);
+  --border-strong: var(--gray-7);
+  --border-focus: var(--blue-8);
+
+  --foreground: var(--gray-12);
+  --foreground-muted: var(--gray-11);
+  --foreground-subtle: var(--gray-10);
+  --foreground-disabled: var(--gray-8);
+
+  --primary: var(--blue-9);
+  --primary-hover: var(--blue-10);
+  --primary-active: var(--blue-10);
+  --primary-foreground: var(--accent-contrast);
+
+  --success: var(--green-9);
+  --warning: var(--orange-9);
+  --danger: var(--red-9);
+  --info: var(--blue-9);
+
+  --ring: var(--blue-8);
+  --overlay: rgb(0 0 0 / 0.4);
+  --code: var(--gray-2);
+  --frost: rgb(255 255 255 / 0.72);
+  --panel: #ffffff;
+  --canvas: #ffffff;
+
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.08);
+  --shadow-lg: 0 12px 32px rgb(0 0 0 / 0.12);
+}
+
+:root {
+  color-scheme: dark;
+}

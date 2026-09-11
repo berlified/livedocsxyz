@@ -1,0 +1,19 @@
+{
+  "name": "frostui",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FrostUI — a frosted-inspired React component library with first-class AI agent support",
+  "scripts": {
+    "dev": "pnpm --filter @frostui/docs dev",
+    "build": "pnpm -r build",
+    "build:docs": "pnpm --filter @frostui/docs build",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "clean": "pnpm -r clean"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "packageManager": "pnpm@9.15.0",
+  "license": "MIT"
+}

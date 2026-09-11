@@ -1,0 +1,19 @@
+{
+  "name": "@frostui/tokens",
+  "version": "0.1.0",
+  "private": true,
+  "description": "FrostUI design tokens",
+  "main": "./src/index.css",
+  "exports": {
+    ".": "./src/index.css",
+    "./themes.css": "./src/themes.css",
+    "./tokens.json": "./src/tokens.json"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "typecheck": "node -e \"console.log('tokens: ok')\"",
+    "clean": "rm -rf dist"
+  }
+}

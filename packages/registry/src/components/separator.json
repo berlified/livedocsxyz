@@ -1,0 +1,33 @@
+{
+  "name": "separator",
+  "title": "Separator",
+  "category": "foundations",
+  "description": "Subtle horizontal or vertical divider for grouping content.",
+  "dependencies": ["@radix-ui/react-separator"],
+  "registryDependencies": [],
+  "files": ["packages/ui/src/components/separator.tsx"],
+  "examples": ["horizontal", "vertical"],
+  "variants": ["horizontal", "vertical"],
+  "keywords": ["separator", "divider", "hr", "rule"],
+  "props": [
+    { "name": "orientation", "type": "\"horizontal\" | \"vertical\"", "default": "\"horizontal\"", "description": "Divider orientation" },
+    { "name": "decorative", "type": "boolean", "default": "true", "description": "Whether the separator is purely decorative" }
+  ],
+  "ai": {
+    "purpose": "Visually separate sections without heavy borders.",
+    "useWhen": [
+      "Between card sections",
+      "In menus and toolbars",
+      "In sidebars between nav groups"
+    ],
+    "preferOver": ["Border-top utility on arbitrary wrappers when a semantic divider is clearer"],
+    "avoid": [
+      "Using Separator for layout spacing alone",
+      "Stacking multiple Separators for decoration"
+    ],
+    "compositions": [
+      "CardHeader + Separator + CardContent",
+      "Sidebar group + Separator + Sidebar group"
+    ]
+  }
+}

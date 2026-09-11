@@ -1,0 +1,36 @@
+{
+  "name": "input",
+  "title": "Input",
+  "category": "foundations",
+  "description": "Accessible single-line text field with surface, soft, and ghost variants.",
+  "dependencies": ["class-variance-authority"],
+  "registryDependencies": [],
+  "files": ["packages/ui/src/components/input.tsx"],
+  "examples": ["default", "sizes", "disabled", "types"],
+  "variants": ["surface", "soft", "ghost"],
+  "keywords": ["input", "text", "field", "form", "search"],
+  "props": [
+    { "name": "variant", "type": "\"surface\" | \"soft\" | \"ghost\"", "default": "\"surface\"", "description": "Visual style" },
+    { "name": "inputSize", "type": "\"sm\" | \"md\" | \"lg\"", "default": "\"md\"", "description": "Control size" },
+    { "name": "disabled", "type": "boolean", "default": "false", "description": "Disables the input" },
+    { "name": "type", "type": "string", "default": "\"text\"", "description": "Native input type" }
+  ],
+  "ai": {
+    "purpose": "Collect a single line of text from the user.",
+    "useWhen": [
+      "Forms and filters",
+      "Search fields",
+      "Settings values"
+    ],
+    "preferOver": ["Unstyled native input with one-off classes"],
+    "avoid": [
+      "Using Input for multi-line text (use Textarea)",
+      "Omitting an associated label in forms"
+    ],
+    "compositions": [
+      "Label + Input + Description + Error",
+      "Input inside Card forms",
+      "Search Input pattern with icon adornment"
+    ]
+  }
+}
