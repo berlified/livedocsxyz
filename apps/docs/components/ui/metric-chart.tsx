@@ -6,6 +6,7 @@ import {
   CartesianGrid,
   ComposedChart as RechartsComposedChart,
   Line,
+  ReferenceDot,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -19,12 +20,15 @@ import {
   colorVar,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 function MetricChartRoot({
   title,
   value,
+  delta,
+  tone = "up",
   data,
   config,
   series,
@@ -34,6 +38,8 @@ function MetricChartRoot({
 }: {
   title: string;
   value: string;
+  delta?: string;
+  tone?: "up" | "down";
   data: Record<string, unknown>[];
   config: ChartConfig;
   series: Array<{ key: string; label: string }>;
@@ -45,49 +51,72 @@ function MetricChartRoot({
 
   return (
     <Card className={cn("p-5", className)}>
-      <p className="text-sm text-muted-foreground">{title}</p>
-      <p className="mt-2 font-mono text-4xl font-semibold tracking-tight">{value}</p>
-      <div className="mt-3 flex flex-wrap gap-3" role="radiogroup" aria-label="Series">
-        {series.map((item) => {
-          const selected = active === item.key;
-          return (
-            <button
-              key={item.key}
-              type="button"
-              role="radio"
-              aria-checked={selected}
-              onClick={() => setActive(item.key)}
-              className={cn(
-                "flex items-center gap-2 text-xs text-muted-foreground",
-                selected && "text-foreground"
-              )}
-            >
-              <span
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="text-sm text-muted-foreground">{title}</p>
+          <div className="mt-2 flex items-center gap-2.5">
+            <p className="font-mono text-4xl font-semibold leading-none tracking-tight">{value}</p>
+            {delta ? (
+              <Badge
+                variant="outline"
+                className={
+                  tone === "down"
+                    ? "border-destructive/30 bg-destructive/15 text-destructive"
+                    : "border-transparent bg-secondary text-chart-2"
+                }
+              >
+                {delta}
+              </Badge>
+            ) : null}
+          </div>
+        </div>
+        <div
+          className="inline-flex flex-wrap rounded-full border border-border bg-muted/40 p-0.5"
+          role="radiogroup"
+          aria-label="Series"
+        >
+          {series.map((item) => {
+            const selected = active === item.key;
+            return (
+              <button
+                key={item.key}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                onClick={() => setActive(item.key)}
                 className={cn(
-                  "size-2 rounded-full border border-border",
-                  selected && "border-transparent"
+                  "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs text-muted-foreground transition-colors",
+                  selected && "bg-card text-foreground shadow-sm"
                 )}
-                style={{ background: selected ? colorVar(item.key) : "transparent" }}
-              />
-              {item.label}
-            </button>
-          );
-        })}
+              >
+                <span
+                  className="size-1.5 rounded-full"
+                  style={{ background: colorVar(item.key) }}
+                />
+                {item.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       <div className="mt-4 h-72 overflow-hidden rounded-xl bg-background">
         <ChartContainer
-          key={active}
           config={config}
           data={data}
           className="h-full w-full p-2"
           defaultSelectedDataKey={active}
         >
-        {isLoading ? (
-          <div className="h-full animate-pulse rounded-lg bg-muted/40" />
-        ) : (
-          <MetricBody data={data} xDataKey={xDataKey} series={series} active={active} />
-        )}
+          {isLoading ? (
+            <div className="h-full animate-pulse rounded-lg bg-muted/40" />
+          ) : (
+            <MetricBody
+              data={data}
+              xDataKey={xDataKey}
+              series={series}
+              active={active}
+            />
+          )}
         </ChartContainer>
       </div>
     </Card>
@@ -105,12 +134,12 @@ function MetricBody({
   series: Array<{ key: string; label: string }>;
   active?: string;
 }) {
-  const { useId } = React;
-  const id = useId().replace(/:/g, "");
+  const id = React.useId().replace(/:/g, "");
+  const last = data[data.length - 1];
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <RechartsComposedChart data={data} margin={{ top: 12, right: 8, left: 0, bottom: 0 }}>
+      <RechartsComposedChart data={data} margin={{ top: 16, right: 16, left: 0, bottom: 0 }}>
         <defs>
           {series.map((item) => (
             <GradientFill
@@ -126,11 +155,15 @@ function MetricBody({
           axisLine={false}
           width={36}
           tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+          tickFormatter={(value: number) =>
+            value >= 1000 ? `${Math.round(value / 100) / 10}k` : String(value)
+          }
         />
         <XAxis
           dataKey={xDataKey}
           tickLine={false}
           axisLine={false}
+          interval="preserveStartEnd"
           tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
         />
         <Tooltip
@@ -138,7 +171,7 @@ function MetricBody({
           content={<ChartTooltipContent />}
         />
         {series.map((item) => {
-          const muted = active && active !== item.key;
+          const muted = Boolean(active && active !== item.key);
           return (
             <Area
               key={`${item.key}-fill`}
@@ -146,12 +179,13 @@ function MetricBody({
               dataKey={item.key}
               stroke="none"
               fill={`url(#${id}-${item.key})`}
-              fillOpacity={muted ? 0.08 : 0.9}
+              fillOpacity={muted ? 0 : 1}
+              isAnimationActive={false}
             />
           );
         })}
         {series.map((item) => {
-          const muted = active && active !== item.key;
+          const muted = Boolean(active && active !== item.key);
           return (
             <Line
               key={`${item.key}-stroke`}
@@ -159,15 +193,33 @@ function MetricBody({
               dataKey={item.key}
               stroke={colorVar(item.key)}
               strokeWidth={muted ? 1.5 : 2.5}
-              opacity={muted ? 0.35 : 1}
-              dot={
+              strokeDasharray={muted ? "5 5" : undefined}
+              opacity={muted ? 0.55 : 1}
+              dot={false}
+              activeDot={
                 muted
                   ? false
-                  : { r: 3.5, fill: colorVar(item.key), stroke: "var(--background)", strokeWidth: 2 }
+                  : {
+                      r: 5,
+                      fill: colorVar(item.key),
+                      stroke: "var(--background)",
+                      strokeWidth: 2,
+                    }
               }
+              isAnimationActive={false}
             />
           );
         })}
+        {active && last && last[active] != null ? (
+          <ReferenceDot
+            x={last[xDataKey] as string | number}
+            y={Number(last[active])}
+            r={4.5}
+            fill={colorVar(active)}
+            stroke="var(--background)"
+            strokeWidth={2}
+          />
+        ) : null}
       </RechartsComposedChart>
     </ResponsiveContainer>
   );

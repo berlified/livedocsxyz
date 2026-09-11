@@ -7,11 +7,13 @@ import { ArrowUpRight, Github, Menu, Moon, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { LivedocsLogo } from "@/components/livedocs-logo";
+import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { PageToc } from "@/components/page-toc";
 import { SearchDialog } from "@/components/search-dialog";
 import { foundationExtras, navGroups } from "@/lib/nav";
+import { SITE } from "@/lib/site";
 
 export function DocsShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -126,15 +128,17 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
               variant="ghost"
               size="icon"
               aria-label="GitHub"
-              onClick={() => window.open("https://github.com", "_blank")}
+              asChild
             >
-              <Github className="size-4" />
+              <a href={SITE.github} target="_blank" rel="noreferrer">
+                <Github className="size-4" />
+              </a>
             </Button>
           </div>
         </div>
       </header>
 
-      <div className="mx-auto flex max-w-[1600px]">
+      <div className="mx-auto flex w-full max-w-[1600px] flex-1">
         {isLanding ? null : (
           <aside className="docs-sidebar hidden w-64 shrink-0 px-3 py-5 lg:block">
             <DocsSidebar
@@ -191,6 +195,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
       ) : null}
 
       <SearchDialog open={searchOpen} onOpenChange={setSearchOpen} />
+      <SiteFooter />
     </div>
   );
 }

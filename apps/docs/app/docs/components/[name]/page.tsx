@@ -260,6 +260,7 @@ export function Example() {
     <MetricChart
       title="Active members"
       value="272"
+      delta="+24"
       data={metricSeries}
       config={metricConfig}
       series={[

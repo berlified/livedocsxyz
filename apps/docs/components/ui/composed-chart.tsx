@@ -132,6 +132,21 @@ function ComposedBody({
   extras: React.ReactNode[];
 }) {
   const { id, selected, setSelected } = useChart();
+  const backdrop = extras.filter(
+    (child) =>
+      !(
+        React.isValidElement(child) &&
+        (child.type === Tooltip || child.type === Legend)
+      )
+  );
+  const overlays = extras.filter(
+    (child) =>
+      React.isValidElement(child) &&
+      (child.type === Tooltip || child.type === Legend)
+  );
+  const hasXAxis = extras.some(
+    (child) => React.isValidElement(child) && child.type === AxisX
+  );
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -145,13 +160,16 @@ function ComposedBody({
             />
           ))}
         </defs>
-        {extras}
+        {backdrop}
         {bars.map((item) => (
           <Bar
             key={`${item.props.dataKey}-bar`}
             dataKey={item.props.dataKey}
             fill={colorVar(item.props.dataKey)}
+            fillOpacity={0.92}
             radius={4}
+            maxBarSize={42}
+            isAnimationActive={false}
             opacity={selected && selected !== item.props.dataKey ? 0.25 : 1}
             onClick={() => item.props.isClickable && setSelected(item.props.dataKey)}
           />
@@ -163,6 +181,8 @@ function ComposedBody({
             dataKey={item.props.dataKey}
             stroke={colorVar(item.props.dataKey)}
             fill={`url(#${id}-${item.props.dataKey}-fill)`}
+            fillOpacity={0.35}
+            isAnimationActive={false}
             opacity={selected && selected !== item.props.dataKey ? 0.25 : 1}
           />
         ))}
@@ -172,14 +192,19 @@ function ComposedBody({
             type="monotone"
             dataKey={item.props.dataKey}
             stroke={colorVar(item.props.dataKey)}
-            strokeWidth={2}
+            strokeWidth={2.5}
             dot={false}
+            activeDot={{
+              r: 4,
+              fill: colorVar(item.props.dataKey),
+              stroke: "var(--background)",
+              strokeWidth: 2,
+            }}
             opacity={selected && selected !== item.props.dataKey ? 0.25 : 1}
+            isAnimationActive={false}
           />
         ))}
-        {extras.some(
-          (child) => React.isValidElement(child) && child.type === AxisX
-        ) ? null : (
+        {hasXAxis ? null : (
           <XAxis
             dataKey={xDataKey}
             tickLine={false}
@@ -189,6 +214,7 @@ function ComposedBody({
             }
           />
         )}
+        {overlays}
       </RechartsComposedChart>
     </ResponsiveContainer>
   );

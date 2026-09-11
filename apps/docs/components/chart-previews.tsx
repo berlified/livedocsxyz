@@ -465,6 +465,7 @@ export function MetricChartPreview() {
       className="w-full"
       title="Active members"
       value="272"
+      delta="+24"
       data={metricSeries}
       config={metricConfig}
       series={[

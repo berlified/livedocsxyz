@@ -73,7 +73,7 @@ Never use raw hex values in component styles.
 | `RadialChart` | Full or semi radial bars |
 | `SankeyChart` | Flow diagrams between stages |
 | `TrendCard` | KPI tile with overlay period vs last |
-| `MetricChart` | Hero metric with series pills and a gradient well |
+| `MetricChart` | Hero metric with delta badge, series pills, and a gradient well |
 | `ComparisonChart` | Overlapping this-year vs last-year areas |
 | `BreakdownChart` | Clickable share stack with amounts |
 | `RangeChart` | Forecast band with an actual line |

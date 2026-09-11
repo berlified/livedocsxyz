@@ -2,7 +2,7 @@
   "name": "composed-chart",
   "title": "Composed Chart",
   "category": "charts",
-  "description": "Mix bars, areas, and lines on one cartesian surface with shared tooltip and legend.",
+  "description": "Mix bars, areas, and lines on one cartesian surface. Bars sit in back, lines paint last.",
   "dependencies": ["recharts"],
   "registryDependencies": [
     "https://livedocs.xyz/r/chart.json",
@@ -25,7 +25,7 @@
     }
   ],
   "ai": {
-    "purpose": "Overlay different encodings on the same axes.",
+    "purpose": "Overlay different encodings on the same axes. Volume as bars, rates as lines on top.",
     "useWhen": ["Volume as bars with a rate as a line"],
     "preferOver": ["Separate charts when series share a domain"],
     "avoid": ["Unrelated scales on one plot without a second axis"],

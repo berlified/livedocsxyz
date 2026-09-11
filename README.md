@@ -4,6 +4,9 @@
 
 A shadcn component registry. Preview on [livedocs.xyz](https://livedocs.xyz), copy the command, own the source.
 
+Source: [github.com/berlified/livedocsxyz](https://github.com/berlified/livedocsxyz)  
+Built by [@oX8erlin](https://x.com/oX8erlin)
+
 ## Install a component
 
 ```bash
