@@ -114,6 +114,12 @@ function RadialBody({
     ...item,
     fill: colorVar(String(item[nameKey])),
   }));
+  const computedMax =
+    max ??
+    Math.max(
+      ...data.map((item) => Number(item[dataKey]) || 0),
+      1
+    );
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -124,12 +130,18 @@ function RadialBody({
         startAngle={variant === "semi" ? 180 : 90}
         endAngle={variant === "semi" ? 0 : -270}
       >
-        <PolarAngleAxis type="number" domain={[0, max ?? 100]} tick={false} />
+        <PolarAngleAxis type="number" domain={[0, computedMax]} tick={false} />
         {extras}
         <RadialBar
           dataKey={dataKey}
-          background={series?.props.showBackground ? { fill: "var(--muted)" } : undefined}
+          background={
+            series?.props.showBackground
+              ? { fill: "var(--border)", fillOpacity: 0.45 }
+              : undefined
+          }
           cornerRadius={series?.props.cornerRadius ?? 6}
+          stroke="var(--background)"
+          strokeWidth={2}
           onClick={(entry: Record<string, unknown>) => {
             const key = String(entry?.[nameKey] ?? "");
             if (series?.props.isClickable && key) setSelected(key);

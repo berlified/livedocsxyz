@@ -220,8 +220,13 @@ export function ChartLegendContent({
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
       {payload.map((item) => {
-        const rawKey = String(item.dataKey ?? item.value ?? "");
-        const key = config[rawKey] ? rawKey : String(item.value ?? rawKey);
+        const fromValue = String(item.value ?? "");
+        const fromKey = String(item.dataKey ?? "");
+        const key = config[fromValue]
+          ? fromValue
+          : config[fromKey]
+            ? fromKey
+            : fromValue || fromKey;
         const series = config[key];
         const Icon = series?.icon;
         const active = !selected || selected === key;
@@ -401,10 +406,10 @@ export const radarConfig = {
 } satisfies ChartConfig;
 
 export const radialData = [
-  { browser: "chrome", visitors: 275 },
-  { browser: "safari", visitors: 200 },
-  { browser: "firefox", visitors: 187 },
-  { browser: "edge", visitors: 173 },
+  { browser: "chrome", visitors: 90 },
+  { browser: "safari", visitors: 72 },
+  { browser: "firefox", visitors: 64 },
+  { browser: "edge", visitors: 48 },
 ];
 
 export const sankeyNodes = [
@@ -445,6 +450,119 @@ export const sankeyConfig = {
     label: "Churn",
     colors: { dark: ["var(--chart-5)"], light: ["var(--chart-5)"] },
   },
+} satisfies ChartConfig;
+
+export const dailyOverlay = [
+  { day: "Mon", current: 42, previous: 38 },
+  { day: "Tue", current: 68, previous: 51 },
+  { day: "Wed", current: 51, previous: 47 },
+  { day: "Thu", current: 44, previous: 62 },
+  { day: "Fri", current: 71, previous: 58 },
+  { day: "Sat", current: 63, previous: 49 },
+  { day: "Sun", current: 28, previous: 41 },
+];
+
+export const overlayConfig = {
+  current: {
+    label: "This period",
+    colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] },
+  },
+  previous: {
+    label: "Last period",
+    colors: { dark: ["var(--muted-foreground)"], light: ["var(--muted-foreground)"] },
+  },
+} satisfies ChartConfig;
+
+export const metricSeries = [
+  { month: "Jan 24", period: 82, today: 40 },
+  { month: "Mar 24", period: 228, today: 90 },
+  { month: "May 24", period: 248, today: 120 },
+  { month: "Jul 24", period: 264, today: 150 },
+  { month: "Sep 24", period: 272, today: 168 },
+];
+
+export const metricConfig = {
+  period: {
+    label: "Current period",
+    colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] },
+  },
+  today: {
+    label: "Today",
+    colors: { dark: ["var(--muted-foreground)"], light: ["var(--muted-foreground)"] },
+  },
+} satisfies ChartConfig;
+
+export const yearCompare = [
+  { month: "Nov 3", thisYear: 48, lastYear: 36 },
+  { month: "Nov 6", thisYear: 62, lastYear: 44 },
+  { month: "Nov 9", thisYear: 91, lastYear: 58 },
+  { month: "Nov 12", thisYear: 54, lastYear: 61 },
+  { month: "Nov 15", thisYear: 73, lastYear: 49 },
+  { month: "Nov 18", thisYear: 41, lastYear: 38 },
+];
+
+export const yearCompareConfig = {
+  thisYear: {
+    label: "This year",
+    colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] },
+  },
+  lastYear: {
+    label: "Last year",
+    colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] },
+  },
+} satisfies ChartConfig;
+
+export const rangeBand = [
+  { month: "Jan", low: 18, high: 46, value: 32 },
+  { month: "Feb", low: 22, high: 58, value: 41 },
+  { month: "Mar", low: 19, high: 51, value: 28 },
+  { month: "Apr", low: 26, high: 64, value: 49 },
+  { month: "May", low: 24, high: 61, value: 44 },
+  { month: "Jun", low: 31, high: 72, value: 58 },
+];
+
+export const rangeConfig = {
+  high: {
+    label: "Upper",
+    colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] },
+  },
+  low: {
+    label: "Lower",
+    colors: { dark: ["var(--muted)"], light: ["var(--muted)"] },
+  },
+  value: {
+    label: "Actual",
+    colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] },
+  },
+} satisfies ChartConfig;
+
+export const paymentMix = [
+  { key: "paid", label: "Settled", value: 48210, percent: 64.2 },
+  { key: "open", label: "Open", value: 12840, percent: 17.1 },
+  { key: "retry", label: "Retrying", value: 7620, percent: 10.2 },
+  { key: "void", label: "Voided", value: 4310, percent: 5.7 },
+  { key: "back", label: "Chargeback", value: 2110, percent: 2.8 },
+];
+
+export const cohortMix = [
+  { key: "renew", label: "Renewing", value: 4120, percent: 46.1 },
+  { key: "join", label: "Joined", value: 2680, percent: 30.0 },
+  { key: "pause", label: "Paused", value: 980, percent: 11.0 },
+  { key: "once", label: "One-time", value: 710, percent: 7.9 },
+  { key: "trial", label: "Trial", value: 450, percent: 5.0 },
+];
+
+export const mixConfig = {
+  paid: { label: "Settled", colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] } },
+  open: { label: "Open", colors: { dark: ["var(--chart-4)"], light: ["var(--chart-4)"] } },
+  retry: { label: "Retrying", colors: { dark: ["var(--chart-3)"], light: ["var(--chart-3)"] } },
+  void: { label: "Voided", colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] } },
+  back: { label: "Chargeback", colors: { dark: ["var(--chart-5)"], light: ["var(--chart-5)"] } },
+  renew: { label: "Renewing", colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] } },
+  join: { label: "Joined", colors: { dark: ["var(--chart-4)"], light: ["var(--chart-4)"] } },
+  pause: { label: "Paused", colors: { dark: ["var(--chart-3)"], light: ["var(--chart-3)"] } },
+  once: { label: "One-time", colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] } },
+  trial: { label: "Trial", colors: { dark: ["var(--chart-5)"], light: ["var(--chart-5)"] } },
 } satisfies ChartConfig;
 
 export { RechartsPrimitive };

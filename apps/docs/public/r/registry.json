@@ -110,6 +110,36 @@
       "type": "registry:ui",
       "title": "Sankey Chart",
       "description": "Flow diagram with nodes, weighted links, and themed strokes."
+    },
+    {
+      "name": "trend-card",
+      "type": "registry:ui",
+      "title": "Trend Card",
+      "description": "Metric tile with overlay lines for this period vs last, a delta chip, and a compact chart."
+    },
+    {
+      "name": "metric-chart",
+      "type": "registry:ui",
+      "title": "Metric Chart",
+      "description": "Large value header, series pills, and a gradient well with axes and dots."
+    },
+    {
+      "name": "comparison-chart",
+      "type": "registry:ui",
+      "title": "Comparison Chart",
+      "description": "Two overlapping gradient areas for this year vs last, with a KPI and delta."
+    },
+    {
+      "name": "breakdown-chart",
+      "type": "registry:ui",
+      "title": "Breakdown Chart",
+      "description": "Clickable share stack with labeled rows, amounts, and percents."
+    },
+    {
+      "name": "range-chart",
+      "type": "registry:ui",
+      "title": "Range Chart",
+      "description": "Forecast band from low to high with an actual line sitting in the middle."
     }
   ]
 }

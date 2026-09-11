@@ -1,0 +1,28 @@
+{
+  "name": "comparison-chart",
+  "title": "Comparison Chart",
+  "category": "charts",
+  "description": "Two overlapping gradient areas for this year vs last, with a KPI and delta.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/badge.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/comparison-chart.tsx"],
+  "examples": ["year-over-year"],
+  "variants": ["up", "down"],
+  "keywords": ["chart", "comparison", "yoy", "area", "dashboard"],
+  "props": [
+    { "name": "primaryKey", "type": "string", "default": "\"thisYear\"", "description": "Foreground series" },
+    { "name": "compareKey", "type": "string", "default": "\"lastYear\"", "description": "Background series" }
+  ],
+  "ai": {
+    "purpose": "Compare two periods as overlapping filled areas.",
+    "useWhen": ["Year-over-year or campaign vs baseline"],
+    "preferOver": ["Two separate charts when the domain is shared"],
+    "avoid": ["Unrelated units on one plot"],
+    "compositions": ["Two ComparisonCharts in a row"]
+  }
+}

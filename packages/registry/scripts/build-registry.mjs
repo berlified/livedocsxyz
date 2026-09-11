@@ -24,6 +24,11 @@ const uiComponents = [
   "radar-chart",
   "radial-chart",
   "sankey-chart",
+  "trend-card",
+  "metric-chart",
+  "comparison-chart",
+  "breakdown-chart",
+  "range-chart",
 ];
 
 function syncDocsToRegistry() {

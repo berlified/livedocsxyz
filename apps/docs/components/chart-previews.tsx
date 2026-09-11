@@ -2,25 +2,40 @@
 
 import { AreaChart } from "@/components/ui/area-chart";
 import { BarChart } from "@/components/ui/bar-chart";
+import { BreakdownChart } from "@/components/ui/breakdown-chart";
 import {
+  dailyOverlay,
+  metricConfig,
+  metricSeries,
+  mixConfig,
   monthlyData,
+  overlayConfig,
+  paymentMix,
   radarConfig,
   radarData,
   radialData,
+  rangeBand,
+  rangeConfig,
   sankeyConfig,
   sankeyLinks,
   sankeyNodes,
   shareConfig,
   shareData,
   trafficConfig,
+  yearCompare,
+  yearCompareConfig,
 } from "@/components/ui/chart";
+import { ComparisonChart } from "@/components/ui/comparison-chart";
 import { ComposedChart } from "@/components/ui/composed-chart";
 import { LineChart } from "@/components/ui/line-chart";
+import { MetricChart } from "@/components/ui/metric-chart";
 import { PieChart } from "@/components/ui/pie-chart";
 import { RadarChart } from "@/components/ui/radar-chart";
 import { RadialChart } from "@/components/ui/radial-chart";
+import { RangeChart } from "@/components/ui/range-chart";
 import { SankeyChart } from "@/components/ui/sankey-chart";
 import { Sparkline } from "@/components/ui/sparkline";
+import { TrendCard } from "@/components/ui/trend-card";
 
 import { ComponentPreview } from "@/components/component-preview";
 
@@ -327,5 +342,90 @@ export function SparklineExamples() {
         <Sparkline markerLabel="$12,480" markerIndex={18} />
       </ComponentPreview>
     </section>
+  );
+}
+
+export function TrendCardPreview() {
+  return (
+    <TrendCard
+      className="w-full max-w-sm"
+      title="Gross volume"
+      value="$48,210"
+      baseline="$11,640"
+      delta="+$940"
+      data={dailyOverlay}
+      config={overlayConfig}
+    />
+  );
+}
+
+export function TrendCardExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Down tone</h2>
+      <ComponentPreview label="Churn" className="p-4">
+        <TrendCard
+          className="w-full max-w-sm"
+          title="Churn"
+          value="3.8%"
+          baseline="6.1%"
+          delta="-0.4%"
+          tone="down"
+          data={dailyOverlay}
+          config={overlayConfig}
+        />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function MetricChartPreview() {
+  return (
+    <MetricChart
+      className="w-full"
+      title="Active members"
+      value="272"
+      data={metricSeries}
+      config={metricConfig}
+      series={[
+        { key: "period", label: "Current period" },
+        { key: "today", label: "Today" },
+      ]}
+    />
+  );
+}
+
+export function ComparisonChartPreview() {
+  return (
+    <ComparisonChart
+      className="w-full"
+      title="Revenue"
+      value="$83,151"
+      delta="+12.8%"
+      data={yearCompare}
+      config={yearCompareConfig}
+    />
+  );
+}
+
+export function BreakdownChartPreview() {
+  return (
+    <BreakdownChart
+      className="w-full max-w-md"
+      title="Settlements"
+      items={paymentMix}
+      config={mixConfig}
+    />
+  );
+}
+
+export function RangeChartPreview() {
+  return (
+    <RangeChart
+      className="w-full"
+      title="Expected vs actual"
+      data={rangeBand}
+      config={rangeConfig}
+    />
   );
 }

@@ -290,6 +290,103 @@
           "target": "components/ui/sankey-chart.tsx"
         }
       ]
+    },
+    {
+      "name": "trend-card",
+      "type": "registry:ui",
+      "title": "Trend Card",
+      "description": "Metric tile with overlay lines for this period vs last, a delta chip, and a compact chart.",
+      "dependencies": ["recharts", "lucide-react"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/badge.json",
+        "https://livedocs.xyz/r/button.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/trend-card.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/trend-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "metric-chart",
+      "type": "registry:ui",
+      "title": "Metric Chart",
+      "description": "Large value header, series pills, and a gradient well with axes and dots.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/metric-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/metric-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "comparison-chart",
+      "type": "registry:ui",
+      "title": "Comparison Chart",
+      "description": "Two overlapping gradient areas for this year vs last, with a KPI and delta.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/badge.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/comparison-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/comparison-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "breakdown-chart",
+      "type": "registry:ui",
+      "title": "Breakdown Chart",
+      "description": "Clickable share stack with labeled rows, amounts, and percents.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/breakdown-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/breakdown-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "range-chart",
+      "type": "registry:ui",
+      "title": "Range Chart",
+      "description": "Forecast band from low to high with an actual line sitting in the middle.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/range-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/range-chart.tsx"
+        }
+      ]
     }
   ]
 }

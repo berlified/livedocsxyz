@@ -34,6 +34,11 @@ export function getShadcnAddAllCommand() {
     "radar-chart",
     "radial-chart",
     "sankey-chart",
+    "trend-card",
+    "metric-chart",
+    "comparison-chart",
+    "breakdown-chart",
+    "range-chart",
   ];
   return `npx shadcn@latest add ${items.map(getRegistryItemUrl).join(" ")}`;
 }

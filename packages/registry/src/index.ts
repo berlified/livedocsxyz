@@ -15,6 +15,11 @@ import pieChart from "./components/pie-chart.json";
 import radarChart from "./components/radar-chart.json";
 import radialChart from "./components/radial-chart.json";
 import sankeyChart from "./components/sankey-chart.json";
+import trendCard from "./components/trend-card.json";
+import metricChart from "./components/metric-chart.json";
+import comparisonChart from "./components/comparison-chart.json";
+import breakdownChart from "./components/breakdown-chart.json";
+import rangeChart from "./components/range-chart.json";
 
 export type {
   ComponentAIGuidance,
@@ -40,6 +45,11 @@ export const components: RegistryComponent[] = [
   radarChart,
   radialChart,
   sankeyChart,
+  trendCard,
+  metricChart,
+  comparisonChart,
+  breakdownChart,
+  rangeChart,
 ] as RegistryComponent[];
 
 export const registry: RegistryIndex = {

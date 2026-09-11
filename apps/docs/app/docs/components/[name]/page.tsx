@@ -38,6 +38,12 @@ import {
   SankeyChartPreview,
   SparklineExamples,
   SparklinePreview,
+  TrendCardPreview,
+  TrendCardExamples,
+  MetricChartPreview,
+  ComparisonChartPreview,
+  BreakdownChartPreview,
+  RangeChartPreview,
 } from "@/components/chart-previews";
 
 const usageByName: Record<string, string> = {
@@ -217,6 +223,70 @@ export function Example() {
     />
   )
 }`,
+  "trend-card": `import { dailyOverlay, overlayConfig } from "@/components/ui/chart"
+import { TrendCard } from "@/components/ui/trend-card"
+
+export function Example() {
+  return (
+    <TrendCard
+      title="Gross volume"
+      value="$48,210"
+      baseline="$11,640"
+      delta="+$940"
+      data={dailyOverlay}
+      config={overlayConfig}
+    />
+  )
+}`,
+  "metric-chart": `import { metricSeries, metricConfig } from "@/components/ui/chart"
+import { MetricChart } from "@/components/ui/metric-chart"
+
+export function Example() {
+  return (
+    <MetricChart
+      title="Active members"
+      value="272"
+      data={metricSeries}
+      config={metricConfig}
+      series={[
+        { key: "period", label: "Current period" },
+        { key: "today", label: "Today" },
+      ]}
+    />
+  )
+}`,
+  "comparison-chart": `import { yearCompare, yearCompareConfig } from "@/components/ui/chart"
+import { ComparisonChart } from "@/components/ui/comparison-chart"
+
+export function Example() {
+  return (
+    <ComparisonChart
+      title="Revenue"
+      value="$83,151"
+      delta="+12.8%"
+      data={yearCompare}
+      config={yearCompareConfig}
+    />
+  )
+}`,
+  "breakdown-chart": `import { paymentMix, mixConfig } from "@/components/ui/chart"
+import { BreakdownChart } from "@/components/ui/breakdown-chart"
+
+export function Example() {
+  return (
+    <BreakdownChart
+      title="Settlements"
+      items={paymentMix}
+      config={mixConfig}
+    />
+  )
+}`,
+  "range-chart": `import { rangeBand, rangeConfig } from "@/components/ui/chart"
+import { RangeChart } from "@/components/ui/range-chart"
+
+export function Example() {
+  return <RangeChart title="Expected vs actual" data={rangeBand} config={rangeConfig} />
+}`,
 };
 
 const previewByName: Record<string, ReactNode> = {
@@ -236,6 +306,11 @@ const previewByName: Record<string, ReactNode> = {
   "radar-chart": <RadarChartPreview />,
   "radial-chart": <RadialChartPreview />,
   "sankey-chart": <SankeyChartPreview />,
+  "trend-card": <TrendCardPreview />,
+  "metric-chart": <MetricChartPreview />,
+  "comparison-chart": <ComparisonChartPreview />,
+  "breakdown-chart": <BreakdownChartPreview />,
+  "range-chart": <RangeChartPreview />,
 };
 
 const examplesByName: Record<string, ReactNode> = {
@@ -252,6 +327,7 @@ const examplesByName: Record<string, ReactNode> = {
   "pie-chart": <PieChartExamples />,
   "radar-chart": <RadarChartExamples />,
   "radial-chart": <RadialChartExamples />,
+  "trend-card": <TrendCardExamples />,
 };
 
 const sourcePaths: Record<string, string> = {
@@ -271,6 +347,11 @@ const sourcePaths: Record<string, string> = {
   "radar-chart": "apps/docs/components/ui/radar-chart.tsx",
   "radial-chart": "apps/docs/components/ui/radial-chart.tsx",
   "sankey-chart": "apps/docs/components/ui/sankey-chart.tsx",
+  "trend-card": "apps/docs/components/ui/trend-card.tsx",
+  "metric-chart": "apps/docs/components/ui/metric-chart.tsx",
+  "comparison-chart": "apps/docs/components/ui/comparison-chart.tsx",
+  "breakdown-chart": "apps/docs/components/ui/breakdown-chart.tsx",
+  "range-chart": "apps/docs/components/ui/range-chart.tsx",
 };
 
 function readRegistrySource(name: string) {
