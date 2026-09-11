@@ -1,8 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  transpilePackages: ["@frostui/ui", "@frostui/registry", "frosted-ui"],
-  reactStrictMode: true,
+  transpilePackages: ["@frostui/ui", "@frostui/registry"],
 };
 
 export default nextConfig;

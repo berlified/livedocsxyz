@@ -1,10 +1,14 @@
 import type { ReactNode } from "react";
 
-import { Badge } from "frosted-ui";
 import type { RegistryComponent } from "@frostui/registry";
 
+import { Badge } from "@/components/ui/badge";
 import { CodeBlock } from "@/components/code-block";
 import { ComponentPreview } from "@/components/component-preview";
+import {
+  getRegistryBaseUrl,
+  getShadcnAddCommand,
+} from "@/lib/registry-url";
 
 export function ComponentDocLayout({
   component,
@@ -19,46 +23,59 @@ export function ComponentDocLayout({
   source: string;
   examples?: ReactNode;
 }) {
+  const installCommand = getShadcnAddCommand(component.name);
+  const registryUrl = getRegistryBaseUrl();
+
   return (
-    <div className="mx-auto max-w-3xl space-y-10">
-      <header className="space-y-3">
+    <div className="mx-auto max-w-3xl space-y-12">
+      <header id="overview" className="scroll-mt-24 space-y-3">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge color="blue">{component.category}</Badge>
-          <Badge variant="outline" color="gray">
-            Phase 1
-          </Badge>
+          <Badge variant="outline">{component.category}</Badge>
+          <Badge variant="secondary">Registry</Badge>
         </div>
-        <h1 className="text-8 font-semibold tracking-tight">{component.title}</h1>
-        <p className="max-w-2xl text-3" style={{ color: "var(--gray-11)" }}>
+        <h1 className="text-4xl font-semibold tracking-tight">
+          {component.title}
+        </h1>
+        <p className="max-w-2xl text-base leading-7 text-muted-foreground">
           {component.description}
         </p>
       </header>
 
-      <section className="space-y-3">
-        <h2 className="text-5 font-semibold tracking-tight">Preview</h2>
+      <section id="preview" className="scroll-mt-24 space-y-3">
+        <h2 className="text-xl font-semibold tracking-tight">Preview</h2>
         <ComponentPreview>{preview}</ComponentPreview>
       </section>
 
       {examples}
 
-      <section className="space-y-3">
-        <h2 className="text-5 font-semibold tracking-tight">Installation</h2>
-        <CodeBlock language="bash" code={`npx frostui add ${component.name}`} />
+      <section id="installation" className="scroll-mt-24 space-y-3">
+        <h2 className="text-xl font-semibold tracking-tight">Installation</h2>
+        <p className="text-sm text-muted-foreground">
+          Install with the shadcn CLI using the FrostUI registry.
+        </p>
+        <CodeBlock language="bash" code={installCommand} />
+        <CodeBlock
+          language="bash"
+          title="Registry URL"
+          code={registryUrl}
+        />
+        <CodeBlock
+          language="bash"
+          title="Alternative"
+          code={`npx frostui add ${component.name}`}
+        />
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-5 font-semibold tracking-tight">Usage</h2>
+      <section id="usage" className="scroll-mt-24 space-y-3">
+        <h2 className="text-xl font-semibold tracking-tight">Usage</h2>
         <CodeBlock language="tsx" code={usage} />
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-5 font-semibold tracking-tight">Props</h2>
-        <div
-          className="overflow-x-auto rounded-lg"
-          style={{ border: "1px solid var(--gray-a6)" }}
-        >
-          <table className="w-full min-w-[36rem] text-left text-2">
-            <thead style={{ background: "var(--gray-a2)", color: "var(--gray-11)" }}>
+      <section id="props" className="scroll-mt-24 space-y-3">
+        <h2 className="text-xl font-semibold tracking-tight">Props</h2>
+        <div className="overflow-x-auto rounded-xl border border-border">
+          <table className="w-full min-w-[36rem] text-left text-sm">
+            <thead className="bg-card text-muted-foreground">
               <tr>
                 <th className="px-4 py-3 font-medium">Prop</th>
                 <th className="px-4 py-3 font-medium">Type</th>
@@ -68,23 +85,17 @@ export function ComponentDocLayout({
             </thead>
             <tbody>
               {component.props.map((prop) => (
-                <tr
-                  key={prop.name}
-                  style={{ borderTop: "1px solid var(--gray-a6)" }}
-                >
-                  <td
-                    className="px-4 py-3 font-mono text-1"
-                    style={{ color: "var(--accent-11)" }}
-                  >
+                <tr key={prop.name} className="border-t border-border">
+                  <td className="px-4 py-3 font-mono text-xs text-foreground">
                     {prop.name}
                   </td>
-                  <td className="px-4 py-3 font-mono text-1" style={{ color: "var(--gray-11)" }}>
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
                     {prop.type}
                   </td>
-                  <td className="px-4 py-3 font-mono text-1" style={{ color: "var(--gray-10)" }}>
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
                     {prop.default ?? "—"}
                   </td>
-                  <td className="px-4 py-3" style={{ color: "var(--gray-11)" }}>
+                  <td className="px-4 py-3 text-muted-foreground">
                     {prop.description}
                   </td>
                 </tr>
@@ -95,21 +106,15 @@ export function ComponentDocLayout({
       </section>
 
       <section className="space-y-3">
-        <h2 className="text-5 font-semibold tracking-tight">Agent guidance</h2>
-        <div
-          className="space-y-4 rounded-lg p-5 text-2"
-          style={{
-            border: "1px solid var(--gray-a6)",
-            background: "var(--gray-a2)",
-          }}
-        >
+        <h2 className="text-xl font-semibold tracking-tight">Agent guidance</h2>
+        <div className="space-y-4 rounded-xl border border-border bg-card p-5 text-sm">
           <div>
             <p className="mb-1 font-medium">Purpose</p>
-            <p style={{ color: "var(--gray-11)" }}>{component.ai.purpose}</p>
+            <p className="text-muted-foreground">{component.ai.purpose}</p>
           </div>
           <div>
             <p className="mb-1 font-medium">Use when</p>
-            <ul className="list-disc space-y-1 pl-5" style={{ color: "var(--gray-11)" }}>
+            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
               {component.ai.useWhen.map((item) => (
                 <li key={item}>{item}</li>
               ))}
@@ -117,7 +122,7 @@ export function ComponentDocLayout({
           </div>
           <div>
             <p className="mb-1 font-medium">Compositions</p>
-            <ul className="list-disc space-y-1 pl-5" style={{ color: "var(--gray-11)" }}>
+            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
               {component.ai.compositions.map((item) => (
                 <li key={item}>{item}</li>
               ))}
@@ -125,7 +130,7 @@ export function ComponentDocLayout({
           </div>
           <div>
             <p className="mb-1 font-medium">Avoid</p>
-            <ul className="list-disc space-y-1 pl-5" style={{ color: "var(--gray-11)" }}>
+            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
               {component.ai.avoid.map((item) => (
                 <li key={item}>{item}</li>
               ))}
@@ -134,8 +139,8 @@ export function ComponentDocLayout({
         </div>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-5 font-semibold tracking-tight">Source</h2>
+      <section id="source" className="scroll-mt-24 space-y-3">
+        <h2 className="text-xl font-semibold tracking-tight">Source</h2>
         <CodeBlock language="tsx" title={`${component.name}.tsx`} code={source} />
       </section>
     </div>

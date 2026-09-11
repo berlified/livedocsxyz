@@ -1,6 +1,6 @@
 # FrostUI — Agent Instructions
 
-You are working with **FrostUI**, a frosted-inspired React component library.
+You are working with **FrostUI**, a dark-first React component library distributed through a shadcn-compatible registry.
 Prefer FrostUI components over generating custom UI from scratch.
 
 ## Design principles
@@ -16,8 +16,16 @@ Prefer FrostUI components over generating custom UI from scratch.
 
 1. Read component metadata in `packages/registry`
 2. Search by name, category, or keywords
-3. Install via `npx frostui add <component>` (copies source into the project)
-4. Import from `@/components/ui/<name>` after install
+3. Install via `npx shadcn@latest add <component> --registry <registry-url>`
+4. Or use `npx frostui add <component>` to print the install command
+5. Import from `@/components/ui/<name>` after install
+
+## Registry
+
+- Source of truth: `registry/frostui/ui/*.tsx`
+- shadcn manifest: `registry/registry.json`
+- Built JSON served from `apps/docs/public/r/*.json`
+- Build: `pnpm registry:build`
 
 ## Token usage
 
@@ -26,12 +34,11 @@ Use semantic CSS variables / Tailwind tokens:
 | Token | Use |
 | --- | --- |
 | `bg-background` | App canvas |
-| `bg-surface` | Cards, panels |
-| `bg-surface-elevated` | Popovers, elevated layers |
+| `bg-card` | Cards, panels |
+| `bg-accent` | Hover states, subtle fills |
 | `border-border` | Default borders |
-| `border-border-subtle` | Dividers, quiet edges |
 | `text-foreground` | Primary text |
-| `text-foreground-muted` | Secondary text |
+| `text-muted-foreground` | Secondary text |
 | `bg-primary` / `text-primary-foreground` | Primary actions |
 
 Never use raw hex values in component styles.

@@ -11,6 +11,7 @@
     "./components/*": "./src/components/*.json"
   },
   "scripts": {
+    "build:registry": "node ./scripts/build-registry.mjs",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
   },

@@ -1,47 +1,60 @@
 import Link from "next/link";
-import { components } from "@frostui/registry";
-import { Badge, Card, Heading, Inset, Text } from "frosted-ui";
 
-import { DocsLinkButton } from "@/components/docs-link-button";
+import { Badge } from "@/components/ui/badge";
 import { CodeBlock } from "@/components/code-block";
+import { getShadcnAddCommand } from "@/lib/registry-url";
 
-export default function DocsIntroPage() {
+export default function DocsHomePage() {
   return (
     <div className="mx-auto max-w-3xl space-y-10">
       <header className="space-y-3">
-        <Badge color="blue">Guides</Badge>
-        <Heading size="8">Introduction</Heading>
-        <Text size="3" color="gray">
-          FrostUI wraps Whop&apos;s open-source Frosted UI. Phase 1 ships real
-          components — not reimplementations.
-        </Text>
+        <Badge variant="outline">Documentation</Badge>
+        <h1 className="text-4xl font-semibold tracking-tight">FrostUI docs</h1>
+        <p className="text-base leading-7 text-muted-foreground">
+          Dark-first React components distributed through a shadcn-compatible
+          registry. Copy source into your app, customize freely, ship faster.
+        </p>
       </header>
 
-      <section className="space-y-3">
-        <Heading size="5">What&apos;s ready</Heading>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {components.map((component) => (
-            <Link key={component.name} href={`/docs/components/${component.name}`} className="no-underline">
-              <Card size="2" className="h-full">
-                <Inset side="all" p="current">
-                  <Heading size="3">{component.title}</Heading>
-                  <Text size="2" color="gray">
-                    {component.description}
-                  </Text>
-                </Inset>
-              </Card>
-            </Link>
-          ))}
-        </div>
+      <section className="grid gap-4 sm:grid-cols-2">
+        {[
+          {
+            title: "Installation",
+            description: "Add components with the shadcn CLI and registry URL.",
+            href: "/docs/installation",
+          },
+          {
+            title: "Component catalog",
+            description: "Browse previews, props, and install commands.",
+            href: "/docs/components",
+          },
+          {
+            title: "Theming",
+            description: "Semantic CSS variables for dark and light modes.",
+            href: "/docs/theming",
+          },
+          {
+            title: "Agent guidance",
+            description: "Registry metadata for AI coding agents.",
+            href: "/docs/agents",
+          },
+        ].map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="rounded-xl border border-border bg-card p-5 no-underline transition-colors hover:bg-accent"
+          >
+            <h2 className="text-base font-semibold">{item.title}</h2>
+            <p className="mt-2 text-sm text-muted-foreground">
+              {item.description}
+            </p>
+          </Link>
+        ))}
       </section>
 
       <section className="space-y-3">
-        <Heading size="5">Start here</Heading>
-        <CodeBlock
-          language="bash"
-          code={`pnpm add frosted-ui\nimport "frosted-ui/styles.css"`}
-        />
-        <DocsLinkButton href="/docs/installation">Installation guide</DocsLinkButton>
+        <h2 className="text-xl font-semibold">Quick start</h2>
+        <CodeBlock language="bash" code={getShadcnAddCommand("button")} />
       </section>
     </div>
   );

@@ -2,25 +2,24 @@
 
 import {
   ArrowRight,
-  Ban,
   Download,
   Mail,
   Plus,
-  Settings,
 } from "lucide-react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
-  Avatar,
-  Badge,
-  Button,
   Card,
-  Heading,
-  IconButton,
-  Inset,
-  Link,
-  Separator,
-  Text,
-  TextField,
-} from "frosted-ui";
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
 
 import {
   ComponentPreview,
@@ -30,13 +29,10 @@ import {
 export function ButtonPreview() {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Button variant="solid">Button</Button>
-      <Button variant="soft">Button</Button>
-      <Button variant="ghost">Button</Button>
-      <Button variant="surface">Button</Button>
-      <Link href="#" onClick={(e) => e.preventDefault()}>
-        Button
-      </Link>
+      <Button>Button</Button>
+      <Button variant="secondary">Secondary</Button>
+      <Button variant="outline">Outline</Button>
+      <Button variant="ghost">Ghost</Button>
     </div>
   );
 }
@@ -44,101 +40,37 @@ export function ButtonPreview() {
 export function ButtonExamples() {
   return (
     <section className="space-y-6">
-      <h2 className="text-5 font-semibold">Variants</h2>
+      <h2 className="text-xl font-semibold">Variants</h2>
 
       <ComponentPreview label="Variant" className="space-y-6">
         <PreviewSection title="Variant">
-          <Button variant="solid">Button</Button>
-          <Button variant="soft">Button</Button>
-          <Button variant="ghost">Button</Button>
-          <Button variant="surface">Button</Button>
-          <Link href="#" onClick={(e) => e.preventDefault()}>
-            Button
-          </Link>
+          <Button>Default</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="outline">Outline</Button>
+          <Button variant="ghost">Ghost</Button>
+          <Button variant="destructive">Destructive</Button>
+          <Button variant="link">Link</Button>
         </PreviewSection>
 
-        <PreviewSection title="Color">
-          <Button variant="soft" color="blue">
-            Blue
-          </Button>
-          <Button variant="soft" color="green">
-            Green
-          </Button>
-          <Button variant="soft" color="orange">
-            Orange
-          </Button>
-          <Button variant="soft" color="red">
-            Red
-          </Button>
-        </PreviewSection>
-
-        <PreviewSection title="Semantic color">
-          <Button variant="soft" color="info">
-            Info
-          </Button>
-          <Button variant="soft" color="success">
-            Success
-          </Button>
-          <Button variant="soft" color="warning">
-            Warning
-          </Button>
-          <Button variant="soft" color="danger">
-            Danger
-          </Button>
-        </PreviewSection>
-
-        <PreviewSection title="High contrast">
-          <Button highContrast>Button</Button>
-          <Button highContrast color="green">
-            Button
-          </Button>
-          <Button highContrast color="orange">
-            Button
-          </Button>
-          <Button highContrast color="red">
-            Button
-          </Button>
-          <div className="mt-2 flex flex-wrap gap-2">
-            <Button variant="soft" highContrast>
-              Button
-            </Button>
-            <Button variant="soft" highContrast color="green">
-              Button
-            </Button>
-            <Button variant="soft" highContrast color="orange">
-              Button
-            </Button>
-            <Button variant="soft" highContrast color="red">
-              Button
-            </Button>
-          </div>
-        </PreviewSection>
-      </ComponentPreview>
-
-      <ComponentPreview label="Size & states" className="space-y-6">
         <PreviewSection title="Size">
-          <Button size="1">Size 1</Button>
-          <Button size="2">Size 2</Button>
-          <Button size="3">Size 3</Button>
-          <Button size="4">Size 4</Button>
-        </PreviewSection>
-        <PreviewSection title="States">
-          <Button loading>Saving</Button>
-          <Button disabled>
-            <Ban size={16} />
-            Disabled
+          <Button size="sm">Small</Button>
+          <Button size="default">Default</Button>
+          <Button size="lg">Large</Button>
+          <Button size="icon" aria-label="Email">
+            <Mail className="size-4" />
           </Button>
+        </PreviewSection>
+
+        <PreviewSection title="With icon">
           <Button>
-            <Mail size={16} />
+            <Mail className="size-4" />
             Email
           </Button>
-          <IconButton aria-label="Settings">
-            <Settings size={16} />
-          </IconButton>
-          <Button variant="surface">
+          <Button variant="outline">
             Next
-            <ArrowRight size={16} />
+            <ArrowRight className="size-4" />
           </Button>
+          <Button disabled>Disabled</Button>
         </PreviewSection>
       </ComponentPreview>
     </section>
@@ -148,11 +80,10 @@ export function ButtonExamples() {
 export function BadgePreview() {
   return (
     <div className="flex flex-wrap items-center gap-2">
-      <Badge color="blue">Blue</Badge>
-      <Badge color="green">Green</Badge>
-      <Badge color="orange">Orange</Badge>
-      <Badge color="red">Red</Badge>
-      <Badge color="gray">Gray</Badge>
+      <Badge>Default</Badge>
+      <Badge variant="secondary">Secondary</Badge>
+      <Badge variant="outline">Outline</Badge>
+      <Badge variant="destructive">Destructive</Badge>
     </div>
   );
 }
@@ -160,19 +91,13 @@ export function BadgePreview() {
 export function BadgeExamples() {
   return (
     <section className="space-y-6">
-      <h2 className="text-5 font-semibold">Variants</h2>
+      <h2 className="text-xl font-semibold">Variants</h2>
       <ComponentPreview className="space-y-6">
         <PreviewSection title="Variant">
-          <Badge variant="solid">Solid</Badge>
-          <Badge variant="soft">Soft</Badge>
-          <Badge variant="surface">Surface</Badge>
+          <Badge>Default</Badge>
+          <Badge variant="secondary">Secondary</Badge>
           <Badge variant="outline">Outline</Badge>
-        </PreviewSection>
-        <PreviewSection title="Semantic">
-          <Badge color="success">Success</Badge>
-          <Badge color="warning">Warning</Badge>
-          <Badge color="danger">Danger</Badge>
-          <Badge color="info">Info</Badge>
+          <Badge variant="destructive">Destructive</Badge>
         </PreviewSection>
       </ComponentPreview>
     </section>
@@ -181,26 +106,22 @@ export function BadgeExamples() {
 
 export function CardPreview() {
   return (
-    <Card size="2" className="w-full max-w-sm">
-      <Inset side="all" p="current">
-        <div className="mb-1 flex items-center justify-between gap-3">
-          <Heading size="3">Workspace</Heading>
-          <Badge color="success">Active</Badge>
+    <Card className="w-full max-w-sm">
+      <CardHeader>
+        <div className="flex items-center justify-between gap-3">
+          <CardTitle>Workspace</CardTitle>
+          <Badge variant="secondary">Active</Badge>
         </div>
-        <Text size="2" color="gray">
+        <CardDescription>
           Layered surfaces with subtle borders for dense product UI.
-        </Text>
-        <Text size="2" color="gray" className="mt-2">
-          Use Card as the default content container across dashboards and
-          settings.
-        </Text>
-        <div className="mt-4 flex gap-2">
-          <Button size="2">Open</Button>
-          <Button size="2" variant="ghost">
-            Dismiss
-          </Button>
-        </div>
-      </Inset>
+        </CardDescription>
+      </CardHeader>
+      <CardFooter className="gap-2">
+        <Button size="sm">Open</Button>
+        <Button size="sm" variant="ghost">
+          Dismiss
+        </Button>
+      </CardFooter>
     </Card>
   );
 }
@@ -208,40 +129,20 @@ export function CardPreview() {
 export function CardExamples() {
   return (
     <section className="space-y-6">
-      <h2 className="text-5 font-semibold">Variants</h2>
+      <h2 className="text-xl font-semibold">Composition</h2>
       <ComponentPreview label="Surface treatments">
         <div className="grid w-full gap-3 sm:grid-cols-2">
-          <Card variant="surface" size="2">
-            <Inset side="all" p="current">
-              <Heading size="3">Surface</Heading>
-              <Text size="2" color="gray">
-                Default panel
-              </Text>
-            </Inset>
+          <Card>
+            <CardHeader>
+              <CardTitle>Surface</CardTitle>
+              <CardDescription>Default panel</CardDescription>
+            </CardHeader>
           </Card>
-          <Card variant="outline" size="2">
-            <Inset side="all" p="current">
-              <Heading size="3">Outline</Heading>
-              <Text size="2" color="gray">
-                Border only
-              </Text>
-            </Inset>
-          </Card>
-          <Card variant="soft" size="2">
-            <Inset side="all" p="current">
-              <Heading size="3">Soft</Heading>
-              <Text size="2" color="gray">
-                Muted fill
-              </Text>
-            </Inset>
-          </Card>
-          <Card variant="ghost" size="2">
-            <Inset side="all" p="current">
-              <Heading size="3">Ghost</Heading>
-              <Text size="2" color="gray">
-                Borderless
-              </Text>
-            </Inset>
+          <Card className="border-dashed">
+            <CardHeader>
+              <CardTitle>Outline</CardTitle>
+              <CardDescription>Border emphasis</CardDescription>
+            </CardHeader>
           </Card>
         </div>
       </ComponentPreview>
@@ -252,15 +153,8 @@ export function CardExamples() {
 export function InputPreview() {
   return (
     <div className="flex w-full max-w-sm flex-col gap-3">
-      <TextField.Root>
-        <TextField.Input placeholder="Email address" type="email" />
-      </TextField.Root>
-      <TextField.Root variant="soft">
-        <TextField.Input placeholder="Soft variant" />
-      </TextField.Root>
-      <TextField.Root>
-        <TextField.Input placeholder="Disabled" disabled />
-      </TextField.Root>
+      <Input placeholder="Email address" type="email" />
+      <Input placeholder="Disabled" disabled />
     </div>
   );
 }
@@ -268,18 +162,11 @@ export function InputPreview() {
 export function InputExamples() {
   return (
     <section className="space-y-6">
-      <h2 className="text-5 font-semibold">Sizes</h2>
+      <h2 className="text-xl font-semibold">States</h2>
       <ComponentPreview>
         <div className="flex w-full max-w-sm flex-col gap-3">
-          <TextField.Root size="1">
-            <TextField.Input placeholder="Size 1" />
-          </TextField.Root>
-          <TextField.Root size="2">
-            <TextField.Input placeholder="Size 2" />
-          </TextField.Root>
-          <TextField.Root size="3">
-            <TextField.Input placeholder="Size 3" />
-          </TextField.Root>
+          <Input placeholder="Default" />
+          <Input placeholder="Disabled" disabled />
         </div>
       </ComponentPreview>
     </section>
@@ -289,14 +176,19 @@ export function InputExamples() {
 export function AvatarPreview() {
   return (
     <div className="flex flex-wrap items-center gap-4">
-      <Avatar size="2" fallback="SM" />
-      <Avatar
-        size="3"
-        src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=96&h=96&fit=crop"
-        fallback="JD"
-      />
-      <Avatar size="4" fallback="LG" />
-      <Avatar size="5" fallback="XL" />
+      <Avatar className="size-8">
+        <AvatarFallback>SM</AvatarFallback>
+      </Avatar>
+      <Avatar>
+        <AvatarImage
+          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=96&h=96&fit=crop"
+          alt="User"
+        />
+        <AvatarFallback>JD</AvatarFallback>
+      </Avatar>
+      <Avatar className="size-12">
+        <AvatarFallback>LG</AvatarFallback>
+      </Avatar>
     </div>
   );
 }
@@ -305,30 +197,18 @@ export function SeparatorPreview() {
   return (
     <div className="w-full max-w-sm space-y-4">
       <div>
-        <Text size="2" weight="medium">
-          Account
-        </Text>
-        <Text size="1" color="gray">
-          Profile and security
-        </Text>
+        <p className="text-sm font-medium">Account</p>
+        <p className="text-xs text-muted-foreground">Profile and security</p>
       </div>
-      <Separator size="4" />
+      <Separator />
       <div>
-        <Text size="2" weight="medium">
-          Billing
-        </Text>
-        <Text size="1" color="gray">
-          Invoices and plans
-        </Text>
+        <p className="text-sm font-medium">Billing</p>
+        <p className="text-xs text-muted-foreground">Invoices and plans</p>
       </div>
       <div className="flex h-8 items-center gap-3">
-        <Text size="2" color="gray">
-          Item
-        </Text>
-        <Separator orientation="vertical" size="4" />
-        <Text size="2" color="gray">
-          Detail
-        </Text>
+        <span className="text-sm text-muted-foreground">Item</span>
+        <Separator orientation="vertical" />
+        <span className="text-sm text-muted-foreground">Detail</span>
       </div>
     </div>
   );
@@ -336,38 +216,36 @@ export function SeparatorPreview() {
 
 export function CompositionPreview() {
   return (
-    <Card size="2" className="w-full max-w-md">
-      <Inset side="all" p="current">
-        <div className="mb-4 flex items-center gap-3">
-          <Avatar size="3" fallback="FU" />
-          <div>
-            <Heading size="3">FrostUI Design System</Heading>
-            <Text size="2" color="gray">
-              Phase 1 foundations
-            </Text>
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <div className="flex items-center gap-3">
+          <Avatar>
+            <AvatarFallback>FU</AvatarFallback>
+          </Avatar>
+          <div className="flex-1">
+            <CardTitle>FrostUI Design System</CardTitle>
+            <CardDescription>Phase 1 foundations</CardDescription>
           </div>
-          <Badge color="info" className="ml-auto">
-            New
-          </Badge>
+          <Badge variant="outline">New</Badge>
         </div>
-        <Separator size="4" className="my-4" />
-        <TextField.Root>
-          <TextField.Input placeholder="Invite teammate by email" />
-        </TextField.Root>
-        <div className="mt-3 flex flex-wrap gap-2">
-          <Button size="2">
-            <Plus size={16} />
+      </CardHeader>
+      <CardContent className="space-y-3">
+        <Separator />
+        <Input placeholder="Invite teammate by email" />
+        <div className="flex flex-wrap gap-2">
+          <Button size="sm">
+            <Plus className="size-4" />
             Invite
           </Button>
-          <Button size="2" variant="surface" color="gray" loading>
+          <Button size="sm" variant="secondary">
             Syncing
           </Button>
-          <Button size="2" variant="ghost" color="gray">
-            <Download size={16} />
+          <Button size="sm" variant="ghost">
+            <Download className="size-4" />
             Export
           </Button>
         </div>
-      </Inset>
+      </CardContent>
     </Card>
   );
 }

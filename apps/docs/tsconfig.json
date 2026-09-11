@@ -4,10 +4,11 @@
     "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["./*"],
+      "@/components/ui/*": ["./components/ui/*"],
+      "@/lib/utils": ["./lib/utils.ts"],
       "@frostui/ui": ["../../packages/ui/src/index.ts"],
       "@frostui/ui/*": ["../../packages/ui/src/*"],
-      "@frostui/registry": ["../../packages/registry/src/index.ts"],
-      "@frostui/tokens/*": ["../../packages/tokens/src/*"]
+      "@frostui/registry": ["../../packages/registry/src/index.ts"]
     },
     "allowJs": true,
     "jsx": "preserve",

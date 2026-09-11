@@ -2,32 +2,36 @@
   "name": "separator",
   "title": "Separator",
   "category": "foundations",
-  "description": "Subtle horizontal or vertical divider for grouping content.",
+  "description": "Horizontal or vertical divider between sections.",
   "dependencies": ["@radix-ui/react-separator"],
-  "registryDependencies": [],
-  "files": ["packages/ui/src/components/separator.tsx"],
+  "registryDependencies": ["utils"],
+  "files": ["registry/frostui/ui/separator.tsx"],
   "examples": ["horizontal", "vertical"],
-  "variants": ["horizontal", "vertical"],
-  "keywords": ["separator", "divider", "hr", "rule"],
+  "variants": ["default"],
+  "keywords": ["separator", "divider", "hr", "border"],
   "props": [
-    { "name": "orientation", "type": "\"horizontal\" | \"vertical\"", "default": "\"horizontal\"", "description": "Divider orientation" },
+    { "name": "orientation", "type": "\"horizontal\" | \"vertical\"", "default": "\"horizontal\"", "description": "Divider direction" },
     { "name": "decorative", "type": "boolean", "default": "true", "description": "Whether the separator is purely decorative" }
   ],
   "ai": {
-    "purpose": "Visually separate sections without heavy borders.",
+    "purpose": "Visually separate related content groups.",
     "useWhen": [
-      "Between card sections",
-      "In menus and toolbars",
-      "In sidebars between nav groups"
+      "Section breaks in settings",
+      "Sidebar group dividers",
+      "Inline toolbar separators"
     ],
-    "preferOver": ["Border-top utility on arbitrary wrappers when a semantic divider is clearer"],
+    "preferOver": [
+      "Empty div borders for simple dividers",
+      "Multiple br tags for spacing"
+    ],
     "avoid": [
-      "Using Separator for layout spacing alone",
-      "Stacking multiple Separators for decoration"
+      "Separators when whitespace alone is enough",
+      "Overusing vertical separators in dense layouts"
     ],
     "compositions": [
-      "CardHeader + Separator + CardContent",
-      "Sidebar group + Separator + Sidebar group"
+      "Separator between Card sections",
+      "Separator in sidebar navigation",
+      "Separator + stacked text blocks"
     ]
   }
 }

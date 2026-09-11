@@ -2,32 +2,33 @@
   "name": "avatar",
   "title": "Avatar",
   "category": "foundations",
-  "description": "User or entity identity with image and accessible fallback initials.",
-  "dependencies": ["@radix-ui/react-avatar", "class-variance-authority"],
-  "registryDependencies": [],
-  "files": ["packages/ui/src/components/avatar.tsx"],
-  "examples": ["default", "sizes", "fallback"],
-  "variants": ["sm", "md", "lg", "xl"],
-  "keywords": ["avatar", "user", "profile", "image", "identity"],
-  "props": [
-    { "name": "size", "type": "\"sm\" | \"md\" | \"lg\" | \"xl\"", "default": "\"md\"", "description": "Avatar size" }
-  ],
+  "description": "User or entity identity with image and fallback initials.",
+  "dependencies": ["@radix-ui/react-avatar"],
+  "registryDependencies": ["utils"],
+  "files": ["registry/frostui/ui/avatar.tsx"],
+  "examples": ["image", "fallback", "sizes"],
+  "variants": ["default"],
+  "keywords": ["avatar", "profile", "user", "identity"],
+  "props": [],
   "ai": {
-    "purpose": "Represent a person, workspace, or entity visually.",
+    "purpose": "Represent a user, team, or entity visually.",
     "useWhen": [
-      "User menus and lists",
-      "Comments and activity feeds",
-      "Workspace switchers"
+      "User menus",
+      "Comment authors",
+      "Team member lists"
     ],
-    "preferOver": ["Raw img tags without fallbacks"],
+    "preferOver": [
+      "Raw img tags in circular wrappers",
+      "Initials in unstyled spans"
+    ],
     "avoid": [
-      "Using Avatar for decorative product imagery",
-      "Omitting fallback text when image may fail"
+      "Avatars without fallback for missing images",
+      "Oversized avatars in dense tables"
     ],
     "compositions": [
-      "Avatar + Text name stack",
-      "Avatar + Badge",
-      "Avatar Group (future)"
+      "Avatar + name in list rows",
+      "Avatar stack in Card headers",
+      "Avatar beside Badge status"
     ]
   }
 }

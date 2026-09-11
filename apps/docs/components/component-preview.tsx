@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Theme } from "frosted-ui";
 
 export function ComponentPreview({
   children,
@@ -13,24 +12,11 @@ export function ComponentPreview({
   label?: string;
 }) {
   return (
-    <div
-      className="overflow-hidden rounded-lg"
-      style={{ border: "1px solid var(--gray-a6)" }}
-    >
-      <div
-        className="flex items-center justify-between px-3 py-2"
-        style={{
-          borderBottom: "1px solid var(--gray-a6)",
-          background: "var(--gray-a2)",
-        }}
-      >
-        <span className="text-1" style={{ color: "var(--gray-11)" }}>
-          {label}
-        </span>
+    <div className="overflow-hidden rounded-xl border border-border">
+      <div className="flex items-center justify-between border-b border-border bg-card px-3 py-2">
+        <span className="text-xs text-muted-foreground">{label}</span>
       </div>
-      <Theme appearance="light" hasBackground={false}>
-        <div className={`preview-canvas p-6 ${className ?? ""}`}>{children}</div>
-      </Theme>
+      <div className={`preview-canvas p-6 ${className ?? ""}`}>{children}</div>
     </div>
   );
 }

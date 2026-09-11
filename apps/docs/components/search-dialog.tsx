@@ -4,8 +4,8 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 
-import { searchComponents, type RegistryComponent } from "@frostui/registry";
-import { cn } from "@frostui/ui";
+import { searchComponents } from "@frostui/registry";
+import { cn } from "@/lib/utils";
 
 import { foundationExtras } from "@/lib/nav";
 
@@ -59,22 +59,22 @@ export function SearchDialog({
     <div className="fixed inset-0 z-[60]">
       <button
         type="button"
-        className="absolute inset-0 bg-overlay"
+        className="absolute inset-0 bg-black/70"
         aria-label="Close search"
         onClick={() => onOpenChange(false)}
       />
-      <div className="relative mx-auto mt-[12vh] w-[min(40rem,calc(100vw-2rem))] overflow-hidden rounded-[var(--radius-xl)] border border-border bg-surface-elevated shadow-[var(--shadow-lg)]">
-        <div className="flex items-center gap-2 border-b border-border-subtle px-3">
-          <Search className="size-4 text-foreground-subtle" aria-hidden />
+      <div className="relative mx-auto mt-[12vh] w-[min(40rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-border bg-card shadow-2xl">
+        <div className="flex items-center gap-2 border-b border-border px-3">
+          <Search className="size-4 text-muted-foreground" aria-hidden />
           <input
             ref={inputRef}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder="Search components, props, patterns…"
-            className="h-12 w-full bg-transparent text-[length:var(--text-3)] text-foreground outline-none placeholder:text-foreground-subtle"
+            className="h-12 w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
             aria-label="Search"
           />
-          <kbd className="rounded-[var(--radius-sm)] border border-border px-1.5 py-0.5 font-mono text-[length:var(--text-0)] text-foreground-muted">
+          <kbd className="rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
             esc
           </kbd>
         </div>
@@ -105,7 +105,7 @@ export function SearchDialog({
                 />
               ))
             ) : (
-              <p className="px-3 py-6 text-center text-[length:var(--text-2)] text-foreground-muted">
+              <p className="px-3 py-6 text-center text-sm text-muted-foreground">
                 No components found
               </p>
             )}
@@ -125,7 +125,7 @@ function ResultGroup({
 }) {
   return (
     <div className="mb-2">
-      <p className="px-3 py-1.5 text-[length:var(--text-0)] font-semibold uppercase tracking-[0.08em] text-foreground-subtle">
+      <p className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
         {title}
       </p>
       <div className="space-y-0.5">{children}</div>
@@ -149,27 +149,21 @@ function ResultItem({
       type="button"
       onClick={onSelect}
       className={cn(
-        "flex w-full items-start gap-3 rounded-[var(--radius-md)] px-3 py-2.5 text-left",
-        "hover:bg-surface-hover focus-visible:bg-surface-hover focus-visible:outline-none"
+        "flex w-full items-start gap-3 rounded-md px-3 py-2.5 text-left",
+        "hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
       )}
     >
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
-          <span className="text-[length:var(--text-2)] font-medium text-foreground">
-            {title}
-          </span>
+          <span className="text-sm font-medium text-foreground">{title}</span>
           {meta ? (
-            <span className="text-[length:var(--text-0)] uppercase tracking-wide text-foreground-subtle">
+            <span className="text-[10px] uppercase tracking-wide text-muted-foreground">
               {meta}
             </span>
           ) : null}
         </div>
-        <p className="truncate text-[length:var(--text-1)] text-foreground-muted">
-          {description}
-        </p>
+        <p className="truncate text-xs text-muted-foreground">{description}</p>
       </div>
     </button>
   );
 }
-
-export type { RegistryComponent };

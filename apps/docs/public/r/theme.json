@@ -1,0 +1,14 @@
+{
+  "$schema": "https://ui.shadcn.com/schema/registry-item.json",
+  "name": "theme",
+  "type": "registry:theme",
+  "title": "Theme",
+  "description": "FrostUI semantic tokens — dark-first, high-contrast surfaces.",
+  "files": [
+    {
+      "path": "app/globals.css",
+      "type": "registry:theme",
+      "content": ":root {\n  --background: oklch(0 0 0);\n  --foreground: oklch(0.985 0 0);\n  --card: oklch(0.08 0 0);\n  --card-foreground: oklch(0.985 0 0);\n  --popover: oklch(0.08 0 0);\n  --popover-foreground: oklch(0.985 0 0);\n  --primary: oklch(0.623 0.214 259.815);\n  --primary-foreground: oklch(0.985 0 0);\n  --secondary: oklch(0.14 0 0);\n  --secondary-foreground: oklch(0.985 0 0);\n  --muted: oklch(0.14 0 0);\n  --muted-foreground: oklch(0.62 0 0);\n  --accent: oklch(0.16 0 0);\n  --accent-foreground: oklch(0.985 0 0);\n  --destructive: oklch(0.577 0.245 27.325);\n  --destructive-foreground: oklch(0.985 0 0);\n  --border: oklch(1 0 0 / 12%);\n  --input: oklch(1 0 0 / 14%);\n  --ring: oklch(0.623 0.214 259.815);\n  --radius: 0.5rem;\n}\n\n.light {\n  --background: oklch(0.985 0 0);\n  --foreground: oklch(0.09 0 0);\n  --card: oklch(1 0 0);\n  --card-foreground: oklch(0.09 0 0);\n  --popover: oklch(1 0 0);\n  --popover-foreground: oklch(0.09 0 0);\n  --primary: oklch(0.546 0.215 262.881);\n  --primary-foreground: oklch(0.985 0 0);\n  --secondary: oklch(0.96 0 0);\n  --secondary-foreground: oklch(0.09 0 0);\n  --muted: oklch(0.96 0 0);\n  --muted-foreground: oklch(0.45 0 0);\n  --accent: oklch(0.96 0 0);\n  --accent-foreground: oklch(0.09 0 0);\n  --destructive: oklch(0.577 0.245 27.325);\n  --destructive-foreground: oklch(0.985 0 0);\n  --border: oklch(0.09 0 0 / 10%);\n  --input: oklch(0.09 0 0 / 12%);\n  --ring: oklch(0.546 0.215 262.881);\n}\n"
+    }
+  ]
+}

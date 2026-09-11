@@ -2,34 +2,35 @@
   "name": "badge",
   "title": "Badge",
   "category": "foundations",
-  "description": "Compact label for status, categories, and counts.",
+  "description": "Compact status label for counts, states, and metadata.",
   "dependencies": ["class-variance-authority"],
-  "registryDependencies": [],
-  "files": ["packages/ui/src/components/badge.tsx"],
-  "examples": ["solid", "soft", "surface", "outline", "semantic"],
-  "variants": ["solid", "soft", "surface", "outline"],
-  "keywords": ["badge", "tag", "status", "label", "chip"],
+  "registryDependencies": ["utils"],
+  "files": ["registry/frostui/ui/badge.tsx"],
+  "examples": ["variant"],
+  "variants": ["default", "secondary", "outline", "destructive"],
+  "keywords": ["badge", "status", "label", "tag", "pill"],
   "props": [
-    { "name": "variant", "type": "\"solid\" | \"soft\" | \"surface\" | \"outline\"", "default": "\"soft\"", "description": "Visual style" },
-    { "name": "color", "type": "\"blue\" | \"green\" | \"orange\" | \"red\" | \"gray\" | \"info\" | \"success\" | \"warning\" | \"danger\"", "default": "\"blue\"", "description": "Accent color" },
-    { "name": "size", "type": "\"1\" | \"2\"", "default": "\"2\"", "description": "Badge size" }
+    { "name": "variant", "type": "\"default\" | \"secondary\" | \"outline\" | \"destructive\"", "default": "\"default\"", "description": "Visual style" }
   ],
   "ai": {
-    "purpose": "Annotate UI with short status or category labels.",
+    "purpose": "Display compact status, category, or count metadata.",
     "useWhen": [
-      "Showing entity status",
-      "Categorizing items",
-      "Displaying small counts or metadata"
+      "Status indicators",
+      "Category labels",
+      "New or beta markers"
     ],
-    "preferOver": ["Custom span with colored background"],
+    "preferOver": [
+      "Custom span tags with ad-hoc colors",
+      "Large chips for simple status"
+    ],
     "avoid": [
-      "Long sentences inside Badge",
-      "Using Badge as a primary call to action"
+      "Using Badge for long paragraphs",
+      "Replacing Button with Badge for actions"
     ],
     "compositions": [
-      "Avatar + Badge",
-      "CardTitle + Badge",
-      "Button + Badge"
+      "Badge beside CardTitle",
+      "Badge in table rows for status",
+      "Badge + Avatar in list items"
     ]
   }
 }

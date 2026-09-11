@@ -22,7 +22,7 @@ export function DocsSidebar({
   return (
     <nav className="space-y-6" aria-label="Documentation">
       <div>
-        <p className="mb-2 px-2.5 text-1 font-semibold uppercase tracking-wide" style={{ color: "var(--gray-10)" }}>
+        <p className="mb-2 px-2.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
           Guides
         </p>
         <div className="space-y-0.5">
@@ -40,7 +40,7 @@ export function DocsSidebar({
 
       {groups.map((group) => (
         <div key={group.id}>
-          <p className="mb-2 px-2.5 text-[length:var(--text-0)] font-semibold uppercase tracking-[0.08em] text-foreground-subtle">
+          <p className="mb-2 px-2.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
             {group.title}
           </p>
           <div className="space-y-0.5">
@@ -59,18 +59,12 @@ export function DocsSidebar({
 
       {upcomingCategories.length > 0 ? (
         <div>
-          <p className="mb-2 px-2.5 text-[length:var(--text-0)] font-semibold uppercase tracking-[0.08em] text-foreground-subtle">
+          <p className="mb-2 px-2.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
             Roadmap
           </p>
-          <ul className="space-y-1 px-2.5">
+          <ul className="space-y-1 px-2.5 text-sm text-muted-foreground">
             {upcomingCategories.map((title) => (
-              <li
-                key={title}
-                className="text-1"
-                style={{ color: "var(--gray-10)" }}
-              >
-                {title}
-              </li>
+              <li key={title}>{title}</li>
             ))}
           </ul>
         </div>

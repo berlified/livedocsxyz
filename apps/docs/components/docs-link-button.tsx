@@ -1,16 +1,16 @@
-"use client";
-
 import Link from "next/link";
-import { Button, type ButtonProps } from "frosted-ui";
+
+import { Button, type ButtonProps } from "@/components/ui/button";
 
 export function DocsLinkButton({
   href,
   children,
+  variant = "default",
   ...props
 }: ButtonProps & { href: string }) {
   return (
-    <Button {...props} render={<Link href={href} />}>
-      {children}
+    <Button variant={variant} asChild {...props}>
+      <Link href={href}>{children}</Link>
     </Button>
   );
 }

@@ -1,36 +1,38 @@
 {
   "name": "input",
   "title": "Input",
-  "category": "foundations",
-  "description": "Accessible single-line text field with surface, soft, and ghost variants.",
-  "dependencies": ["class-variance-authority"],
-  "registryDependencies": [],
-  "files": ["packages/ui/src/components/input.tsx"],
-  "examples": ["default", "sizes", "disabled", "types"],
-  "variants": ["surface", "soft", "ghost"],
-  "keywords": ["input", "text", "field", "form", "search"],
+  "category": "forms",
+  "description": "Single-line text field with focus ring and disabled states.",
+  "dependencies": [],
+  "registryDependencies": ["utils"],
+  "files": ["registry/frostui/ui/input.tsx"],
+  "examples": ["default", "disabled"],
+  "variants": ["default"],
+  "keywords": ["input", "textfield", "form", "search"],
   "props": [
-    { "name": "variant", "type": "\"surface\" | \"soft\" | \"ghost\"", "default": "\"surface\"", "description": "Visual style" },
-    { "name": "inputSize", "type": "\"sm\" | \"md\" | \"lg\"", "default": "\"md\"", "description": "Control size" },
+    { "name": "type", "type": "string", "default": "\"text\"", "description": "Native input type" },
     { "name": "disabled", "type": "boolean", "default": "false", "description": "Disables the input" },
-    { "name": "type", "type": "string", "default": "\"text\"", "description": "Native input type" }
+    { "name": "placeholder", "type": "string", "default": "undefined", "description": "Placeholder text" }
   ],
   "ai": {
-    "purpose": "Collect a single line of text from the user.",
+    "purpose": "Collect single-line text input in forms and filters.",
     "useWhen": [
-      "Forms and filters",
       "Search fields",
-      "Settings values"
+      "Simple form inputs",
+      "Inline filters"
     ],
-    "preferOver": ["Unstyled native input with one-off classes"],
+    "preferOver": [
+      "Unstyled native inputs in product UI",
+      "Contenteditable divs for plain text"
+    ],
     "avoid": [
-      "Using Input for multi-line text (use Textarea)",
-      "Omitting an associated label in forms"
+      "Multi-line content (use textarea when available)",
+      "Inputs without labels in forms"
     ],
     "compositions": [
-      "Label + Input + Description + Error",
       "Input inside Card forms",
-      "Search Input pattern with icon adornment"
+      "Input + Button search bars",
+      "Input groups with icons"
     ]
   }
 }

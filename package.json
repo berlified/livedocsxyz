@@ -4,9 +4,10 @@
   "private": true,
   "description": "FrostUI — a frosted-inspired React component library with first-class AI agent support",
   "scripts": {
-    "dev": "pnpm --filter @frostui/docs dev",
-    "build": "pnpm -r build",
-    "build:docs": "pnpm --filter @frostui/docs build",
+    "dev": "pnpm --filter @frostui/registry build:registry && pnpm --filter @frostui/docs dev",
+    "build": "pnpm --filter @frostui/registry build:registry && pnpm -r build",
+    "build:docs": "pnpm --filter @frostui/registry build:registry && pnpm --filter @frostui/docs build",
+    "registry:build": "pnpm --filter @frostui/registry build:registry",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "clean": "pnpm -r clean"

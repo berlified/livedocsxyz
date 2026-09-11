@@ -1,44 +1,56 @@
-import { Badge, Button, Card, Heading, Text } from "frosted-ui";
-
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { CodeBlock } from "@/components/code-block";
 
 export default function ThemingPage() {
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
+    <div className="mx-auto max-w-3xl space-y-10">
       <header className="space-y-3">
-        <Badge color="blue">Guides</Badge>
-        <Heading size="8">Theming</Heading>
-        <Text size="3" color="gray">
-          Frosted UI Theme controls appearance, accent, and gray scales.
-        </Text>
+        <Badge variant="outline">Guides</Badge>
+        <h1 className="text-4xl font-semibold tracking-tight">Theming</h1>
+        <p className="text-base leading-7 text-muted-foreground">
+          FrostUI is dark-first. Toggle light mode by applying the{" "}
+          <code className="text-foreground">.light</code> class on{" "}
+          <code className="text-foreground">html</code> or use next-themes.
+        </p>
       </header>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <Card size="2">
-          <Heading size="3">Light</Heading>
-          <Text size="2" color="gray">
-            Default docs appearance — matches Storybook canvas.
-          </Text>
-        </Card>
-        <Card size="2">
-          <Heading size="3">Dark</Heading>
-          <Text size="2" color="gray">
-            Toggle from the header to switch appearance.
-          </Text>
-        </Card>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Live preview</CardTitle>
+          <CardDescription>
+            Semantic tokens drive every primitive below.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-2">
+          <Button>Primary</Button>
+          <Button variant="secondary">Secondary</Button>
+          <Button variant="outline">Outline</Button>
+          <Badge variant="outline">Badge</Badge>
+        </CardContent>
+      </Card>
 
       <section className="space-y-3">
-        <Heading size="5">Apply theme</Heading>
+        <h2 className="text-xl font-semibold">next-themes</h2>
         <CodeBlock
           language="tsx"
-          code={`<Theme appearance="light" accentColor="blue" grayColor="gray" hasBackground>
-  {children}
-</Theme>`}
+          code={`import { ThemeProvider } from "next-themes"
+
+export function AppProviders({ children }) {
+  return (
+    <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      {children}
+    </ThemeProvider>
+  )
+}`}
         />
-        <Button variant="surface" color="gray">
-          Theme toggle lives in the header
-        </Button>
       </section>
     </div>
   );
