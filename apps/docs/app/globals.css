@@ -52,6 +52,7 @@ body {
 
 .docs-shell {
   min-height: 100vh;
+  overflow-x: clip;
 }
 
 .docs-sidebar {
@@ -91,6 +92,8 @@ body {
 
 .catalog-grid {
   display: grid;
+  width: 100%;
+  min-width: 0;
   gap: 1px;
   background: var(--border);
   border: 1px solid var(--border);
@@ -101,6 +104,7 @@ body {
 .catalog-column {
   background: var(--background);
   padding: 1.25rem;
+  min-width: 0;
 }
 
 .catalog-item {

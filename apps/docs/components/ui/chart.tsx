@@ -121,6 +121,40 @@ function ChartStyle({ id, config }: { id: string; config: ChartConfig }) {
   return <style dangerouslySetInnerHTML={{ __html: rules }} />;
 }
 
+function seriesKey(
+  item: { dataKey?: string | number; name?: string; value?: string | number },
+  config: ChartConfig
+) {
+  const fromDataKey = String(item.dataKey ?? "");
+  const fromName = String(item.name ?? "");
+  const fromValue = String(item.value ?? "");
+  if (config[fromDataKey]) return fromDataKey;
+  if (config[fromName]) return fromName;
+  if (config[fromValue]) return fromValue;
+  return fromDataKey || fromName || fromValue;
+}
+
+function uniquePayload<T extends { dataKey?: string | number; name?: string; value?: string | number }>(
+  payload: T[] | undefined,
+  config: ChartConfig
+) {
+  if (!payload?.length) return [];
+  const seen = new Set<string>();
+  const rows: Array<{ item: T; key: string; index: number }> = [];
+  payload.forEach((item, index) => {
+    const key = seriesKey(item, config);
+    if (!key || seen.has(key)) return;
+    seen.add(key);
+    rows.push({ item, key, index });
+  });
+  return rows;
+}
+
+function formatChartNumber(value: number | string | undefined) {
+  if (typeof value === "number") return value.toLocaleString("en-US");
+  return value ?? "";
+}
+
 export function ChartTooltipContent({
   active,
   payload,
@@ -150,6 +184,16 @@ export function ChartTooltipContent({
           ? "rounded-lg"
           : "rounded-xl";
 
+  const rows = uniquePayload(payload, config).filter(
+    ({ key, item }) =>
+      !selected ||
+      selected === key ||
+      selected === String(item.dataKey ?? "") ||
+      selected === String(item.name ?? "")
+  );
+
+  if (!rows.length) return null;
+
   return (
     <div
       className={cn(
@@ -161,19 +205,14 @@ export function ChartTooltipContent({
         <p className="mb-1.5 font-medium text-foreground">{label}</p>
       ) : null}
       <div className="space-y-1">
-        {payload.map((item) => {
-          const rawKey = String(item.dataKey ?? item.name ?? "");
-          const nameKey = String(item.name ?? "");
-          const key = config[rawKey]
-            ? rawKey
-            : config[nameKey]
-              ? nameKey
-              : rawKey;
-          if (selected && selected !== key && selected !== rawKey) return null;
+        {rows.map(({ item, key, index }) => {
           const series = config[key];
           const Icon = series?.icon;
           return (
-            <div key={key} className="flex items-center justify-between gap-6">
+            <div
+              key={`${key}-${index}`}
+              className="flex items-center justify-between gap-6"
+            >
               <span className="flex items-center gap-2 text-muted-foreground">
                 {Icon ? (
                   <Icon className="size-2.5" />
@@ -186,7 +225,7 @@ export function ChartTooltipContent({
                 {series?.label ?? key}
               </span>
               <span className="font-mono text-foreground">
-                {item.value?.toLocaleString?.() ?? item.value}
+                {formatChartNumber(item.value)}
               </span>
             </div>
           );
@@ -219,20 +258,13 @@ export function ChartLegendContent({
 
   return (
     <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-      {payload.map((item) => {
-        const fromValue = String(item.value ?? "");
-        const fromKey = String(item.dataKey ?? "");
-        const key = config[fromValue]
-          ? fromValue
-          : config[fromKey]
-            ? fromKey
-            : fromValue || fromKey;
+      {uniquePayload(payload, config).map(({ item, key, index }) => {
         const series = config[key];
         const Icon = series?.icon;
         const active = !selected || selected === key;
         return (
           <button
-            key={key}
+            key={`${key}-${index}`}
             type="button"
             disabled={!isClickable}
             onClick={() => isClickable && setSelected(key)}

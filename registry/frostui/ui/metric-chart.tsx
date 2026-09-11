@@ -154,7 +154,7 @@ function MetricBody({
           const muted = active && active !== item.key;
           return (
             <Line
-              key={item.key}
+              key={`${item.key}-stroke`}
               type="monotone"
               dataKey={item.key}
               stroke={colorVar(item.key)}

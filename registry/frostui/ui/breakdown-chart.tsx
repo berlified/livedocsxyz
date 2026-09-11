@@ -81,12 +81,12 @@ function BreakdownChartRoot({
                 <span className="flex items-center gap-3 font-mono text-xs">
                   <span className="text-foreground">
                     {currency
-                      ? item.value.toLocaleString(undefined, {
+                      ? item.value.toLocaleString("en-US", {
                           style: "currency",
                           currency: "USD",
                           maximumFractionDigits: 0,
                         })
-                      : item.value.toLocaleString()}
+                      : item.value.toLocaleString("en-US")}
                   </span>
                   <span className="w-12 text-right text-muted-foreground">
                     {item.percent.toFixed(1)}%

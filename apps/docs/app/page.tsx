@@ -48,13 +48,13 @@ export default function HomePage() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Button asChild>
-              <Link href="/docs/components/trend-card">
-                Start with trend cards
+              <Link href="/docs/components">
+                Browse components
                 <ArrowUpRight className="size-4" />
               </Link>
             </Button>
             <Button variant="outline" asChild>
-              <Link href="/docs/installation">Install with shadcn</Link>
+              <Link href="/docs/agents">Install with agents</Link>
             </Button>
           </div>
         </div>
