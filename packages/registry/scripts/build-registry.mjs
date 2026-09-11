@@ -14,6 +14,7 @@ const uiComponents = [
   "input",
   "avatar",
   "separator",
+  "area-chart",
 ];
 
 function syncDocsToRegistry() {

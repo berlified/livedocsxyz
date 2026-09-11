@@ -5,6 +5,7 @@ import card from "./components/card.json";
 import input from "./components/input.json";
 import avatar from "./components/avatar.json";
 import separator from "./components/separator.json";
+import areaChart from "./components/area-chart.json";
 
 export type {
   ComponentAIGuidance,
@@ -20,6 +21,7 @@ export const components: RegistryComponent[] = [
   input,
   avatar,
   separator,
+  areaChart,
 ] as RegistryComponent[];
 
 export const registry: RegistryIndex = {

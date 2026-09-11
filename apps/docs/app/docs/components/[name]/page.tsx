@@ -17,6 +17,8 @@ import {
   InputExamples,
   InputPreview,
   SeparatorPreview,
+  AreaChartPreview,
+  AreaChartExamples,
 } from "@/components/previews";
 
 const usageByName: Record<string, string> = {
@@ -69,6 +71,11 @@ export function Example() {
 export function Example() {
   return <Separator />
 }`,
+  "area-chart": `import { AreaChart } from "@/components/ui/area-chart"
+
+export function Example() {
+  return <AreaChart markerLabel="Your balance will appear here." />
+}`,
 };
 
 const previewByName: Record<string, ReactNode> = {
@@ -78,6 +85,7 @@ const previewByName: Record<string, ReactNode> = {
   input: <InputPreview />,
   avatar: <AvatarPreview />,
   separator: <SeparatorPreview />,
+  "area-chart": <AreaChartPreview />,
 };
 
 const examplesByName: Record<string, ReactNode> = {
@@ -85,6 +93,7 @@ const examplesByName: Record<string, ReactNode> = {
   badge: <BadgeExamples />,
   card: <CardExamples />,
   input: <InputExamples />,
+  "area-chart": <AreaChartExamples />,
 };
 
 const sourcePaths: Record<string, string> = {
@@ -94,6 +103,7 @@ const sourcePaths: Record<string, string> = {
   input: "apps/docs/components/ui/input.tsx",
   avatar: "apps/docs/components/ui/avatar.tsx",
   separator: "apps/docs/components/ui/separator.tsx",
+  "area-chart": "apps/docs/components/ui/area-chart.tsx",
 };
 
 function readRegistrySource(name: string) {

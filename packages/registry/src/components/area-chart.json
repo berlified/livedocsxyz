@@ -1,0 +1,58 @@
+{
+  "name": "area-chart",
+  "title": "Area Chart",
+  "category": "charts",
+  "description": "Minimal area chart with a rising line, soft fill, and a floating marker tooltip.",
+  "dependencies": [],
+  "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+  "files": ["apps/docs/components/ui/area-chart.tsx"],
+  "examples": ["default", "marker"],
+  "variants": ["default"],
+  "keywords": ["chart", "graph", "area", "sparkline", "balance", "analytics"],
+  "props": [
+    {
+      "name": "data",
+      "type": "number[]",
+      "default": "built-in sample",
+      "description": "Series values plotted left to right"
+    },
+    {
+      "name": "markerIndex",
+      "type": "number",
+      "default": "58% of series",
+      "description": "Index of the highlighted point"
+    },
+    {
+      "name": "markerLabel",
+      "type": "string",
+      "default": "\"Your balance will appear here.\"",
+      "description": "Tooltip text above the marker"
+    },
+    {
+      "name": "interactive",
+      "type": "boolean",
+      "default": "true",
+      "description": "Move the marker on hover"
+    }
+  ],
+  "ai": {
+    "purpose": "Show a trend as a quiet area chart with an optional callout on a point.",
+    "useWhen": [
+      "Balance, revenue, or activity empty states",
+      "Dashboard trend previews",
+      "Minimal analytics without axes"
+    ],
+    "preferOver": [
+      "Heavy chart libraries for a single sparkline",
+      "Bar charts for continuous time series"
+    ],
+    "avoid": [
+      "Dense multi-series comparisons",
+      "Charts that need labeled axes and legends"
+    ],
+    "compositions": [
+      "Area Chart inside a Card header",
+      "Area Chart under a metric and Badge"
+    ]
+  }
+}

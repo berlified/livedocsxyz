@@ -17,7 +17,15 @@ export function getShadcnAddCommand(component: string) {
 }
 
 export function getShadcnAddAllCommand() {
-  const items = ["button", "badge", "card", "input", "avatar", "separator"];
+  const items = [
+    "button",
+    "badge",
+    "card",
+    "input",
+    "avatar",
+    "separator",
+    "area-chart",
+  ];
   return `npx shadcn@latest add ${items.map(getRegistryItemUrl).join(" ")}`;
 }
 

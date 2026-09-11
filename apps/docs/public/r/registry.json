@@ -50,6 +50,12 @@
       "type": "registry:ui",
       "title": "Separator",
       "description": "Horizontal or vertical divider between sections."
+    },
+    {
+      "name": "area-chart",
+      "type": "registry:ui",
+      "title": "Area Chart",
+      "description": "Minimal area chart with a rising line, soft fill, and a floating marker tooltip."
     }
   ]
 }

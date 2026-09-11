@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { CodeBlock } from "@/components/code-block";
 import { CompositionPreview } from "@/components/previews";
+import { AreaChart } from "@/components/ui/area-chart";
 import { getShadcnAddCommand } from "@/lib/registry-url";
 
 export default function HomePage() {
@@ -51,6 +52,10 @@ export default function HomePage() {
             <Link href="/docs/installation">Install with shadcn</Link>
           </Button>
         </div>
+      </section>
+
+      <section className="-mx-4 md:-mx-8 lg:-mx-10">
+        <AreaChart />
       </section>
 
       <section className="space-y-3">

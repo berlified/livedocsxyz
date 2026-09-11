@@ -117,6 +117,20 @@
           "target": "components/ui/separator.tsx"
         }
       ]
+    },
+    {
+      "name": "area-chart",
+      "type": "registry:ui",
+      "title": "Area Chart",
+      "description": "Minimal area chart with a rising line, soft fill, and a floating marker tooltip.",
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/area-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/area-chart.tsx"
+        }
+      ]
     }
   ]
 }

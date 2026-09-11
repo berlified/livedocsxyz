@@ -15,6 +15,8 @@ export {
 } from "../../../registry/frostui/ui/card";
 export { Input } from "../../../registry/frostui/ui/input";
 export { Separator } from "../../../registry/frostui/ui/separator";
+export { AreaChart } from "../../../registry/frostui/ui/area-chart";
+export type { AreaChartProps } from "../../../registry/frostui/ui/area-chart";
 export { cn } from "../../../registry/frostui/lib/utils";
 
 export type { BadgeProps } from "../../../registry/frostui/ui/badge";

@@ -62,3 +62,4 @@ Never use raw hex values in component styles.
 | `Input` | Single-line text entry |
 | `Avatar` | User / entity identity |
 | `Separator` | Visual division between sections |
+| `AreaChart` | Quiet trend graphs and empty-state balances |

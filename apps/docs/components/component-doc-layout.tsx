@@ -39,7 +39,11 @@ export function ComponentDocLayout({
 
       <section id="preview" className="scroll-mt-24 space-y-3">
         <h2 className="text-xl font-semibold tracking-tight">Preview</h2>
-        <ComponentPreview>{preview}</ComponentPreview>
+        <ComponentPreview
+          className={component.category === "charts" ? "p-0" : undefined}
+        >
+          {preview}
+        </ComponentPreview>
       </section>
 
       {examples}
