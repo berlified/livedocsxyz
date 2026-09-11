@@ -8,6 +8,7 @@
     "build": "pnpm --filter @frostui/registry build:registry && pnpm -r build",
     "build:docs": "pnpm --filter @frostui/registry build:registry && pnpm --filter @frostui/docs build",
     "registry:build": "pnpm --filter @frostui/registry build:registry",
+    "registry:validate": "npx shadcn@latest registry validate registry/registry.json",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "clean": "pnpm -r clean"
