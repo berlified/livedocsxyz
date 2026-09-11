@@ -1,0 +1,36 @@
+{
+  "name": "radar-chart",
+  "title": "Radar Chart",
+  "category": "charts",
+  "description": "Filled or outlined radar with polygon or circle grid, glow, and series selection.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/radar-chart.tsx"],
+  "examples": ["filled", "lines", "circle-grid"],
+  "variants": ["filled", "lines"],
+  "keywords": ["chart", "radar", "spider", "polar", "recharts"],
+  "props": [
+    {
+      "name": "gridType",
+      "type": "\"polygon\" | \"circle\"",
+      "default": "\"polygon\"",
+      "description": "Polar grid shape"
+    },
+    {
+      "name": "Radar.variant",
+      "type": "\"filled\" | \"lines\"",
+      "default": "\"filled\"",
+      "description": "Fill vs stroke-only"
+    }
+  ],
+  "ai": {
+    "purpose": "Compare multivariate scores on a polar grid.",
+    "useWhen": ["Skill, quality, or score profiles"],
+    "preferOver": ["Grouped bars for a compact profile"],
+    "avoid": ["Time series"],
+    "compositions": ["RadarChart.Radar + Tooltip + Legend"]
+  }
+}

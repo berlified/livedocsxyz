@@ -1,0 +1,27 @@
+{
+  "name": "breakdown-chart",
+  "title": "Breakdown Chart",
+  "category": "charts",
+  "description": "Clickable share stack with labeled rows, amounts, and percents.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/breakdown-chart.tsx"],
+  "examples": ["currency", "counts"],
+  "variants": ["default"],
+  "keywords": ["chart", "share", "stack", "legend", "mix", "dashboard"],
+  "props": [
+    { "name": "items", "type": "BreakdownItem[]", "description": "Rows with key, value, percent" },
+    { "name": "currency", "type": "boolean", "default": "true", "description": "Format values as USD" }
+  ],
+  "ai": {
+    "purpose": "Show mix of a whole as a stacked bar plus a list.",
+    "useWhen": ["Payment mix, plans, cohorts"],
+    "preferOver": ["Pie when you need exact amounts"],
+    "avoid": ["Tiny slices without grouping"],
+    "compositions": ["BreakdownChart beside TrendCards"]
+  }
+}

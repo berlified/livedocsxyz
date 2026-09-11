@@ -1,0 +1,34 @@
+{
+  "name": "sankey-chart",
+  "title": "Sankey Chart",
+  "category": "charts",
+  "description": "Flow diagram with nodes, weighted links, and themed strokes.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/sankey-chart.tsx"],
+  "examples": ["funnel"],
+  "variants": ["default"],
+  "keywords": ["chart", "sankey", "flow", "funnel", "recharts"],
+  "props": [
+    {
+      "name": "nodes",
+      "type": "SankeyNode[]",
+      "description": "Named nodes"
+    },
+    {
+      "name": "links",
+      "type": "SankeyLink[]",
+      "description": "Source/target/value edges"
+    }
+  ],
+  "ai": {
+    "purpose": "Show how volume moves between stages.",
+    "useWhen": ["Funnels, conversion, or budget allocation"],
+    "preferOver": ["Stacked bars when the path matters"],
+    "avoid": ["Tiny graphs with many crossing links"],
+    "compositions": ["SankeyChart inside a Card"]
+  }
+}

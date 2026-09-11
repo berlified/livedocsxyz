@@ -1,0 +1,34 @@
+{
+  "name": "composed-chart",
+  "title": "Composed Chart",
+  "category": "charts",
+  "description": "Mix bars, areas, and lines on one cartesian surface with shared tooltip and legend.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/composed-chart.tsx"],
+  "examples": ["bar-area-line"],
+  "variants": ["default"],
+  "keywords": ["chart", "composed", "combo", "bar", "line", "area", "recharts"],
+  "props": [
+    {
+      "name": "data",
+      "type": "Record<string, unknown>[]",
+      "description": "Series rows"
+    },
+    {
+      "name": "config",
+      "type": "ChartConfig",
+      "description": "Labels and colors for each dataKey"
+    }
+  ],
+  "ai": {
+    "purpose": "Overlay different encodings on the same axes.",
+    "useWhen": ["Volume as bars with a rate as a line"],
+    "preferOver": ["Separate charts when series share a domain"],
+    "avoid": ["Unrelated scales on one plot without a second axis"],
+    "compositions": ["ComposedChart.Bar + Area + Line + Tooltip"]
+  }
+}

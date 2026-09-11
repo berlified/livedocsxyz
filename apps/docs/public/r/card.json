@@ -5,7 +5,7 @@
   "title": "Card",
   "description": "Layered surface for grouped content with header, body, and footer slots.",
   "registryDependencies": [
-    "utils"
+    "https://livedocs.xyz/r/utils.json"
   ],
   "files": [
     {

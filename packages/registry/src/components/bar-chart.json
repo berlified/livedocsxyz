@@ -1,0 +1,44 @@
+{
+  "name": "bar-chart",
+  "title": "Bar Chart",
+  "category": "charts",
+  "description": "Compound bar chart with stacked, horizontal, hatched, duotone, stripped, and gradient fills.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/bar-chart.tsx"],
+  "examples": ["default", "stacked", "horizontal", "hatched"],
+  "variants": ["default", "hatched", "gradient", "duotone", "stripped"],
+  "keywords": ["chart", "bar", "stacked", "horizontal", "analytics", "recharts"],
+  "props": [
+    {
+      "name": "layout",
+      "type": "\"horizontal\" | \"vertical\"",
+      "default": "\"horizontal\"",
+      "description": "Column vs row bars"
+    },
+    {
+      "name": "stackType",
+      "type": "\"none\" | \"stacked\" | \"percent\"",
+      "description": "Stacking behavior"
+    },
+    {
+      "name": "Bar.variant",
+      "type": "\"default\" | \"hatched\" | \"gradient\" | \"duotone\" | \"stripped\"",
+      "default": "\"default\"",
+      "description": "Fill treatment"
+    }
+  ],
+  "ai": {
+    "purpose": "Compare categories or stacked totals with a compound bar API.",
+    "useWhen": [
+      "Month-over-month totals",
+      "Stacked mix of channels"
+    ],
+    "preferOver": ["Line charts for discrete categories"],
+    "avoid": ["Long continuous series better shown as line or area"],
+    "compositions": ["BarChart.Grid + Tooltip + Legend + Bar"]
+  }
+}

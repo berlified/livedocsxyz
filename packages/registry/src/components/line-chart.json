@@ -1,0 +1,49 @@
+{
+  "name": "line-chart",
+  "title": "Line Chart",
+  "category": "charts",
+  "description": "Compound line chart with dashed strokes, glow, curve types, dots, tooltip, and legend.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/line-chart.tsx"],
+  "examples": ["solid", "dashed", "glow", "step"],
+  "variants": ["solid", "dashed"],
+  "keywords": ["chart", "line", "trend", "analytics", "recharts"],
+  "props": [
+    {
+      "name": "data",
+      "type": "Record<string, unknown>[]",
+      "description": "Series rows"
+    },
+    {
+      "name": "config",
+      "type": "ChartConfig",
+      "description": "Labels and colors for each dataKey"
+    },
+    {
+      "name": "Line.strokeVariant",
+      "type": "\"solid\" | \"dashed\"",
+      "default": "\"solid\"",
+      "description": "Stroke pattern"
+    },
+    {
+      "name": "Line.curveType",
+      "type": "\"monotone\" | \"linear\" | \"step\" | \"bump\" | \"monotoneY\"",
+      "default": "\"monotone\"",
+      "description": "Interpolation"
+    }
+  ],
+  "ai": {
+    "purpose": "Compare continuous metrics as lines with optional glow and dashes.",
+    "useWhen": [
+      "Multiple overlapping trends",
+      "When fill would obscure the comparison"
+    ],
+    "preferOver": ["Area charts when fill is noisy"],
+    "avoid": ["Single-point snapshots"],
+    "compositions": ["LineChart.Grid + Tooltip + Legend + Line"]
+  }
+}

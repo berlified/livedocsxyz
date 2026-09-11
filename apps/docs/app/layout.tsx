@@ -18,11 +18,12 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "FrostUI",
-    template: "%s — FrostUI",
+    default: "livedocs",
+    template: "%s — livedocs",
   },
   description:
-    "FrostUI — a dark-first React component library with a shadcn-compatible registry.",
+    "A shadcn component registry. Copy the command, own the source.",
+  metadataBase: new URL("https://livedocs.xyz"),
 };
 
 export default function RootLayout({

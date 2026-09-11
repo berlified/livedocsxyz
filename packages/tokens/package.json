@@ -2,7 +2,7 @@
   "name": "@frostui/tokens",
   "version": "0.1.0",
   "private": true,
-  "description": "FrostUI design tokens",
+  "description": "Design tokens",
   "main": "./src/index.css",
   "exports": {
     ".": "./src/index.css",

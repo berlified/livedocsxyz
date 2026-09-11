@@ -1,0 +1,131 @@
+"use client";
+
+import * as React from "react";
+import { ArrowUpRight, Info } from "lucide-react";
+import {
+  Line,
+  LineChart as RechartsLineChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
+
+import {
+  ChartContainer,
+  ChartTooltipContent,
+  colorVar,
+  type ChartConfig,
+} from "@/components/ui/chart";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+
+function TrendCardRoot({
+  title,
+  value,
+  baseline,
+  delta,
+  tone = "up",
+  href,
+  data,
+  config,
+  currentKey = "current",
+  compareKey = "previous",
+  xDataKey = "day",
+  className,
+  isLoading,
+}: {
+  title: string;
+  value: string;
+  baseline?: string;
+  delta?: string;
+  tone?: "up" | "down" | "neutral";
+  href?: string;
+  data: Record<string, unknown>[];
+  config: ChartConfig;
+  currentKey?: string;
+  compareKey?: string;
+  xDataKey?: string;
+  className?: string;
+  isLoading?: boolean;
+}) {
+  const deltaClass =
+    tone === "down"
+      ? "border-destructive/30 bg-destructive/15 text-destructive"
+      : tone === "up"
+        ? "border-transparent bg-secondary text-[color:var(--chart-2)]"
+        : "border-border text-muted-foreground";
+
+  return (
+    <Card className={cn("relative overflow-hidden p-4", className)}>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-1.5">
+          <p className="text-sm text-muted-foreground">{title}</p>
+          <span className="text-muted-foreground" title={title}>
+            <Info className="size-3.5" aria-hidden />
+          </span>
+        </div>
+        {href ? (
+          <Button variant="ghost" size="icon" className="size-7" asChild>
+            <a href={href} aria-label={`Open ${title}`}>
+              <ArrowUpRight className="size-3.5" />
+            </a>
+          </Button>
+        ) : null}
+      </div>
+
+      <div className="mt-3 flex items-end gap-2">
+        <p className="font-mono text-3xl font-semibold tracking-tight">{value}</p>
+        {delta ? (
+          <Badge variant="outline" className={cn("mb-1", deltaClass)}>
+            {delta}
+          </Badge>
+        ) : null}
+      </div>
+      {baseline ? (
+        <p className="mt-1 font-mono text-xs text-muted-foreground">{baseline}</p>
+      ) : null}
+
+      <ChartContainer
+        config={config}
+        data={data}
+        className="mt-3 h-24 w-full"
+      >
+        {isLoading ? (
+          <div className="h-full animate-pulse rounded-lg bg-muted/40" />
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <RechartsLineChart data={data} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
+              <Tooltip
+                cursor={{ stroke: "var(--border)", strokeDasharray: "3 3" }}
+                content={<ChartTooltipContent />}
+              />
+              <Line
+                type="monotone"
+                dataKey={compareKey}
+                stroke={colorVar(compareKey)}
+                strokeWidth={1.5}
+                dot={false}
+                opacity={0.45}
+              />
+              <Line
+                type="monotone"
+                dataKey={currentKey}
+                stroke={colorVar(currentKey)}
+                strokeWidth={2.25}
+                dot={false}
+                activeDot={{ r: 3.5, fill: colorVar(currentKey) }}
+              />
+            </RechartsLineChart>
+          </ResponsiveContainer>
+        )}
+      </ChartContainer>
+      <p className="mt-1 flex justify-between text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+        <span>{String(data[0]?.[xDataKey] ?? "")}</span>
+        <span>Now</span>
+      </p>
+    </Card>
+  );
+}
+
+export const TrendCard = Object.assign(TrendCardRoot, {});

@@ -1,13 +1,13 @@
 {
   "$schema": "https://ui.shadcn.com/schema/registry.json",
-  "name": "frostui",
+  "name": "livedocs",
   "homepage": "https://livedocs.xyz",
   "items": [
     {
       "name": "theme",
       "type": "registry:theme",
       "title": "Theme",
-      "description": "FrostUI semantic tokens — dark-first, high-contrast surfaces.",
+      "description": "Semantic color tokens for high-contrast surfaces.",
       "files": [
         {
           "path": "registry/frostui/style/theme.css",
@@ -20,7 +20,7 @@
       "name": "utils",
       "type": "registry:lib",
       "title": "Utils",
-      "description": "Tailwind class merge helper used by all FrostUI components.",
+      "description": "Tailwind class merge helper used by all components.",
       "dependencies": ["clsx", "tailwind-merge"],
       "files": [
         {
@@ -36,7 +36,7 @@
       "title": "Button",
       "description": "Action button with default, secondary, outline, ghost, destructive, and link variants.",
       "dependencies": ["@radix-ui/react-slot", "class-variance-authority"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/button.tsx",
@@ -51,7 +51,7 @@
       "title": "Badge",
       "description": "Compact status label for counts, states, and metadata.",
       "dependencies": ["class-variance-authority"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/badge.tsx",
@@ -65,7 +65,7 @@
       "type": "registry:ui",
       "title": "Card",
       "description": "Layered surface for grouped content with header, body, and footer slots.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/card.tsx",
@@ -79,7 +79,7 @@
       "type": "registry:ui",
       "title": "Input",
       "description": "Single-line text field with focus ring and disabled states.",
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/input.tsx",
@@ -94,7 +94,7 @@
       "title": "Avatar",
       "description": "User or entity identity with image and fallback initials.",
       "dependencies": ["@radix-ui/react-avatar"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/avatar.tsx",
@@ -109,12 +109,282 @@
       "title": "Separator",
       "description": "Horizontal or vertical divider between sections.",
       "dependencies": ["@radix-ui/react-separator"],
-      "registryDependencies": ["utils"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/separator.tsx",
           "type": "registry:ui",
           "target": "components/ui/separator.tsx"
+        }
+      ]
+    },
+    {
+      "name": "chart",
+      "type": "registry:ui",
+      "title": "Chart",
+      "description": "Shared chart primitives: config, container, tooltip, legend, grid, and theme tokens.",
+      "dependencies": ["recharts"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sparkline",
+      "type": "registry:ui",
+      "title": "Sparkline",
+      "description": "Quiet SVG trend with a floating marker tooltip. No axes, no Recharts.",
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/sparkline.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/sparkline.tsx"
+        }
+      ]
+    },
+    {
+      "name": "area-chart",
+      "type": "registry:ui",
+      "title": "Area Chart",
+      "description": "Compound area chart with gradient, hatched, glow, selection, tooltip, legend, and brush.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/area-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/area-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "line-chart",
+      "type": "registry:ui",
+      "title": "Line Chart",
+      "description": "Compound line chart with dashed strokes, glow, curve types, dots, tooltip, and legend.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/line-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/line-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "bar-chart",
+      "type": "registry:ui",
+      "title": "Bar Chart",
+      "description": "Compound bar chart with stacked, horizontal, hatched, duotone, stripped, and gradient fills.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/bar-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/bar-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "composed-chart",
+      "type": "registry:ui",
+      "title": "Composed Chart",
+      "description": "Mix bars, areas, and lines on one cartesian surface with shared tooltip and legend.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/composed-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/composed-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "pie-chart",
+      "type": "registry:ui",
+      "title": "Pie Chart",
+      "description": "Donut or pie with padding, glowing sectors, click-to-select, tooltip, and legend.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/pie-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/pie-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "radar-chart",
+      "type": "registry:ui",
+      "title": "Radar Chart",
+      "description": "Filled or outlined radar with polygon or circle grid, glow, and series selection.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/radar-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/radar-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "radial-chart",
+      "type": "registry:ui",
+      "title": "Radial Chart",
+      "description": "Full or semi radial bars with background tracks, rounded caps, tooltip, and legend.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/radial-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/radial-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "sankey-chart",
+      "type": "registry:ui",
+      "title": "Sankey Chart",
+      "description": "Flow diagram with nodes, weighted links, and themed strokes.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/sankey-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/sankey-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "trend-card",
+      "type": "registry:ui",
+      "title": "Trend Card",
+      "description": "Metric tile with overlay lines for this period vs last, a delta chip, and a compact chart.",
+      "dependencies": ["recharts", "lucide-react"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/badge.json",
+        "https://livedocs.xyz/r/button.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/trend-card.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/trend-card.tsx"
+        }
+      ]
+    },
+    {
+      "name": "metric-chart",
+      "type": "registry:ui",
+      "title": "Metric Chart",
+      "description": "Large value header, series pills, and a gradient well with axes and dots.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/metric-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/metric-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "comparison-chart",
+      "type": "registry:ui",
+      "title": "Comparison Chart",
+      "description": "Two overlapping gradient areas for this year vs last, with a KPI and delta.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/badge.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/comparison-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/comparison-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "breakdown-chart",
+      "type": "registry:ui",
+      "title": "Breakdown Chart",
+      "description": "Clickable share stack with labeled rows, amounts, and percents.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/breakdown-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/breakdown-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "range-chart",
+      "type": "registry:ui",
+      "title": "Range Chart",
+      "description": "Forecast band from low to high with an actual line sitting in the middle.",
+      "dependencies": ["recharts"],
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/range-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/range-chart.tsx"
         }
       ]
     }

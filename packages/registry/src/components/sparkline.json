@@ -1,0 +1,54 @@
+{
+  "name": "sparkline",
+  "title": "Sparkline",
+  "category": "charts",
+  "description": "Quiet SVG trend with a floating marker tooltip. No axes, no Recharts.",
+  "dependencies": [],
+  "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+  "files": ["apps/docs/components/ui/sparkline.tsx"],
+  "examples": ["default", "marker"],
+  "variants": ["default"],
+  "keywords": ["chart", "sparkline", "trend", "balance", "empty state"],
+  "props": [
+    {
+      "name": "data",
+      "type": "number[]",
+      "default": "built-in sample",
+      "description": "Series values plotted left to right"
+    },
+    {
+      "name": "markerIndex",
+      "type": "number",
+      "description": "Index of the highlighted point"
+    },
+    {
+      "name": "markerLabel",
+      "type": "string",
+      "default": "\"Your balance will appear here.\"",
+      "description": "Tooltip text above the marker"
+    },
+    {
+      "name": "interactive",
+      "type": "boolean",
+      "default": "true",
+      "description": "Move the marker on hover"
+    }
+  ],
+  "ai": {
+    "purpose": "Show a trend as a quiet area with an optional callout on a point.",
+    "useWhen": [
+      "Balance or empty-state illustrations",
+      "Inline metric decoration"
+    ],
+    "preferOver": [
+      "AreaChart when you do not need axes, legends, or multiple series"
+    ],
+    "avoid": [
+      "Dense multi-series comparisons"
+    ],
+    "compositions": [
+      "Sparkline inside a Card header",
+      "Sparkline under a metric and Badge"
+    ]
+  }
+}

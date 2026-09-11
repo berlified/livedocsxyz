@@ -1,0 +1,33 @@
+{
+  "name": "trend-card",
+  "title": "Trend Card",
+  "category": "charts",
+  "description": "Metric tile with overlay lines for this period vs last, a delta chip, and a compact chart.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/badge.json",
+    "https://livedocs.xyz/r/button.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/trend-card.tsx"],
+  "examples": ["up", "down"],
+  "variants": ["up", "down", "neutral"],
+  "keywords": ["chart", "kpi", "sparkline", "overlay", "delta", "dashboard"],
+  "props": [
+    { "name": "title", "type": "string", "description": "Metric name" },
+    { "name": "value", "type": "string", "description": "Primary figure" },
+    { "name": "delta", "type": "string", "description": "Change chip" },
+    { "name": "tone", "type": "\"up\" | \"down\" | \"neutral\"", "default": "\"up\"", "description": "Delta color" },
+    { "name": "currentKey", "type": "string", "default": "\"current\"", "description": "Foreground series" },
+    { "name": "compareKey", "type": "string", "default": "\"previous\"", "description": "Ghost series" }
+  ],
+  "ai": {
+    "purpose": "Show a KPI with a quiet overlay of the last period.",
+    "useWhen": ["Dashboard stat grids", "Week-over-week tiles"],
+    "preferOver": ["Bare sparklines when a number and delta matter"],
+    "avoid": ["More than two series in the tile"],
+    "compositions": ["Four TrendCards in a row", "TrendCard next to BreakdownChart"]
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "name": "area-chart",
+  "title": "Area Chart",
+  "category": "charts",
+  "description": "Compound area chart with gradient, hatched, glow, selection, tooltip, legend, and brush.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/area-chart.tsx"],
+  "examples": ["gradient", "hatched", "glow", "brush", "loading"],
+  "variants": ["default", "gradient", "hatched"],
+  "keywords": ["chart", "area", "gradient", "analytics", "recharts"],
+  "props": [
+    {
+      "name": "data",
+      "type": "Record<string, unknown>[]",
+      "description": "Series rows"
+    },
+    {
+      "name": "config",
+      "type": "ChartConfig",
+      "description": "Labels and colors for each dataKey"
+    },
+    {
+      "name": "isLoading",
+      "type": "boolean",
+      "default": "false",
+      "description": "Shows a pulse skeleton"
+    },
+    {
+      "name": "Area.variant",
+      "type": "\"default\" | \"gradient\" | \"hatched\"",
+      "default": "\"gradient\"",
+      "description": "Fill treatment for a series"
+    },
+    {
+      "name": "Area.isClickable",
+      "type": "boolean",
+      "description": "Click a series to dim the others"
+    }
+  ],
+  "ai": {
+    "purpose": "Plot continuous series as filled areas with a compound Grid/Tooltip/Legend API.",
+    "useWhen": [
+      "Time series with one or more metrics",
+      "Dashboards that need hover tooltips and legends"
+    ],
+    "preferOver": [
+      "Sparkline when axes, legends, or multiple series are required"
+    ],
+    "avoid": [
+      "Category comparisons better shown as bars",
+      "Part-to-whole breakdowns better shown as pie"
+    ],
+    "compositions": [
+      "AreaChart.Grid + Tooltip + Legend + Area",
+      "Card around AreaChart for dashboard metrics"
+    ]
+  }
+}

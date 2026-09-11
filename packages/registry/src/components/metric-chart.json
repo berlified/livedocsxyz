@@ -1,0 +1,28 @@
+{
+  "name": "metric-chart",
+  "title": "Metric Chart",
+  "category": "charts",
+  "description": "Large value header, series pills, and a gradient well with axes and dots.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/metric-chart.tsx"],
+  "examples": ["pills"],
+  "variants": ["default"],
+  "keywords": ["chart", "metric", "area", "legend", "dashboard"],
+  "props": [
+    { "name": "title", "type": "string", "description": "Metric name" },
+    { "name": "value", "type": "string", "description": "Hero figure" },
+    { "name": "series", "type": "{ key: string; label: string }[]", "description": "Selectable overlay series" }
+  ],
+  "ai": {
+    "purpose": "Feature one metric on a full-width chart with clickable series pills.",
+    "useWhen": ["Home dashboards", "Subscription or revenue hero"],
+    "preferOver": ["AreaChart alone when the number should lead"],
+    "avoid": ["Tiny cards — this wants height"],
+    "compositions": ["MetricChart above a TrendCard grid"]
+  }
+}

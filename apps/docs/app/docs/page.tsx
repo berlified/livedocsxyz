@@ -9,10 +9,10 @@ export default function DocsHomePage() {
     <div className="mx-auto max-w-3xl space-y-10">
       <header className="space-y-3">
         <Badge variant="outline">Documentation</Badge>
-        <h1 className="text-4xl font-semibold tracking-tight">FrostUI docs</h1>
+        <h1 className="text-4xl font-semibold tracking-tight">Docs</h1>
         <p className="text-base leading-7 text-muted-foreground">
-          Dark-first React components distributed through a shadcn-compatible
-          registry. Copy source into your app, customize freely, ship faster.
+          Preview components, copy a shadcn command, and drop the source into
+          any project.
         </p>
       </header>
 
@@ -20,22 +20,22 @@ export default function DocsHomePage() {
         {[
           {
             title: "Installation",
-            description: "Add components with the shadcn CLI and registry URL.",
+            description: "Add components with the shadcn CLI.",
             href: "/docs/installation",
           },
           {
             title: "Component catalog",
-            description: "Browse previews, props, and install commands.",
+            description: "Previews, props, and install commands.",
             href: "/docs/components",
           },
           {
             title: "Theming",
-            description: "Semantic CSS variables for dark and light modes.",
+            description: "Semantic CSS variables for both themes.",
             href: "/docs/theming",
           },
           {
             title: "Agent guidance",
-            description: "Registry metadata for AI coding agents.",
+            description: "Registry metadata for coding agents.",
             href: "/docs/agents",
           },
         ].map((item) => (

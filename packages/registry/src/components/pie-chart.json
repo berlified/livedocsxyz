@@ -1,0 +1,41 @@
+{
+  "name": "pie-chart",
+  "title": "Pie Chart",
+  "category": "charts",
+  "description": "Donut or pie with padding, glowing sectors, click-to-select, tooltip, and legend.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/pie-chart.tsx"],
+  "examples": ["donut", "labels", "glow"],
+  "variants": ["pie", "donut"],
+  "keywords": ["chart", "pie", "donut", "share", "recharts"],
+  "props": [
+    {
+      "name": "innerRadius",
+      "type": "number",
+      "default": "0",
+      "description": "Set above 0 for a donut"
+    },
+    {
+      "name": "paddingAngle",
+      "type": "number",
+      "default": "2",
+      "description": "Gap between sectors"
+    },
+    {
+      "name": "glowingSectors",
+      "type": "string[]",
+      "description": "Keys that receive a drop-shadow"
+    }
+  ],
+  "ai": {
+    "purpose": "Show part-to-whole share with optional donut hole and glow.",
+    "useWhen": ["Browser, plan, or channel mix"],
+    "preferOver": ["Bars when the story is share of a whole"],
+    "avoid": ["More than about six slices without grouping"],
+    "compositions": ["PieChart.Tooltip + Legend"]
+  }
+}

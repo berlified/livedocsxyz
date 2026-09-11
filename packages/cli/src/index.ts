@@ -3,31 +3,31 @@
 import { getComponent, searchComponents, components } from "@frostui/registry";
 
 const REGISTRY_URL =
-  process.env.FROSTUI_REGISTRY_URL ?? "https://livedocs.xyz/r";
+  process.env.LIVEDOCS_REGISTRY_URL ?? "https://livedocs.xyz/r";
 
 const [, , command, ...args] = process.argv;
 
 function printHelp() {
   console.log(`
-FrostUI CLI
+livedocs
 
 Usage:
-  frostui add <component>     Print shadcn install command
-  frostui list                List registry components
-  frostui search <query>      Search components
-  frostui info <component>    Show component metadata
+  livedocs add <component>     Print the shadcn install command
+  livedocs list                List registry components
+  livedocs search <query>      Search components
+  livedocs info <component>    Show component metadata
 
 Examples:
-  frostui add button
-  frostui search card
+  livedocs add button
+  livedocs search card
 
 Environment:
-  FROSTUI_REGISTRY_URL        Override registry base URL (default: ${REGISTRY_URL})
+  LIVEDOCS_REGISTRY_URL        Override registry base URL (default: ${REGISTRY_URL})
 `);
 }
 
 function shadcnCommand(name: string) {
-  return `npx shadcn@latest add ${name} --registry ${REGISTRY_URL}`;
+  return `npx shadcn@latest add ${REGISTRY_URL}/${name}.json`;
 }
 
 function main() {
@@ -70,7 +70,7 @@ function main() {
     case "add": {
       const name = args[0];
       if (!name) {
-        console.error("Missing component name. Example: frostui add button");
+        console.error("Missing component name. Example: livedocs add button");
         process.exitCode = 1;
         break;
       }
@@ -81,7 +81,6 @@ function main() {
         break;
       }
       console.log(shadcnCommand(component.name));
-      console.log(`\nInstalls into @/components/ui/${component.name}.tsx`);
       break;
     }
     case "help":

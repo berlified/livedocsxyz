@@ -18,8 +18,8 @@ export default function TokensPage() {
         <Badge variant="outline">Guides</Badge>
         <h1 className="text-4xl font-semibold tracking-tight">Design tokens</h1>
         <p className="text-base leading-7 text-muted-foreground">
-          FrostUI uses semantic CSS variables mapped to Tailwind tokens. Never
-          hardcode hex values in components.
+          Semantic CSS variables mapped to Tailwind tokens. Never hardcode hex
+          values in components.
         </p>
       </header>
 
@@ -46,7 +46,7 @@ export default function TokensPage() {
         <h2 className="text-xl font-semibold">Install theme</h2>
         <CodeBlock
           language="bash"
-          code="npx shadcn@latest add theme --registry https://livedocs.xyz/r"
+          code="npx shadcn@latest add https://livedocs.xyz/r/theme.json"
         />
       </section>
     </div>

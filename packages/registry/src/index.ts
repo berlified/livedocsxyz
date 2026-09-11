@@ -5,6 +5,21 @@ import card from "./components/card.json";
 import input from "./components/input.json";
 import avatar from "./components/avatar.json";
 import separator from "./components/separator.json";
+import chart from "./components/chart.json";
+import sparkline from "./components/sparkline.json";
+import areaChart from "./components/area-chart.json";
+import lineChart from "./components/line-chart.json";
+import barChart from "./components/bar-chart.json";
+import composedChart from "./components/composed-chart.json";
+import pieChart from "./components/pie-chart.json";
+import radarChart from "./components/radar-chart.json";
+import radialChart from "./components/radial-chart.json";
+import sankeyChart from "./components/sankey-chart.json";
+import trendCard from "./components/trend-card.json";
+import metricChart from "./components/metric-chart.json";
+import comparisonChart from "./components/comparison-chart.json";
+import breakdownChart from "./components/breakdown-chart.json";
+import rangeChart from "./components/range-chart.json";
 
 export type {
   ComponentAIGuidance,
@@ -20,11 +35,26 @@ export const components: RegistryComponent[] = [
   input,
   avatar,
   separator,
+  chart,
+  sparkline,
+  areaChart,
+  lineChart,
+  barChart,
+  composedChart,
+  pieChart,
+  radarChart,
+  radialChart,
+  sankeyChart,
+  trendCard,
+  metricChart,
+  comparisonChart,
+  breakdownChart,
+  rangeChart,
 ] as RegistryComponent[];
 
 export const registry: RegistryIndex = {
   version: "0.1.0",
-  name: "frostui",
+  name: "livedocs",
   components,
 };
 

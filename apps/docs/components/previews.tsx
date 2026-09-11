@@ -20,7 +20,6 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-
 import {
   ComponentPreview,
   PreviewSection,
@@ -223,8 +222,8 @@ export function CompositionPreview() {
             <AvatarFallback>FU</AvatarFallback>
           </Avatar>
           <div className="flex-1">
-            <CardTitle>FrostUI Design System</CardTitle>
-            <CardDescription>Phase 1 foundations</CardDescription>
+            <CardTitle>Workspace</CardTitle>
+            <CardDescription>Invite teammates</CardDescription>
           </div>
           <Badge variant="outline">New</Badge>
         </div>

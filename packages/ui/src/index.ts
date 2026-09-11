@@ -15,6 +15,8 @@ export {
 } from "../../../registry/frostui/ui/card";
 export { Input } from "../../../registry/frostui/ui/input";
 export { Separator } from "../../../registry/frostui/ui/separator";
+export { Sparkline } from "../../../registry/frostui/ui/sparkline";
+export type { SparklineProps } from "../../../registry/frostui/ui/sparkline";
 export { cn } from "../../../registry/frostui/lib/utils";
 
 export type { BadgeProps } from "../../../registry/frostui/ui/badge";

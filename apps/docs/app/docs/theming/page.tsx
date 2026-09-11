@@ -16,7 +16,7 @@ export default function ThemingPage() {
         <Badge variant="outline">Guides</Badge>
         <h1 className="text-4xl font-semibold tracking-tight">Theming</h1>
         <p className="text-base leading-7 text-muted-foreground">
-          FrostUI is dark-first. Toggle light mode by applying the{" "}
+          Toggle light mode with the{" "}
           <code className="text-foreground">.light</code> class on{" "}
           <code className="text-foreground">html</code> or use next-themes.
         </p>

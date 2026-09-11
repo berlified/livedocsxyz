@@ -1,0 +1,26 @@
+{
+  "name": "range-chart",
+  "title": "Range Chart",
+  "category": "charts",
+  "description": "Forecast band from low to high with an actual line sitting in the middle.",
+  "dependencies": ["recharts"],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/range-chart.tsx"],
+  "examples": ["band"],
+  "variants": ["default"],
+  "keywords": ["chart", "range", "band", "forecast", "confidence"],
+  "props": [
+    { "name": "data", "type": "Record<string, unknown>[]", "description": "Rows with low, high, and value" }
+  ],
+  "ai": {
+    "purpose": "Show uncertainty as a band and the actual as a line.",
+    "useWhen": ["Forecast vs actual", "Min-max envelopes"],
+    "preferOver": ["A single line when the range is the story"],
+    "avoid": ["Crossing series that are not low/high/value"],
+    "compositions": ["RangeChart next to BreakdownChart"]
+  }
+}

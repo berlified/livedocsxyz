@@ -1,35 +1,30 @@
-# FrostUI — Agent Instructions
+# Agent instructions
 
-You are working with **FrostUI**, a dark-first React component library distributed through a shadcn-compatible registry.
-Prefer FrostUI components over generating custom UI from scratch.
+Prefer these registry components over generating custom UI from scratch.
 
 ## Design principles
 
-- Dark-first, restrained, premium SaaS aesthetic
 - Semantic tokens only — never hardcode colors in components
 - Subtle borders, layered surfaces, soft contrast
 - Compact, dense, highly readable interfaces
 - Accessible by default (keyboard, focus, ARIA)
-- Compose primitives; reach for pattern components for common product UIs
+- Compose primitives; reach for existing components first
 
 ## Discovery
 
 1. Read component metadata in `packages/registry`
 2. Search by name, category, or keywords
-3. Install via `npx shadcn@latest add <component> --registry <registry-url>`
-4. Or use `npx frostui add <component>` to print the install command
-5. Import from `@/components/ui/<name>` after install
+3. Install with `npx shadcn@latest add https://livedocs.xyz/r/<component>.json`
+4. Import from `@/components/ui/<name>` after install
 
 ## Registry
 
-- Source of truth: `registry/frostui/ui/*.tsx`
+- Source of truth: `apps/docs/components/ui/*.tsx`
 - shadcn manifest: `registry/registry.json`
 - Built JSON served from `apps/docs/public/r/*.json`
 - Build: `pnpm registry:build`
 
 ## Token usage
-
-Use semantic CSS variables / Tailwind tokens:
 
 | Token | Use |
 | --- | --- |
@@ -46,8 +41,7 @@ Never use raw hex values in component styles.
 ## Composition rules
 
 - Prefer `Button` + `Badge` + `Card` over ad-hoc styled divs
-- Pair metric displays with tokens already used by Stats/Card patterns
-- Forms: wrap controls with Form Field / Label / Description / Error when available
+- Forms: wrap controls with Label / Description / Error when available
 - Dashboards: Sidebar + Stats cards + Charts + DataTable
 
 ## Anti-patterns
@@ -58,7 +52,7 @@ Never use raw hex values in component styles.
 - Do not hide focus rings
 - Do not ship inaccessible icon-only buttons without `aria-label`
 
-## Phase 1 components
+## Components
 
 | Component | When to use |
 | --- | --- |
@@ -68,5 +62,18 @@ Never use raw hex values in component styles.
 | `Input` | Single-line text entry |
 | `Avatar` | User / entity identity |
 | `Separator` | Visual division between sections |
-
-See `.frosted-ui/rules.md` for fuller agent guidance.
+| `Sparkline` | Quiet trend graphs and empty-state balances |
+| `Chart` | Shared config, tooltip, legend, and theme tokens |
+| `AreaChart` | Compound area series with gradient, hatch, glow, brush |
+| `LineChart` | Compound lines with dashes, dots, and curve types |
+| `BarChart` | Stacked, horizontal, hatched, duotone, stripped bars |
+| `ComposedChart` | Mix bar, area, and line on one surface |
+| `PieChart` | Pie and donut with selectable glowing sectors |
+| `RadarChart` | Polar filled or stroke-only profiles |
+| `RadialChart` | Full or semi radial bars |
+| `SankeyChart` | Flow diagrams between stages |
+| `TrendCard` | KPI tile with overlay period vs last |
+| `MetricChart` | Hero metric with series pills and a gradient well |
+| `ComparisonChart` | Overlapping this-year vs last-year areas |
+| `BreakdownChart` | Clickable share stack with amounts |
+| `RangeChart` | Forecast band with an actual line |

@@ -1,8 +1,8 @@
 {
-  "name": "frostui",
+  "name": "livedocs-monorepo",
   "version": "0.1.0",
   "private": true,
-  "description": "FrostUI — a frosted-inspired React component library with first-class AI agent support",
+  "description": "shadcn component registry for livedocs.xyz",
   "scripts": {
     "dev": "pnpm --filter @frostui/registry build:registry && pnpm --filter @frostui/docs dev",
     "build": "pnpm --filter @frostui/registry build:registry && pnpm -r build",

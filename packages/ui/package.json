@@ -2,7 +2,7 @@
   "name": "@frostui/ui",
   "version": "0.1.0",
   "private": true,
-  "description": "FrostUI — shadcn-style React components",
+  "description": "React UI primitives",
   "type": "module",
   "sideEffects": false,
   "main": "./src/index.ts",
