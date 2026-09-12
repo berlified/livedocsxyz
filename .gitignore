@@ -12,3 +12,13 @@ build
 *.tsbuildinfo
 coverage
 .pnpm-store
+.idea
+.vscode/*
+!.vscode/extensions.json
+*.pem
+*.p12
+*.key
+*.p8
+credentials.json
+secrets/
+.cache
