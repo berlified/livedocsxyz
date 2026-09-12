@@ -78,6 +78,9 @@ importers:
         specifier: workspace:*
         version: link:../registry
     devDependencies:
+      '@types/node':
+        specifier: ^22.15.29
+        version: 22.20.2
       tsx:
         specifier: ^4.19.4
         version: 4.23.13
