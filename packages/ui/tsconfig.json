@@ -4,6 +4,7 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
+      "@/*": ["../../apps/docs/*"],
       "@frostui/ui/*": ["./src/*"]
     }
   },
