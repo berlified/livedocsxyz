@@ -1,0 +1,13 @@
+livedocs
+Copyright (c) 2026 livedocs contributors
+
+This product includes software developed by third parties, including:
+
+- shadcn/ui (MIT) — https://ui.shadcn.com
+- Radix UI primitives (MIT) — https://www.radix-ui.com
+- Recharts (MIT) — https://recharts.org
+- Lucide icons (ISC) — https://lucide.dev
+- Next.js (MIT) — https://nextjs.org
+- Tailwind CSS (MIT) — https://tailwindcss.com
+
+Third-party licenses appear in their upstream repositories and in `node_modules` after install.

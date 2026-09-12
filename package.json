@@ -3,6 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "description": "shadcn component registry for livedocs.xyz",
+  "homepage": "https://livedocs.xyz",
+  "bugs": {
+    "url": "https://github.com/berlified/livedocsxyz/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berlified/livedocsxyz.git"
+  },
   "scripts": {
     "dev": "pnpm --filter @frostui/registry build:registry && pnpm --filter @frostui/docs dev",
     "build": "pnpm --filter @frostui/registry build:registry && pnpm -r build",

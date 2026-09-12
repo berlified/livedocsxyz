@@ -1,0 +1,47 @@
+name: Bug report
+description: Something is broken in a chart, the docs, or the registry
+title: "[bug] "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: Search existing issues first. Security reports go to the Security advisory form, not here.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      placeholder: What did you expect, and what did you see instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to …
+        2. Click …
+        3. See …
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Chart component
+        - Docs site
+        - Registry JSON / shadcn install
+        - Search
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: component
+    attributes:
+      label: Component (if any)
+      placeholder: bar-chart
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: Browser, OS, Node version
