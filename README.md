@@ -1,4 +1,8 @@
-# livedocs
+<p align="center">
+  <img src="apps/docs/public/livedocs.png" alt="livedocs" width="100%" />
+</p>
+
+<img src="apps/docs/public/logo.svg" alt="livedocs" width="37" height="48" /> # livedocs
 
 [![CI](https://github.com/berlified/livedocsxyz/actions/workflows/ci.yml/badge.svg)](https://github.com/berlified/livedocsxyz/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
