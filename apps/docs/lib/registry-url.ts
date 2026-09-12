@@ -18,12 +18,6 @@ export function getShadcnAddCommand(component: string) {
 
 export function getShadcnAddAllCommand() {
   const items = [
-    "button",
-    "badge",
-    "card",
-    "input",
-    "avatar",
-    "separator",
     "chart",
     "sparkline",
     "area-chart",

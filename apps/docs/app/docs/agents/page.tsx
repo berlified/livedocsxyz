@@ -17,7 +17,7 @@ export default function AgentsPage() {
         <h2 className="text-xl font-semibold">Install</h2>
         <CodeBlock
           language="bash"
-          code="npx shadcn@latest add https://livedocs.xyz/r/button.json"
+          code="npx shadcn@latest add https://livedocs.xyz/r/chart.json"
         />
         <p className="text-sm text-muted-foreground">
           Source lands in <code className="text-foreground">@/components/ui</code>.

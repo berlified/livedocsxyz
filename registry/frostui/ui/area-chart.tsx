@@ -138,7 +138,7 @@ function AreaBody({
 
   if (isLoading) {
     return (
-      <div className="h-full w-full animate-pulse rounded-xl bg-muted/40" />
+      <div className="h-full w-full animate-pulse bg-muted/40" />
     );
   }
 
@@ -173,9 +173,7 @@ function AreaBody({
           const fill =
             variant === "hatched"
               ? `url(#${id}-${dataKey}-hatch)`
-              : variant === "gradient"
-                ? `url(#${id}-${dataKey}-fill)`
-                : colorVar(dataKey);
+              : `url(#${id}-${dataKey}-fill)`;
           return (
             <Area
               key={dataKey}
@@ -187,11 +185,6 @@ function AreaBody({
               strokeDasharray={strokeVariant === "dashed" ? "6 4" : undefined}
               connectNulls={connectNulls}
               opacity={muted ? 0.2 : 1}
-              style={
-                isGlowing
-                  ? { filter: `drop-shadow(0 0 8px ${colorVar(dataKey)})` }
-                  : undefined
-              }
               onClick={() => isClickable && setSelected(dataKey)}
               cursor={isClickable ? "pointer" : undefined}
               activeDot={{ r: 4, strokeWidth: 2, fill: "var(--background)" }}

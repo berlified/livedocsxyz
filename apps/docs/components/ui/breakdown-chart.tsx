@@ -2,7 +2,13 @@
 
 import * as React from "react";
 
-import { ChartContainer, colorVar, type ChartConfig } from "@/components/ui/chart";
+import {
+  ChartContainer,
+  PixelSwatch,
+  colorVar,
+  pixelFillStyle,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -34,9 +40,10 @@ function BreakdownChartRoot({
         config={config}
         data={items as unknown as Record<string, unknown>[]}
         className="w-full justify-start"
+        variant="plain"
       >
       <p className="text-sm text-muted-foreground">{title}</p>
-      <div className="mt-3 flex h-2 overflow-hidden rounded-full bg-muted">
+      <div className="mt-3 flex h-3 overflow-hidden rounded-none border-2 border-border bg-muted">
         {items.map((item) => (
           <button
             key={item.key}
@@ -51,7 +58,7 @@ function BreakdownChartRoot({
             )}
             style={{
               width: `${item.percent}%`,
-              background: colorVar(item.key),
+              ...pixelFillStyle(colorVar(item.key)),
             }}
           />
         ))}
@@ -67,15 +74,12 @@ function BreakdownChartRoot({
                   setSelected((current) => (current === item.key ? undefined : item.key))
                 }
                 className={cn(
-                  "flex w-full items-center justify-between gap-3 rounded-md px-1 py-0.5 text-left text-sm transition-opacity",
+                  "flex w-full items-center justify-between gap-3 rounded-none px-1 py-0.5 text-left text-sm transition-opacity",
                   muted && "opacity-40"
                 )}
               >
                 <span className="flex items-center gap-2 text-muted-foreground">
-                  <span
-                    className="size-2 rounded-sm"
-                    style={{ background: colorVar(item.key) }}
-                  />
+                  <PixelSwatch color={colorVar(item.key)} />
                   {config[item.key]?.label ?? item.label}
                 </span>
                 <span className="flex items-center gap-3 font-mono text-xs">

@@ -7,7 +7,10 @@ import {
   ChartContainer,
   ChartLegend,
   ChartTooltip,
+  GradientFill,
   colorVar,
+  pixelPatternId,
+  pixelPatternUrl,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
@@ -33,7 +36,7 @@ function ChartPie({
   innerRadius = 0,
   outerRadius = 110,
   paddingAngle = 2,
-  cornerRadius = 6,
+  cornerRadius = 0,
   startAngle = 90,
   endAngle = -270,
   glowingSectors,
@@ -68,7 +71,7 @@ function ChartPie({
       onSelectionChange={onSelectionChange}
     >
       {isLoading ? (
-        <div className="mx-auto size-48 animate-pulse rounded-full bg-muted/40" />
+        <div className="mx-auto size-48 animate-pulse bg-muted/40" />
       ) : (
         <PieBody
           data={data}
@@ -117,11 +120,23 @@ function PieBody({
   showLabels?: boolean;
   children?: React.ReactNode;
 }) {
-  const { selected, setSelected } = useChart();
+  const { id, selected, setSelected } = useChart();
 
   return (
     <ResponsiveContainer width="100%" height="100%">
       <RechartsPieChart>
+        <defs>
+          {data.map((item) => {
+            const key = String(item[nameKey]);
+            return (
+              <GradientFill
+                key={key}
+                id={pixelPatternId(id, key)}
+                color={colorVar(key)}
+              />
+            );
+          })}
+        </defs>
         {children}
         <Pie
           data={data}
@@ -139,17 +154,11 @@ function PieBody({
           {data.map((item) => {
             const key = String(item[nameKey]);
             const muted = selected && selected !== key;
-            const glow = glowingSectors?.includes(key);
             return (
               <Cell
                 key={key}
-                fill={colorVar(key)}
+                fill={pixelPatternUrl(id, key)}
                 opacity={muted ? 0.25 : 1}
-                style={
-                  glow
-                    ? { filter: `drop-shadow(0 0 10px ${colorVar(key)})` }
-                    : undefined
-                }
                 onClick={() => setSelected(key)}
                 cursor="pointer"
               />

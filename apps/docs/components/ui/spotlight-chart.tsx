@@ -14,7 +14,11 @@ import {
 import {
   ChartContainer,
   ChartTooltipContent,
+  GradientFill,
   colorVar,
+  pixelPatternId,
+  pixelPatternUrl,
+  useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
@@ -72,7 +76,7 @@ function SpotlightChartRoot({
           ) : null}
         </div>
       ) : null}
-      <ChartContainer config={config} data={data} className="mt-4 h-52 w-full">
+      <ChartContainer config={config} data={data} className="mt-4 h-52 w-full" variant="plain">
         <SpotlightBody
           data={data}
           xDataKey={xDataKey}
@@ -95,6 +99,7 @@ function SpotlightBody({
   peak: number;
   markerLabel?: string;
 }) {
+  const { id } = useChart();
   const peakRow = data[peak];
   const peakX = peakRow?.[xDataKey];
   const peakY = Number(peakRow?.current ?? 0);
@@ -102,6 +107,9 @@ function SpotlightBody({
   return (
     <ResponsiveContainer width="100%" height="100%">
       <RechartsAreaChart data={data} margin={{ top: 24, right: 12, left: 0, bottom: 0 }}>
+        <defs>
+          <GradientFill id={pixelPatternId(id, "current")} color={colorVar("current")} />
+        </defs>
         <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 3" />
         <XAxis
           dataKey={xDataKey}
@@ -127,8 +135,8 @@ function SpotlightBody({
           type="linear"
           dataKey="current"
           stroke={colorVar("current")}
-          fill={colorVar("current")}
-          fillOpacity={0.35}
+          fill={pixelPatternUrl(id, "current")}
+          fillOpacity={1}
           strokeWidth={2.5}
           isAnimationActive={false}
         />

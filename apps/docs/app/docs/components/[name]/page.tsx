@@ -7,18 +7,6 @@ import { components, getComponent } from "@frostui/registry";
 
 import { ComponentDocLayout } from "@/components/component-doc-layout";
 import {
-  AvatarPreview,
-  BadgeExamples,
-  BadgePreview,
-  ButtonExamples,
-  ButtonPreview,
-  CardExamples,
-  CardPreview,
-  InputExamples,
-  InputPreview,
-  SeparatorPreview,
-} from "@/components/previews";
-import {
   AreaChartExamples,
   AreaChartPreview,
   BarChartExamples,
@@ -53,55 +41,6 @@ import {
 } from "@/components/chart-previews";
 
 const usageByName: Record<string, string> = {
-  button: `import { Button } from "@/components/ui/button"
-
-export function Example() {
-  return <Button>Continue</Button>
-}`,
-  badge: `import { Badge } from "@/components/ui/badge"
-
-export function Example() {
-  return <Badge variant="secondary">Active</Badge>
-}`,
-  card: `import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-
-export function Example() {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Revenue</CardTitle>
-        <CardDescription>Last 30 days</CardDescription>
-      </CardHeader>
-      <CardContent>$12,480</CardContent>
-    </Card>
-  )
-}`,
-  input: `import { Input } from "@/components/ui/input"
-
-export function Example() {
-  return <Input placeholder="Search…" />
-}`,
-  avatar: `import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
-export function Example() {
-  return (
-    <Avatar>
-      <AvatarImage src="/avatar.jpg" alt="User" />
-      <AvatarFallback>AL</AvatarFallback>
-    </Avatar>
-  )
-}`,
-  separator: `import { Separator } from "@/components/ui/separator"
-
-export function Example() {
-  return <Separator />
-}`,
   chart: `import { monthlyData, trafficConfig } from "@/components/ui/chart"
 import { AreaChart } from "@/components/ui/area-chart"
 
@@ -372,12 +311,6 @@ export function Example() {
 };
 
 const previewByName: Record<string, ReactNode> = {
-  button: <ButtonPreview />,
-  badge: <BadgePreview />,
-  card: <CardPreview />,
-  input: <InputPreview />,
-  avatar: <AvatarPreview />,
-  separator: <SeparatorPreview />,
   chart: <ChartPreview />,
   sparkline: <SparklinePreview />,
   "area-chart": <AreaChartPreview />,
@@ -402,10 +335,6 @@ const previewByName: Record<string, ReactNode> = {
 };
 
 const examplesByName: Record<string, ReactNode> = {
-  button: <ButtonExamples />,
-  badge: <BadgeExamples />,
-  card: <CardExamples />,
-  input: <InputExamples />,
   "area-chart": <AreaChartExamples />,
   chart: <ChartExamples />,
   sparkline: <SparklineExamples />,
@@ -419,12 +348,6 @@ const examplesByName: Record<string, ReactNode> = {
 };
 
 const sourcePaths: Record<string, string> = {
-  button: "apps/docs/components/ui/button.tsx",
-  badge: "apps/docs/components/ui/badge.tsx",
-  card: "apps/docs/components/ui/card.tsx",
-  input: "apps/docs/components/ui/input.tsx",
-  avatar: "apps/docs/components/ui/avatar.tsx",
-  separator: "apps/docs/components/ui/separator.tsx",
   chart: "apps/docs/components/ui/chart.tsx",
   sparkline: "apps/docs/components/ui/sparkline.tsx",
   "area-chart": "apps/docs/components/ui/area-chart.tsx",

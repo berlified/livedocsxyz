@@ -31,21 +31,21 @@ export default function ComponentsCatalogPage() {
         <div className="min-w-0 space-y-6">
           <div className="flex items-center gap-3">
             <LivedocsLogo className="h-6" />
-            <Badge variant="outline">Component catalog</Badge>
+            <Badge variant="outline">Chart catalog</Badge>
           </div>
           <div className="space-y-4">
             <h1 className="max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
-              Browse the component library
+              Browse the chart library
             </h1>
             <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
-              Pick a category, open a component, preview the demo, then copy the
-              shadcn install command or manual source from the docs.
+              Open a chart, preview the demo, then copy the shadcn install
+              command or the source from the docs.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Button asChild>
-              <Link href="/docs/components/button">
-                Start with buttons
+              <Link href="/docs/components/chart">
+                Start with Chart
                 <ArrowUpRight className="size-4" />
               </Link>
             </Button>
@@ -55,7 +55,7 @@ export default function ComponentsCatalogPage() {
           </div>
         </div>
 
-        <Card className="min-w-0 rounded-xl">
+        <Card className="min-w-0">
           <CardContent className="space-y-3 p-5">
             <div className="flex items-baseline gap-2">
               <p className="text-3xl font-semibold tracking-tight">
@@ -72,7 +72,7 @@ export default function ComponentsCatalogPage() {
             <CodeBlock
               language="bash"
               className="[&_pre]:whitespace-pre-wrap [&_code]:break-all"
-              code={getShadcnAddCommand("button")}
+              code={getShadcnAddCommand("chart")}
             />
           </CardContent>
         </Card>
@@ -82,7 +82,7 @@ export default function ComponentsCatalogPage() {
         {catalogGroups.map((group) => (
           <div
             key={group.id}
-            className="min-w-0 rounded-xl border border-border bg-background p-5"
+            className="min-w-0 rounded-none border-2 border-border bg-background p-5 shadow-[4px_4px_0_0_var(--border)]"
           >
             <div className="mb-2 flex items-center justify-between gap-3">
               <div className="min-w-0">

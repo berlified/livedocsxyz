@@ -28,11 +28,11 @@ export function CodeBlock({
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-xl border border-border bg-card",
+        "overflow-hidden rounded-none border-2 border-border bg-card shadow-[4px_4px_0_0_var(--border)]",
         className
       )}
     >
-      <div className="flex items-center justify-between border-b border-border px-3 py-2">
+      <div className="flex items-center justify-between border-b-2 border-border px-3 py-2">
         <span className="text-xs text-muted-foreground">
           {title ?? language}
         </span>

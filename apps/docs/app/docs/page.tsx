@@ -46,7 +46,7 @@ export default function DocsHomePage() {
           <Link
             key={item.href}
             href={item.href}
-            className="rounded-xl border border-border bg-card p-5 no-underline transition-colors hover:bg-accent"
+            className="rounded-none border-2 border-border bg-card p-5 no-underline shadow-[4px_4px_0_0_var(--border)] hover:bg-accent"
           >
             <h2 className="text-base font-semibold">{item.title}</h2>
             <p className="mt-2 text-sm text-muted-foreground">
@@ -58,7 +58,7 @@ export default function DocsHomePage() {
 
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Quick start</h2>
-        <CodeBlock language="bash" code={getShadcnAddCommand("button")} />
+        <CodeBlock language="bash" code={getShadcnAddCommand("chart")} />
       </section>
     </div>
   );

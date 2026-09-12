@@ -88,7 +88,7 @@ export default function HomePage() {
             <Link
               key={item.name}
               href={`/docs/components/${item.name}`}
-              className="group rounded-xl border border-border bg-card p-5 no-underline transition-colors hover:bg-accent"
+              className="group rounded-none border-2 border-border bg-card p-5 no-underline shadow-[4px_4px_0_0_var(--border)] hover:bg-accent"
             >
               <div className="flex items-start justify-between gap-3">
                 <p className="text-sm font-semibold">{item.title}</p>

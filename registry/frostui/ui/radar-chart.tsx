@@ -14,7 +14,10 @@ import {
   ChartContainer,
   ChartLegend,
   ChartTooltip,
+  GradientFill,
   colorVar,
+  pixelPatternId,
+  pixelPatternUrl,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
@@ -76,7 +79,7 @@ function ChartRadar({
       onSelectionChange={onSelectionChange}
     >
       {isLoading ? (
-        <div className="h-full w-full animate-pulse rounded-xl bg-muted/40" />
+        <div className="h-full w-full animate-pulse bg-muted/40" />
       ) : (
         <RadarBody
           data={data}
@@ -100,11 +103,20 @@ function RadarBody({
   extras: React.ReactNode[];
   gridType: "polygon" | "circle";
 }) {
-  const { selected, setSelected } = useChart();
+  const { id, selected, setSelected } = useChart();
 
   return (
     <ResponsiveContainer width="100%" height="100%">
       <RechartsRadarChart data={data} cx="50%" cy="50%" outerRadius="72%">
+        <defs>
+          {series.map((item) => (
+            <GradientFill
+              key={item.props.dataKey}
+              id={pixelPatternId(id, item.props.dataKey)}
+              color={colorVar(item.props.dataKey)}
+            />
+          ))}
+        </defs>
         <PolarGrid
           gridType={gridType}
           stroke="var(--border)"
@@ -130,15 +142,10 @@ function RadarBody({
               key={dataKey}
               dataKey={dataKey}
               stroke={colorVar(dataKey)}
-              fill={colorVar(dataKey)}
-              fillOpacity={variant === "lines" ? 0 : fillOpacity}
+              fill={pixelPatternUrl(id, dataKey)}
+              fillOpacity={variant === "lines" ? 0 : Math.max(fillOpacity, 0.85)}
               strokeWidth={2}
               opacity={muted ? 0.25 : 1}
-              style={
-                isGlowing
-                  ? { filter: `drop-shadow(0 0 8px ${colorVar(dataKey)})` }
-                  : undefined
-              }
               onClick={() => isClickable && setSelected(dataKey)}
             />
           );

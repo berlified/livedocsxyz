@@ -2,7 +2,13 @@
 
 import * as React from "react";
 
-import { ChartContainer, colorVar, type ChartConfig } from "@/components/ui/chart";
+import {
+  ChartContainer,
+  PixelSwatch,
+  colorVar,
+  pixelFillStyle,
+  type ChartConfig,
+} from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -41,16 +47,17 @@ function CountryChartRoot({
         config={config}
         data={rows as unknown as Record<string, unknown>[]}
         className="w-full justify-start"
+        variant="plain"
       >
         {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
         <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <span className="h-2 w-5 rounded-sm" style={{ background: colorVar("current") }} />
+            <PixelSwatch color={colorVar("current")} />
             {config.current?.label ?? "This period"}
           </span>
           <span className="flex items-center gap-1.5">
             <span
-              className="h-2.5 w-1 rounded-full bg-foreground"
+              className="h-2.5 w-1 rounded-none bg-foreground"
               aria-hidden
             />
             {config.previous?.label ?? "Last period"}
@@ -78,23 +85,23 @@ function CountryChartRoot({
                 >
                   <span className="flex min-w-0 items-center gap-2">
                     {row.code ? (
-                      <span className="rounded border border-border bg-background px-1 py-px font-mono text-[10px] text-muted-foreground">
+                      <span className="rounded-none border-2 border-border bg-background px-1 py-px font-mono text-[10px] uppercase text-muted-foreground">
                         {row.code}
                       </span>
                     ) : null}
                     <span className="truncate text-sm text-foreground">{row.region}</span>
                   </span>
-                  <span className="relative h-3.5 overflow-visible rounded-full bg-muted">
+                  <span className="relative h-3.5 overflow-visible rounded-none border-2 border-border bg-muted">
                     <span
-                      className="absolute inset-y-0 left-0 rounded-full"
+                      className="absolute inset-y-0 left-0 rounded-none"
                       style={{
                         width: `${currentPct}%`,
-                        background: colorVar("current"),
+                        ...pixelFillStyle(colorVar("current")),
                       }}
                     />
                     {previousPct != null ? (
                       <span
-                        className="absolute top-1/2 z-10 h-3.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground shadow-sm"
+                        className="absolute top-1/2 z-10 h-3.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-none bg-foreground"
                         style={{ left: `${previousPct}%` }}
                         title="Last period"
                       />

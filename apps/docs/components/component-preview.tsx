@@ -14,8 +14,8 @@ export function ComponentPreview({
   label?: string;
 }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-border">
-      <div className="flex items-center justify-between border-b border-border bg-card px-3 py-2">
+    <div className="overflow-hidden rounded-none border-2 border-border shadow-[4px_4px_0_0_var(--border)]">
+      <div className="flex items-center justify-between border-b-2 border-border bg-card px-3 py-2">
         <span className="text-xs text-muted-foreground">{label}</span>
       </div>
       <div className={cn("preview-canvas p-6", className)}>{children}</div>

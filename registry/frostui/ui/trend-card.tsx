@@ -90,31 +90,34 @@ function TrendCardRoot({
         config={config}
         data={data}
         className="mt-3 h-24 w-full"
+        variant="plain"
       >
         {isLoading ? (
-          <div className="h-full animate-pulse rounded-lg bg-muted/40" />
+          <div className="h-full animate-pulse bg-muted/40" />
         ) : (
           <ResponsiveContainer width="100%" height="100%">
             <RechartsLineChart data={data} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
               <Tooltip
-                cursor={{ stroke: "var(--border)", strokeDasharray: "3 3" }}
+                cursor={{ stroke: "var(--foreground)", strokeDasharray: "4 4", strokeWidth: 2 }}
                 content={<ChartTooltipContent />}
               />
               <Line
-                type="monotone"
+                type="linear"
                 dataKey={compareKey}
                 stroke={colorVar(compareKey)}
-                strokeWidth={1.5}
+                strokeWidth={2}
                 dot={false}
                 opacity={0.45}
+                isAnimationActive={false}
               />
               <Line
-                type="monotone"
+                type="linear"
                 dataKey={currentKey}
                 stroke={colorVar(currentKey)}
-                strokeWidth={2.25}
+                strokeWidth={3}
                 dot={false}
-                activeDot={{ r: 3.5, fill: colorVar(currentKey) }}
+                isAnimationActive={false}
+                activeDot={{ r: 0 }}
               />
             </RechartsLineChart>
           </ResponsiveContainer>

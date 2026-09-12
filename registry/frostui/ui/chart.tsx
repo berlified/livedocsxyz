@@ -50,6 +50,7 @@ export function ChartContainer({
   children,
   defaultSelectedDataKey,
   onSelectionChange,
+  variant = "panel",
 }: {
   id?: string;
   config: ChartConfig;
@@ -58,6 +59,7 @@ export function ChartContainer({
   children: React.ReactNode;
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
+  variant?: "panel" | "plain";
 }) {
   const generatedId = React.useId().replace(/:/g, "");
   const chartId = id ?? generatedId;
@@ -83,12 +85,24 @@ export function ChartContainer({
       <div
         data-chart={chartId}
         className={cn(
-          "flex aspect-auto w-full flex-col justify-end text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid-horizontal_line]:stroke-border [&_.recharts-cartesian-grid-vertical_line]:stroke-border [&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted/40 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-border",
+          "relative flex aspect-auto w-full flex-col justify-end text-xs",
+          "[&_svg]:[shape-rendering:crispEdges] [&_svg]:[image-rendering:pixelated]",
+          "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-axis-tick_text]:font-mono",
+          "[&_.recharts-cartesian-grid-horizontal_line]:stroke-border [&_.recharts-cartesian-grid-vertical_line]:stroke-border",
+          "[&_.recharts-rectangle.recharts-tooltip-cursor]:fill-foreground/15 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-foreground",
+          "[&_.recharts-dot]:stroke-background [&_.recharts-area-curve]:[stroke-linejoin:miter] [&_.recharts-line-curve]:[stroke-linejoin:miter]",
+          "[&_.recharts-tooltip-wrapper]:z-10",
+          variant === "panel" &&
+            "rounded-none border-2 border-border bg-background shadow-[4px_4px_0_0_var(--border)]",
+          variant === "plain" && "rounded-none border-0 bg-transparent shadow-none",
           className
         )}
       >
         <ChartStyle id={chartId} config={config} />
-        {children}
+        <PixelScreen id={chartId} />
+        <div className="relative z-[1] flex h-full min-h-0 w-full flex-1 flex-col justify-end">
+          {children}
+        </div>
       </div>
     </ChartContext.Provider>
   );
@@ -175,14 +189,7 @@ export function ChartTooltipContent({
   const { config, selected } = useChart();
   if (!active || !payload?.length) return null;
 
-  const radius =
-    roundness === "full"
-      ? "rounded-full"
-      : roundness === "sm"
-        ? "rounded-md"
-        : roundness === "md"
-          ? "rounded-lg"
-          : "rounded-xl";
+  void roundness;
 
   const rows = uniquePayload(payload, config).filter(
     ({ key, item }) =>
@@ -195,14 +202,9 @@ export function ChartTooltipContent({
   if (!rows.length) return null;
 
   return (
-    <div
-      className={cn(
-        "min-w-40 border border-border bg-card px-3 py-2 text-xs shadow-sm",
-        radius
-      )}
-    >
+    <div className="relative min-w-40 overflow-hidden rounded-none border-2 border-border bg-background px-3 py-2 font-mono text-[11px] shadow-[3px_3px_0_0_var(--border)]">
       {label ? (
-        <p className="mb-1.5 font-medium text-foreground">{label}</p>
+        <p className="mb-1.5 font-medium uppercase tracking-wide text-foreground">{label}</p>
       ) : null}
       <div className="space-y-1">
         {rows.map(({ item, key, index }) => {
@@ -217,10 +219,7 @@ export function ChartTooltipContent({
                 {Icon ? (
                   <Icon className="size-2.5" />
                 ) : (
-                  <span
-                    className="size-2 rounded-sm"
-                    style={{ background: colorVar(key) }}
-                  />
+                  <PixelSwatch color={colorVar(key)} />
                 )}
                 {series?.label ?? key}
               </span>
@@ -238,7 +237,11 @@ export function ChartTooltipContent({
 export function ChartTooltip(props: React.ComponentProps<typeof RechartsPrimitive.Tooltip>) {
   return (
     <RechartsPrimitive.Tooltip
-      cursor={{ stroke: "var(--border)", strokeDasharray: "3 3" }}
+      cursor={{
+        stroke: "var(--foreground)",
+        strokeDasharray: "4 4",
+        strokeWidth: 2,
+      }}
       content={<ChartTooltipContent />}
       {...props}
     />
@@ -257,7 +260,7 @@ export function ChartLegendContent({
   if (!payload?.length) return null;
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+    <div className="flex flex-wrap items-center justify-center gap-1.5 pt-2">
       {uniquePayload(payload, config).map(({ item, key, index }) => {
         const series = config[key];
         const Icon = series?.icon;
@@ -269,18 +272,16 @@ export function ChartLegendContent({
             disabled={!isClickable}
             onClick={() => isClickable && setSelected(key)}
             className={cn(
-              "flex items-center gap-1.5 text-xs text-muted-foreground",
-              isClickable && "cursor-pointer",
+              "inline-flex items-center gap-1.5 rounded-none border-2 border-border bg-background px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-muted-foreground",
+              isClickable &&
+                "cursor-pointer hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
               !active && "opacity-40"
             )}
           >
             {Icon ? (
               <Icon className="size-3" />
             ) : (
-              <span
-                className="size-2 rounded-sm"
-                style={{ background: colorVar(key) }}
-              />
+              <PixelSwatch color={colorVar(key)} />
             )}
             {series?.label ?? key}
           </button>
@@ -310,12 +311,64 @@ export function ChartGrid(props: React.ComponentProps<typeof RechartsPrimitive.C
     <RechartsPrimitive.CartesianGrid
       vertical={false}
       stroke="var(--border)"
-      strokeDasharray="3 3"
+      strokeDasharray="4 4"
       {...props}
     />
   );
 }
 ChartGrid.displayName = "CartesianGrid";
+
+export function pixelPatternId(scope: string, key: string) {
+  return `${scope}-${String(key).replace(/[^a-zA-Z0-9_-]/g, "_")}-px`;
+}
+
+export function pixelPatternUrl(scope: string, key: string) {
+  return `url(#${pixelPatternId(scope, key)})`;
+}
+
+export function pixelFillStyle(color: string): React.CSSProperties {
+  return {
+    backgroundColor: `color-mix(in oklab, ${color} 28%, transparent)`,
+    backgroundImage: `linear-gradient(90deg, ${color} 50%, transparent 50%), linear-gradient(${color} 50%, transparent 50%)`,
+    backgroundSize: "4px 4px",
+    backgroundPosition: "0 0, 2px 2px",
+  };
+}
+
+export function PixelSwatch({ color }: { color: string }) {
+  return (
+    <span
+      className="size-2.5 shrink-0 rounded-none border border-border"
+      style={pixelFillStyle(color)}
+    />
+  );
+}
+
+function PixelScreen({ id }: { id: string }) {
+  return (
+    <svg
+      className="pointer-events-none absolute inset-0 size-full text-border"
+      aria-hidden
+    >
+      <defs>
+        <pattern
+          id={`${id}-screen`}
+          width="8"
+          height="8"
+          patternUnits="userSpaceOnUse"
+        >
+          <path
+            d="M8 0H0V8"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1"
+          />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill={`url(#${id}-screen)`} />
+    </svg>
+  );
+}
 
 export function HatchPattern({
   id,
@@ -325,14 +378,9 @@ export function HatchPattern({
   color: string;
 }) {
   return (
-    <pattern
-      id={id}
-      width="6"
-      height="6"
-      patternUnits="userSpaceOnUse"
-      patternTransform="rotate(45)"
-    >
-      <line x1="0" y1="0" x2="0" y2="6" stroke={color} strokeWidth="2" />
+    <pattern id={id} width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="4" height="4" fill={color} fillOpacity={0.7} />
+      <rect x="4" y="4" width="4" height="4" fill={color} fillOpacity={0.7} />
     </pattern>
   );
 }
@@ -345,10 +393,11 @@ export function GradientFill({
   color: string;
 }) {
   return (
-    <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor={color} stopOpacity={0.45} />
-      <stop offset="100%" stopColor={color} stopOpacity={0.05} />
-    </linearGradient>
+    <pattern id={id} width="8" height="8" patternUnits="userSpaceOnUse">
+      <rect width="8" height="8" fill={color} fillOpacity={0.16} />
+      <rect width="4" height="4" fill={color} />
+      <rect x="4" y="4" width="4" height="4" fill={color} fillOpacity={0.72} />
+    </pattern>
   );
 }
 

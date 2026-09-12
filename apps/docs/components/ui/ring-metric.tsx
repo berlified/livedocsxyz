@@ -7,7 +7,11 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
+  GradientFill,
+  PixelSwatch,
   colorVar,
+  pixelPatternId,
+  pixelPatternUrl,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
@@ -38,6 +42,7 @@ function RingMetricRoot({
         config={config}
         data={data as unknown as Record<string, unknown>[]}
         className="mt-2 h-64 w-full justify-center"
+        variant="plain"
       >
         <RingBody data={data} total={total} centerLabel={centerLabel} />
       </ChartContainer>
@@ -54,13 +59,22 @@ function RingBody({
   total: number;
   centerLabel?: string;
 }) {
-  const { selected, setSelected } = useChart();
+  const { id, selected, setSelected } = useChart();
 
   return (
     <div className="grid h-full items-center gap-4 sm:grid-cols-[1fr_8rem]">
       <div className="relative h-full min-h-48">
         <ResponsiveContainer width="100%" height="100%">
           <RechartsPieChart>
+            <defs>
+              {data.map((item) => (
+                <GradientFill
+                  key={item.key}
+                  id={pixelPatternId(id, item.key)}
+                  color={colorVar(item.key)}
+                />
+              ))}
+            </defs>
             <ChartTooltip content={<ChartTooltipContent />} />
             <Pie
               data={data}
@@ -68,14 +82,14 @@ function RingBody({
               nameKey="key"
               innerRadius={58}
               outerRadius={84}
-              paddingAngle={3}
-              cornerRadius={6}
+              paddingAngle={2}
+              cornerRadius={0}
               stroke="var(--background)"
             >
               {data.map((item) => (
                 <Cell
                   key={item.key}
-                  fill={colorVar(item.key)}
+                  fill={pixelPatternUrl(id, item.key)}
                   opacity={selected && selected !== item.key ? 0.25 : 1}
                   cursor="pointer"
                   onClick={() => setSelected(item.key)}
@@ -110,10 +124,7 @@ function RingBody({
                 )}
               >
                 <span className="flex items-center gap-2 text-muted-foreground">
-                  <span
-                    className="size-2 rounded-full"
-                    style={{ background: colorVar(item.key) }}
-                  />
+                  <PixelSwatch color={colorVar(item.key)} />
                   {item.label}
                 </span>
                 <span className="font-mono text-xs text-foreground">

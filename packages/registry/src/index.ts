@@ -1,10 +1,4 @@
 import type { RegistryComponent, RegistryIndex } from "./types";
-import button from "./components/button.json";
-import badge from "./components/badge.json";
-import card from "./components/card.json";
-import input from "./components/input.json";
-import avatar from "./components/avatar.json";
-import separator from "./components/separator.json";
 import chart from "./components/chart.json";
 import sparkline from "./components/sparkline.json";
 import areaChart from "./components/area-chart.json";
@@ -35,12 +29,6 @@ export type {
 } from "./types";
 
 export const components: RegistryComponent[] = [
-  button,
-  badge,
-  card,
-  input,
-  avatar,
-  separator,
   chart,
   sparkline,
   areaChart,
@@ -71,43 +59,63 @@ export const registry: RegistryIndex = {
 };
 
 export const categories = [
-  { id: "foundations", title: "Foundations", description: "Core primitives" },
-  { id: "forms", title: "Forms", description: "Inputs and field controls" },
-  { id: "navigation", title: "Navigation", description: "Sidebars, tabs, menus" },
-  { id: "overlays", title: "Overlays", description: "Dialogs, sheets, menus" },
-  { id: "data-display", title: "Data Display", description: "Tables, lists, metrics" },
   { id: "charts", title: "Charts", description: "Analytics visualizations" },
-  { id: "dashboard", title: "Dashboard", description: "Composable dashboard patterns" },
-  { id: "commerce", title: "Commerce", description: "Pricing and checkout UI" },
-  { id: "creator", title: "Creator", description: "Creator product patterns" },
-  { id: "saas", title: "SaaS", description: "Workspace and billing patterns" },
 ] as const;
 
 export function getComponent(name: string): RegistryComponent | undefined {
   return components.find((c) => c.name === name);
 }
 
+function fieldScore(query: string, value: string, weight: number) {
+  const text = value.toLowerCase();
+  if (!text || !query) return 0;
+  if (text === query) return weight * 5;
+  if (text.startsWith(query)) return weight * 4;
+  if (text.includes(query)) return weight * 2;
+  return 0;
+}
+
+function scoreComponent(component: RegistryComponent, query: string) {
+  const tokens = query.split(/\s+/).filter(Boolean);
+  const haystack = [
+    component.name,
+    component.name.replaceAll("-", " "),
+    component.title,
+    component.description,
+    component.category,
+    ...component.keywords,
+    ...component.variants,
+    ...component.props.map((prop) => `${prop.name} ${prop.description}`),
+    component.ai.purpose,
+    ...component.ai.useWhen,
+  ]
+    .join(" ")
+    .toLowerCase();
+
+  if (!tokens.every((token) => haystack.includes(token))) return 0;
+
+  return (
+    fieldScore(query, component.title, 50) +
+    fieldScore(query, component.name.replaceAll("-", " "), 42) +
+    fieldScore(query, component.name, 36) +
+    component.keywords.reduce((sum, keyword) => sum + fieldScore(query, keyword, 18), 0) +
+    fieldScore(query, component.description, 8) +
+    fieldScore(query, component.ai.purpose, 6) +
+    tokens.length * 4
+  );
+}
+
 export function searchComponents(query: string): RegistryComponent[] {
   const q = query.trim().toLowerCase();
   if (!q) return components;
 
-  return components.filter((c) => {
-    const haystack = [
-      c.name,
-      c.title,
-      c.description,
-      c.category,
-      ...c.keywords,
-      ...c.variants,
-      ...c.props.map((p) => p.name),
-      c.ai.purpose,
-      ...c.ai.useWhen,
-    ]
-      .join(" ")
-      .toLowerCase();
-
-    return haystack.includes(q);
-  });
+  return components
+    .map((component) => ({ component, score: scoreComponent(component, q) }))
+    .filter((item) => item.score > 0)
+    .sort(
+      (a, b) => b.score - a.score || a.component.title.localeCompare(b.component.title)
+    )
+    .map((item) => item.component);
 }
 
 export function getComponentsByCategory(category: string): RegistryComponent[] {
