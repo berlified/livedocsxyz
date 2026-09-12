@@ -18,15 +18,37 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "livedocs",
+    default: "livedocs: Pixel-art chart components for billing companies.",
     template: "%s — livedocs",
   },
-  description:
-    "A shadcn component registry. Copy the command, own the source.",
-  metadataBase: new URL("https://livedocs.xyz"),
+  description: "Pixel-art chart components for shadcn.",
+  metadataBase: new URL("https://www.livedocs.xyz"),
+
   icons: {
     icon: [{ url: "/logo.svg", type: "image/svg+xml" }],
     apple: [{ url: "/logo.svg", type: "image/svg+xml" }],
+  },
+
+  openGraph: {
+    type: "website",
+    url: "https://www.livedocs.xyz",
+    title: "livedocs: Pixel-art chart components for billing companies.",
+    description: "Pixel-art chart components for shadcn.",
+    images: [
+      {
+        url: "/livedocs.png",
+        width: 1200,
+        height: 630,
+        alt: "livedocs — Pixel-art chart components for billing companies.",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "livedocs: Pixel-art chart components for billing companies.",
+    description: "Pixel-art chart components for shadcn.",
+    images: ["/livedocs.png"],
   },
 };
 
