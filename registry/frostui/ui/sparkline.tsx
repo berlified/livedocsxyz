@@ -57,29 +57,15 @@ function toPoints(data: number[], width: number, height: number) {
   });
 }
 
-function smoothPath(points: Array<{ x: number; y: number }>) {
+function pixelPath(points: Array<{ x: number; y: number }>) {
   if (points.length === 0) return "";
-  const first = points[0];
-  if (!first) return "";
-  if (points.length === 1) return `M${first.x} ${first.y}`;
-  const second = points[1];
-  if (points.length === 2 && second) {
-    return `M${first.x} ${first.y} L${second.x} ${second.y}`;
-  }
-
-  let path = `M${first.x} ${first.y}`;
-  for (let index = 0; index < points.length - 1; index++) {
-    const p0 = points[index - 1] ?? points[index] ?? first;
-    const p1 = points[index] ?? first;
-    const p2 = points[index + 1] ?? p1;
-    const p3 = points[index + 2] ?? p2;
-    const cp1x = p1.x + (p2.x - p0.x) / 6;
-    const cp1y = p1.y + (p2.y - p0.y) / 6;
-    const cp2x = p2.x - (p3.x - p1.x) / 6;
-    const cp2y = p2.y - (p3.y - p1.y) / 6;
-    path += ` C${cp1x} ${cp1y} ${cp2x} ${cp2y} ${p2.x} ${p2.y}`;
-  }
-  return path;
+  return points
+    .map((point, index) => {
+      const x = Math.round(point.x);
+      const y = Math.round(point.y);
+      return `${index === 0 ? "M" : "L"}${x} ${y}`;
+    })
+    .join(" ");
 }
 
 function Sparkline({
@@ -95,6 +81,7 @@ function Sparkline({
   tone = "neutral",
   ...props
 }: SparklineProps) {
+  const uid = React.useId().replace(/:/g, "");
   const fallbackIndex = markerIndex ?? Math.max(0, data.length - 1);
   const [active, setActive] = React.useState(fallbackIndex);
   const svgRef = React.useRef<SVGSVGElement>(null);
@@ -107,7 +94,7 @@ function Sparkline({
   const height = 280;
   const baseline = height - 18;
   const points = toPoints(data, width, height);
-  const line = smoothPath(points);
+  const line = pixelPath(points);
   const last = points[points.length - 1];
   const area = last
     ? `${line} L${last.x} ${baseline} L${points[0]?.x ?? 0} ${baseline} Z`
@@ -154,11 +141,18 @@ function Sparkline({
   const caption = markerLabel ?? (marker ? format(marker.value) : "");
 
   return (
-    <div className={cn("relative w-full bg-background", className)} {...props}>
+    <div
+      className={cn(
+        "relative w-full rounded-none border-2 border-border bg-background shadow-[4px_4px_0_0_var(--border)]",
+        className
+      )}
+      {...props}
+    >
       <svg
         ref={svgRef}
         viewBox={`0 0 ${width} ${height}`}
         className={cn("block w-full select-none", sizeClass[size], toneClass[tone])}
+        style={{ shapeRendering: "crispEdges", imageRendering: "pixelated" }}
         role="img"
         aria-label={caption || "Trend"}
         tabIndex={interactive ? 0 : undefined}
@@ -185,7 +179,28 @@ function Sparkline({
         onKeyDown={onKeyDown}
       >
         {area ? (
-          <path d={area} fill="currentColor" className="opacity-[0.16]" />
+          <>
+            <defs>
+              <pattern
+                id={`${uid}-area`}
+                width="8"
+                height="8"
+                patternUnits="userSpaceOnUse"
+              >
+                <rect width="8" height="8" fill="currentColor" fillOpacity="0.16" />
+                <rect width="4" height="4" fill="currentColor" />
+                <rect
+                  x="4"
+                  y="4"
+                  width="4"
+                  height="4"
+                  fill="currentColor"
+                  fillOpacity="0.72"
+                />
+              </pattern>
+            </defs>
+            <path d={area} fill={`url(#${uid}-area)`} />
+          </>
         ) : null}
         <line
           x1="0"
@@ -193,21 +208,22 @@ function Sparkline({
           y1={baseline}
           y2={baseline}
           className="stroke-border"
-          strokeDasharray="3 7"
+          strokeDasharray="4 4"
         />
         <path
           d={line}
           fill="none"
           stroke="currentColor"
-          strokeWidth="2"
-          strokeLinejoin="round"
-          strokeLinecap="round"
+          strokeWidth="3"
+          strokeLinejoin="miter"
+          strokeLinecap="square"
         />
         {last ? (
-          <circle
-            cx={last.x}
-            cy={last.y}
-            r="2.5"
+          <rect
+            x={last.x - 3}
+            y={last.y - 3}
+            width="6"
+            height="6"
             fill="currentColor"
             className="opacity-40"
           />
@@ -220,22 +236,21 @@ function Sparkline({
               y1="20"
               y2={baseline}
               className="stroke-border"
-              strokeWidth="1"
-            />
-            <circle
-              cx={marker.x}
-              cy={marker.y}
-              r="8"
-              fill="currentColor"
-              className="opacity-20"
-            />
-            <circle
-              cx={marker.x}
-              cy={marker.y}
-              r="3.75"
-              fill="currentColor"
-              stroke="var(--background)"
               strokeWidth="2"
+            />
+            <rect
+              x={marker.x - 5}
+              y={marker.y - 5}
+              width="10"
+              height="10"
+              fill="currentColor"
+            />
+            <rect
+              x={marker.x - 3}
+              y={marker.y - 3}
+              width="6"
+              height="6"
+              fill="var(--background)"
             />
           </g>
         ) : null}
@@ -247,7 +262,7 @@ function Sparkline({
             left: `${Math.min(86, Math.max(14, (marker.x / width) * 100))}%`,
           }}
         >
-          <div className="rounded-full border border-border bg-card px-2.5 py-1 shadow-sm">
+          <div className="rounded-none border-2 border-border bg-background px-2 py-1 font-mono shadow-[3px_3px_0_0_var(--border)]">
             {markerLabel ? (
               <p className="text-[11px] text-muted-foreground">{markerLabel}</p>
             ) : null}

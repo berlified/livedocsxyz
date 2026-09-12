@@ -10,7 +10,7 @@ import {
   type SankeyNodeProps,
 } from "recharts";
 
-import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
+import { ChartContainer, GradientFill, pixelPatternId, type ChartConfig, useChart } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
 
 export type SankeyNode = { name: string };
@@ -36,26 +36,45 @@ function ChartSankey({
       className={cn("h-80 w-full", className)}
     >
       {isLoading ? (
-        <div className="h-full w-full animate-pulse rounded-xl bg-muted/40" />
+        <div className="h-full w-full animate-pulse bg-muted/40" />
       ) : (
-        <ResponsiveContainer width="100%" height="100%">
-          <RechartsSankey
-            data={{ nodes, links }}
-            nodePadding={24}
-            nodeWidth={12}
-            linkCurvature={0.5}
-            iterations={32}
-            node={renderSankeyNode}
-            link={renderSankeyLink}
-            margin={{ top: 8, right: 120, left: 8, bottom: 8 }}
-          />
-        </ResponsiveContainer>
+        <SankeyBody nodes={nodes} links={links} />
       )}
     </ChartContainer>
   );
 }
 
-function renderSankeyNode(props: SankeyNodeProps) {
+function SankeyBody({
+  nodes,
+  links,
+}: {
+  nodes: SankeyNode[];
+  links: SankeyLink[];
+}) {
+  const { id } = useChart();
+  const fillId = pixelPatternId(id, "flow");
+
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <RechartsSankey
+        data={{ nodes, links }}
+        nodePadding={24}
+        nodeWidth={12}
+        linkCurvature={0.5}
+        iterations={32}
+        node={(props) => renderSankeyNode(props, fillId)}
+        link={(props) => renderSankeyLink(props, fillId)}
+        margin={{ top: 8, right: 120, left: 8, bottom: 8 }}
+      >
+        <defs>
+          <GradientFill id={fillId} color="var(--chart-1)" />
+        </defs>
+      </RechartsSankey>
+    </ResponsiveContainer>
+  );
+}
+
+function renderSankeyNode(props: SankeyNodeProps, fillId: string) {
   const { x, y, width, height, payload } = props;
   return (
     <Layer>
@@ -64,8 +83,8 @@ function renderSankeyNode(props: SankeyNodeProps) {
         y={y}
         width={width}
         height={height}
-        fill="var(--chart-1)"
-        radius={4}
+        fill={`url(#${fillId})`}
+        radius={0}
       />
       <text
         x={x + width + 8}
@@ -79,7 +98,7 @@ function renderSankeyNode(props: SankeyNodeProps) {
   );
 }
 
-function renderSankeyLink(props: SankeyLinkProps) {
+function renderSankeyLink(props: SankeyLinkProps, fillId: string) {
   const {
     sourceX,
     targetX,
@@ -96,8 +115,8 @@ function renderSankeyLink(props: SankeyLinkProps) {
         C${sourceControlX},${sourceY} ${targetControlX},${targetY} ${targetX},${targetY}
       `}
       fill="none"
-      stroke="var(--chart-1)"
-      strokeOpacity={0.28}
+      stroke={`url(#${fillId})`}
+      strokeOpacity={0.55}
       strokeWidth={linkWidth}
     />
   );

@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { Card } from "@/components/ui/card";
+import { pixelFillStyle } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
 
 function UsageMeterRoot({
@@ -35,10 +36,10 @@ function UsageMeterRoot({
       {remainingLabel ? (
         <p className="mt-1 text-xs text-muted-foreground">{remainingLabel}</p>
       ) : null}
-      <div className="mt-4 h-2 overflow-hidden rounded-full bg-muted">
+      <div className="mt-4 h-3 overflow-hidden rounded-none border-2 border-border bg-muted">
         <div
-          className="h-full rounded-full bg-primary"
-          style={{ width: `${used}%` }}
+          className="h-full rounded-none"
+          style={{ width: `${used}%`, ...pixelFillStyle("var(--primary)") }}
         />
       </div>
       <div className="mt-2 flex justify-between text-[10px] uppercase tracking-[0.12em] text-muted-foreground">

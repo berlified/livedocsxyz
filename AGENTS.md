@@ -56,14 +56,8 @@ Never use raw hex values in component styles.
 
 | Component | When to use |
 | --- | --- |
-| `Button` | Actions, CTAs, form submits |
-| `Card` | Grouped content surfaces |
-| `Badge` | Status, labels, counts |
-| `Input` | Single-line text entry |
-| `Avatar` | User / entity identity |
-| `Separator` | Visual division between sections |
+| `Chart` | Shared pixel-art config, tooltip, legend, and theme tokens |
 | `Sparkline` | Quiet trend graphs, inline balances, and empty-state charts |
-| `Chart` | Shared config, tooltip, legend, and theme tokens |
 | `AreaChart` | Compound area series with gradient, hatch, glow, brush |
 | `LineChart` | Compound lines with dashes, dots, and curve types |
 | `BarChart` | Stacked, horizontal, hatched, duotone, stripped bars |

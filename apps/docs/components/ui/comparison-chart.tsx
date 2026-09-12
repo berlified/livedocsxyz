@@ -14,6 +14,7 @@ import {
   ChartContainer,
   ChartTooltipContent,
   GradientFill,
+  PixelSwatch,
   colorVar,
   type ChartConfig,
 } from "@/components/ui/chart";
@@ -69,19 +70,19 @@ function ComparisonChartRoot({
         </div>
         <div className="flex flex-col items-end gap-1 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
-            <span className="size-2 rounded-full" style={{ background: colorVar(primaryKey) }} />
+            <PixelSwatch color={colorVar(primaryKey)} />
             {config[primaryKey]?.label ?? primaryKey}
           </span>
           <span className="flex items-center gap-1.5">
-            <span className="size-2 rounded-full" style={{ background: colorVar(compareKey) }} />
+            <PixelSwatch color={colorVar(compareKey)} />
             {config[compareKey]?.label ?? compareKey}
           </span>
         </div>
       </div>
 
-      <ChartContainer config={config} data={data} className="mt-4 h-44 w-full">
+      <ChartContainer config={config} data={data} className="mt-4 h-44 w-full" variant="plain">
         {isLoading ? (
-          <div className="h-full animate-pulse rounded-lg bg-muted/40" />
+          <div className="h-full animate-pulse bg-muted/40" />
         ) : (
           <ComparisonBody
             data={data}

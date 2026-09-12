@@ -146,7 +146,7 @@ function BarBody({
 
   if (isLoading) {
     return (
-      <div className="h-full w-full animate-pulse rounded-xl bg-muted/40" />
+      <div className="h-full w-full animate-pulse bg-muted/40" />
     );
   }
 
@@ -194,19 +194,15 @@ function BarBody({
             isClickable,
             isGlowing,
             stackId,
-            radius = 4,
+            radius = 0,
           } = item.props;
           const muted = selected && selected !== dataKey;
           const fill =
             variant === "hatched"
               ? `url(#${id}-${dataKey}-hatch)`
-              : variant === "gradient"
-                ? `url(#${id}-${dataKey}-fill)`
-                : variant === "duotone"
-                  ? `url(#${id}-${dataKey}-duo)`
-                  : variant === "stripped"
-                    ? `url(#${id}-${dataKey}-strip)`
-                    : colorVar(dataKey);
+              : variant === "stripped"
+                ? `url(#${id}-${dataKey}-strip)`
+                : `url(#${id}-${dataKey}-fill)`;
           return (
             <Bar
               key={dataKey}
@@ -215,11 +211,6 @@ function BarBody({
               radius={radius}
               stackId={stacked ? stackId ?? "stack" : stackId}
               opacity={muted ? 0.25 : 1}
-              style={
-                isGlowing
-                  ? { filter: `drop-shadow(0 0 8px ${colorVar(dataKey)})` }
-                  : undefined
-              }
               onClick={() => isClickable && setSelected(dataKey)}
               cursor={isClickable ? "pointer" : undefined}
             />

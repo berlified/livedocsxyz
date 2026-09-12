@@ -16,7 +16,12 @@ import {
 import {
   ChartContainer,
   ChartTooltipContent,
+  GradientFill,
+  PixelSwatch,
   colorVar,
+  pixelPatternId,
+  pixelPatternUrl,
+  useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
@@ -43,12 +48,12 @@ function CashflowChartRoot({
 }) {
   return (
     <Card className={cn("p-5", className)}>
-      <ChartContainer config={config} data={data} className="w-full justify-start">
+      <ChartContainer config={config} data={data} className="w-full justify-start" variant="plain">
         {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
         <div className="mt-3 flex flex-wrap gap-6">
         <div>
           <p className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="size-2 rounded-full" style={{ background: colorVar("inflow") }} />
+            <PixelSwatch color={colorVar("inflow")} />
             {inflowLabel ?? config.inflow?.label ?? "Inflow"}
           </p>
           {inflowValue ? (
@@ -57,7 +62,7 @@ function CashflowChartRoot({
         </div>
         <div>
           <p className="flex items-center gap-2 text-xs text-muted-foreground">
-            <span className="size-2 rounded-full" style={{ background: colorVar("outflow") }} />
+            <PixelSwatch color={colorVar("outflow")} />
             {outflowLabel ?? config.outflow?.label ?? "Outflow"}
           </p>
           {outflowValue ? (
@@ -66,36 +71,48 @@ function CashflowChartRoot({
         </div>
         </div>
       <div className="mt-4 h-64 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <RechartsBarChart data={data} stackOffset="sign" margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
-            <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="3 3" />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              axisLine={false}
-              tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
-            />
-            <YAxis hide />
-            <ReferenceLine y={0} stroke="var(--border)" />
-            <Tooltip
-              cursor={{ fill: "var(--muted)", fillOpacity: 0.35 }}
-              content={<ChartTooltipContent />}
-            />
-            <Bar dataKey="inflow" stackId="flow" radius={[4, 4, 0, 0]} isAnimationActive={false}>
-              {data.map((_, index) => (
-                <Cell key={`in-${index}`} fill={colorVar("inflow")} />
-              ))}
-            </Bar>
-            <Bar dataKey="outflow" stackId="flow" radius={[0, 0, 4, 4]} isAnimationActive={false}>
-              {data.map((_, index) => (
-                <Cell key={`out-${index}`} fill={colorVar("outflow")} />
-              ))}
-            </Bar>
-          </RechartsBarChart>
-        </ResponsiveContainer>
+        <CashflowBars data={data} />
       </div>
       </ChartContainer>
     </Card>
+  );
+}
+
+function CashflowBars({ data }: { data: Record<string, unknown>[] }) {
+  const { id } = useChart();
+
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <RechartsBarChart data={data} stackOffset="sign" margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+        <defs>
+          <GradientFill id={pixelPatternId(id, "inflow")} color={colorVar("inflow")} />
+          <GradientFill id={pixelPatternId(id, "outflow")} color={colorVar("outflow")} />
+        </defs>
+        <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="4 4" />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
+        />
+        <YAxis hide />
+        <ReferenceLine y={0} stroke="var(--border)" />
+        <Tooltip
+          cursor={{ fill: "var(--muted)", fillOpacity: 0.35 }}
+          content={<ChartTooltipContent />}
+        />
+        <Bar dataKey="inflow" stackId="flow" radius={0} isAnimationActive={false}>
+          {data.map((_, index) => (
+            <Cell key={`in-${index}`} fill={pixelPatternUrl(id, "inflow")} />
+          ))}
+        </Bar>
+        <Bar dataKey="outflow" stackId="flow" radius={0} isAnimationActive={false}>
+          {data.map((_, index) => (
+            <Cell key={`out-${index}`} fill={pixelPatternUrl(id, "outflow")} />
+          ))}
+        </Bar>
+      </RechartsBarChart>
+    </ResponsiveContainer>
   );
 }
 

@@ -12,7 +12,10 @@ import {
   ChartContainer,
   ChartLegend,
   ChartTooltip,
+  GradientFill,
   colorVar,
+  pixelPatternId,
+  pixelPatternUrl,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
@@ -72,7 +75,7 @@ function ChartRadial({
   return (
     <ChartContainer config={config} data={data} className={cn("h-72 w-full", className)}>
       {isLoading ? (
-        <div className="mx-auto size-48 animate-pulse rounded-full bg-muted/40" />
+        <div className="mx-auto size-48 animate-pulse bg-muted/40" />
       ) : (
         <RadialBody
           data={data}
@@ -108,12 +111,15 @@ function RadialBody({
   outerRadius: number;
   max?: number;
 }) {
-  const { selected, setSelected } = useChart();
+  const { id, selected, setSelected } = useChart();
   const dataKey = series?.props.dataKey ?? "value";
-  const colored = data.map((item) => ({
-    ...item,
-    fill: colorVar(String(item[nameKey])),
-  }));
+  const colored = data.map((item) => {
+    const key = String(item[nameKey]);
+    return {
+      ...item,
+      fill: pixelPatternUrl(id, key),
+    };
+  });
   const computedMax =
     max ??
     Math.max(
@@ -130,6 +136,18 @@ function RadialBody({
         startAngle={variant === "semi" ? 180 : 90}
         endAngle={variant === "semi" ? 0 : -270}
       >
+        <defs>
+          {data.map((item) => {
+            const key = String(item[nameKey]);
+            return (
+              <GradientFill
+                key={key}
+                id={pixelPatternId(id, key)}
+                color={colorVar(key)}
+              />
+            );
+          })}
+        </defs>
         <PolarAngleAxis type="number" domain={[0, computedMax]} tick={false} />
         {extras}
         <RadialBar
@@ -139,7 +157,7 @@ function RadialBody({
               ? { fill: "var(--border)", fillOpacity: 0.45 }
               : undefined
           }
-          cornerRadius={series?.props.cornerRadius ?? 6}
+          cornerRadius={series?.props.cornerRadius ?? 0}
           stroke="var(--background)"
           strokeWidth={2}
           onClick={(entry: Record<string, unknown>) => {

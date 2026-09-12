@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, Github, Menu, Moon, Sun, X } from "lucide-react";
+import { ArrowUpRight, Github, Menu, Moon, Search, Sun, X } from "lucide-react";
 import { useTheme } from "next-themes";
 
 import { LivedocsLogo } from "@/components/livedocs-logo";
@@ -38,7 +38,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
     const onKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
-        setSearchOpen(true);
+        setSearchOpen((current) => !current);
       }
     };
     window.addEventListener("keydown", onKeyDown);
@@ -71,10 +71,11 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
           <button
             type="button"
             onClick={() => setSearchOpen(true)}
-            className="ml-2 hidden h-9 min-w-0 w-full max-w-md items-center gap-2 rounded-md border border-border bg-card px-3 text-left text-sm text-muted-foreground sm:flex"
+            className="ml-2 hidden h-9 min-w-0 w-full max-w-md items-center gap-2 rounded-none border-2 border-border bg-background px-3 text-left text-sm text-muted-foreground shadow-[2px_2px_0_0_var(--border)] transition-colors hover:bg-accent hover:text-foreground sm:flex"
           >
-            <span className="flex-1">Search documentation…</span>
-            <kbd className="rounded border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+            <Search className="size-3.5 shrink-0" aria-hidden />
+            <span className="flex-1 truncate">Search charts and docs…</span>
+            <kbd className="rounded-none border-2 border-border bg-card px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
               ⌘K
             </kbd>
           </button>
@@ -108,7 +109,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
               aria-label="Search"
               onClick={() => setSearchOpen(true)}
             >
-              <span className="text-[10px] font-medium">⌘K</span>
+              <Search className="size-4" />
             </Button>
             <Button
               variant="ghost"

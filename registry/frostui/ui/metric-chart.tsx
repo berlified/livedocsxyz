@@ -17,6 +17,7 @@ import {
   ChartContainer,
   ChartTooltipContent,
   GradientFill,
+  PixelSwatch,
   colorVar,
   type ChartConfig,
 } from "@/components/ui/chart";
@@ -71,7 +72,7 @@ function MetricChartRoot({
           </div>
         </div>
         <div
-          className="inline-flex flex-wrap rounded-full border border-border bg-muted/40 p-0.5"
+          className="inline-flex flex-wrap rounded-none border-2 border-border bg-background p-0.5"
           role="radiogroup"
           aria-label="Series"
         >
@@ -85,14 +86,11 @@ function MetricChartRoot({
                 aria-checked={selected}
                 onClick={() => setActive(item.key)}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs text-muted-foreground transition-colors",
-                  selected && "bg-card text-foreground shadow-sm"
+                  "flex items-center gap-1.5 rounded-none px-2 py-1 font-mono text-[10px] uppercase tracking-wide text-muted-foreground",
+                  selected && "bg-accent text-foreground"
                 )}
               >
-                <span
-                  className="size-1.5 rounded-full"
-                  style={{ background: colorVar(item.key) }}
-                />
+                <PixelSwatch color={colorVar(item.key)} />
                 {item.label}
               </button>
             );
@@ -100,15 +98,16 @@ function MetricChartRoot({
         </div>
       </div>
 
-      <div className="mt-4 h-72 overflow-hidden rounded-xl bg-background">
+      <div className="mt-4 h-72">
         <ChartContainer
           config={config}
           data={data}
-          className="h-full w-full p-2"
+          className="h-full w-full"
+          variant="plain"
           defaultSelectedDataKey={active}
         >
           {isLoading ? (
-            <div className="h-full animate-pulse rounded-lg bg-muted/40" />
+            <div className="h-full animate-pulse bg-muted/40" />
           ) : (
             <MetricBody
               data={data}

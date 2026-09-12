@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { ChartContainer, colorVar, type ChartConfig } from "@/components/ui/chart";
+import { ChartContainer, colorVar, pixelFillStyle, type ChartConfig } from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -28,6 +28,7 @@ function LaneChartRoot({
         config={config}
         data={rows as unknown as Record<string, unknown>[]}
         className="w-full justify-start"
+        variant="plain"
       >
         {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
         <ul className="mt-4 space-y-3">
@@ -48,12 +49,12 @@ function LaneChartRoot({
                   <span className="truncate text-sm text-muted-foreground">
                     {config[row.key]?.label ?? row.label}
                   </span>
-                  <span className="h-3 overflow-hidden rounded-full bg-muted">
+                  <span className="h-3 overflow-hidden rounded-none border-2 border-border bg-muted">
                     <span
-                      className="block h-full rounded-full"
+                      className="block h-full rounded-none"
                       style={{
                         width: `${(row.value / max) * 100}%`,
-                        background: colorVar(row.key),
+                        ...pixelFillStyle(colorVar(row.key)),
                       }}
                     />
                   </span>

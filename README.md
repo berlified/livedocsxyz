@@ -10,10 +10,10 @@ Built by [@oX8erlin](https://x.com/oX8erlin)
 ## Install a component
 
 ```bash
-npx shadcn@latest add https://livedocs.xyz/r/button.json
+npx shadcn@latest add https://livedocs.xyz/r/chart.json
 ```
 
-That copies `button.tsx` into `@/components/ui` in any shadcn project.
+That copies chart source into `@/components/ui` in any shadcn project.
 
 ## Local development
 

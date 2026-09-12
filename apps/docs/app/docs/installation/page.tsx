@@ -24,7 +24,7 @@ export default function InstallationPage() {
         <p className="text-sm text-muted-foreground">
           Works in any project that already uses shadcn. No extra setup.
         </p>
-        <CodeBlock language="bash" code={getShadcnAddCommand("button")} />
+        <CodeBlock language="bash" code={getShadcnAddCommand("chart")} />
       </section>
 
       <section className="space-y-3">
@@ -38,17 +38,25 @@ export default function InstallationPage() {
           Register the catalog once, then install with short names.
         </p>
         <CodeBlock language="bash" code={getNamespaceSetupCommand()} />
-        <CodeBlock language="bash" code={getNamespacedAddCommand("button")} />
+        <CodeBlock language="bash" code={getNamespacedAddCommand("chart")} />
       </section>
 
       <section className="space-y-3">
         <h2 className="text-xl font-semibold">Usage</h2>
         <CodeBlock
           language="tsx"
-          code={`import { Button } from "@/components/ui/button"
+          code={`import { monthlyData, trafficConfig } from "@/components/ui/chart"
+import { AreaChart } from "@/components/ui/area-chart"
 
 export function Example() {
-  return <Button>Continue</Button>
+  return (
+    <AreaChart data={monthlyData} config={trafficConfig}>
+      <AreaChart.Grid />
+      <AreaChart.Tooltip />
+      <AreaChart.Legend isClickable />
+      <AreaChart.Area dataKey="desktop" variant="gradient" />
+    </AreaChart>
+  )
 }`}
         />
       </section>

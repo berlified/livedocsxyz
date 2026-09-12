@@ -101,7 +101,7 @@ function ChartComposed({
   return (
     <ChartContainer config={config} data={data} className={cn("h-72 w-full", className)}>
       {isLoading ? (
-        <div className="h-full w-full animate-pulse rounded-xl bg-muted/40" />
+        <div className="h-full w-full animate-pulse bg-muted/40" />
       ) : (
         <ComposedBody
           data={data}
@@ -152,11 +152,15 @@ function ComposedBody({
     <ResponsiveContainer width="100%" height="100%">
       <RechartsComposedChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
         <defs>
-          {areas.map((item) => (
+          {[
+            ...new Set(
+              [...areas, ...bars].map((item) => item.props.dataKey)
+            ),
+          ].map((key) => (
             <GradientFill
-              key={item.props.dataKey}
-              id={`${id}-${item.props.dataKey}-fill`}
-              color={colorVar(item.props.dataKey)}
+              key={key}
+              id={`${id}-${key}-fill`}
+              color={colorVar(key)}
             />
           ))}
         </defs>
@@ -165,9 +169,9 @@ function ComposedBody({
           <Bar
             key={`${item.props.dataKey}-bar`}
             dataKey={item.props.dataKey}
-            fill={colorVar(item.props.dataKey)}
-            fillOpacity={0.92}
-            radius={4}
+            fill={`url(#${id}-${item.props.dataKey}-fill)`}
+            fillOpacity={1}
+            radius={0}
             maxBarSize={42}
             isAnimationActive={false}
             opacity={selected && selected !== item.props.dataKey ? 0.25 : 1}
@@ -181,7 +185,7 @@ function ComposedBody({
             dataKey={item.props.dataKey}
             stroke={colorVar(item.props.dataKey)}
             fill={`url(#${id}-${item.props.dataKey}-fill)`}
-            fillOpacity={0.35}
+            fillOpacity={1}
             isAnimationActive={false}
             opacity={selected && selected !== item.props.dataKey ? 0.25 : 1}
           />

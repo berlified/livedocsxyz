@@ -2,13 +2,13 @@
   "name": "chart",
   "title": "Chart",
   "category": "charts",
-  "description": "Shared chart primitives: config, container, tooltip, legend, grid, and theme tokens.",
+  "description": "Shared pixel-art chart primitives: tiled fills, crisp edges, and 8-bit chrome.",
   "dependencies": ["recharts"],
   "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
   "files": ["apps/docs/components/ui/chart.tsx"],
   "examples": ["config", "tooltip", "legend"],
   "variants": ["default"],
-  "keywords": ["chart", "config", "tooltip", "legend", "recharts", "theme"],
+  "keywords": ["chart", "config", "tooltip", "legend", "recharts", "theme", "pixel", "pixel-art"],
   "props": [
     {
       "name": "config",
@@ -32,7 +32,7 @@
     }
   ],
   "ai": {
-    "purpose": "Provide the shared compound chart surface, config object, tooltip, and legend.",
+    "purpose": "Provide the shared pixel-art chart surface, config object, tooltip, and legend chips.",
     "useWhen": [
       "Installing any cartesian or polar chart",
       "Theming series with CSS variables",

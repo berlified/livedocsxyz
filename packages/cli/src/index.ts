@@ -18,8 +18,8 @@ Usage:
   livedocs info <component>    Show component metadata
 
 Examples:
-  livedocs add button
-  livedocs search card
+  livedocs add chart
+  livedocs search area
 
 Environment:
   LIVEDOCS_REGISTRY_URL        Override registry base URL (default: ${REGISTRY_URL})
@@ -70,7 +70,7 @@ function main() {
     case "add": {
       const name = args[0];
       if (!name) {
-        console.error("Missing component name. Example: livedocs add button");
+        console.error("Missing component name. Example: livedocs add chart");
         process.exitCode = 1;
         break;
       }

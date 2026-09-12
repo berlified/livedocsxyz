@@ -132,7 +132,7 @@ function LineBody({
 
   if (isLoading) {
     return (
-      <div className="h-full w-full animate-pulse rounded-xl bg-muted/40" />
+      <div className="h-full w-full animate-pulse bg-muted/40" />
     );
   }
 
@@ -164,11 +164,6 @@ function LineBody({
               dot={dot ? { r: 3, fill: colorVar(dataKey) } : false}
               activeDot={{ r: 4, fill: colorVar(dataKey) }}
               opacity={muted ? 0.2 : 1}
-              style={
-                isGlowing
-                  ? { filter: `drop-shadow(0 0 8px ${colorVar(dataKey)})` }
-                  : undefined
-              }
               onClick={() => isClickable && setSelected(dataKey)}
               cursor={isClickable ? "pointer" : undefined}
             />
