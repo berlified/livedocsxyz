@@ -5,6 +5,8 @@ import {
   PolarAngleAxis,
   PolarGrid,
   PolarRadiusAxis,
+  Polygon,
+  type InternalRadarProps,
   Radar,
   RadarChart as RechartsRadarChart,
   ResponsiveContainer,
@@ -21,7 +23,7 @@ import {
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { useChartReducedMotion, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 type RadarSeriesProps = {
@@ -31,6 +33,68 @@ type RadarSeriesProps = {
   isGlowing?: boolean;
   isClickable?: boolean;
 };
+
+function InteractiveRadarShape({
+  geometry,
+  label,
+  selected,
+  muted,
+  glowing,
+  onActivate,
+}: {
+  geometry: InternalRadarProps;
+  label: string;
+  selected: boolean;
+  muted: boolean;
+  glowing?: boolean;
+  onActivate?: () => void;
+}) {
+  const [hovered, setHovered] = React.useState(false);
+  const [focused, setFocused] = React.useState(false);
+  const reducedMotion = useChartReducedMotion();
+  const { animationsEnabled = true } = useChartReactions();
+  const active = hovered || focused || selected;
+
+  return (
+    <g
+      tabIndex={0}
+      role={onActivate ? "button" : "img"}
+      aria-label={label}
+      aria-pressed={onActivate ? selected : undefined}
+      className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
+      onClick={onActivate}
+      onKeyDown={(event) => {
+        if (onActivate && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          event.stopPropagation();
+          onActivate();
+        }
+      }}
+      style={{
+        opacity: muted && !hovered && !focused ? 0.25 : 1,
+        filter: active || glowing ? "drop-shadow(0 2px 3px color-mix(in oklab, var(--foreground) 12%, transparent))" : "drop-shadow(0 0 0 transparent)",
+        transition: animationsEnabled && !reducedMotion ? "opacity 220ms ease, filter 220ms ease" : "none",
+        cursor: onActivate ? "pointer" : undefined,
+      }}
+    >
+      <Polygon
+        points={geometry.points}
+        baseLinePoints={geometry.isRange ? geometry.baseLinePoints : undefined}
+        connectNulls={geometry.connectNulls}
+        stroke={focused ? "var(--ring)" : geometry.stroke}
+        strokeWidth={active ? 3 : 2}
+        strokeLinejoin="round"
+        fill={geometry.fill}
+        fillOpacity={geometry.fillOpacity}
+        style={{ transition: animationsEnabled && !reducedMotion ? "stroke-width 220ms ease" : "none" }}
+      />
+    </g>
+  );
+}
 
 function RadarSeries(_props: RadarSeriesProps) {
   return null;
@@ -106,7 +170,9 @@ function RadarBody({
   extras: React.ReactNode[];
   gridType: "polygon" | "circle";
 }) {
-  const { id, selected, setSelected } = useChart();
+  const { id, config, selected, setSelected } = useChart();
+  const reducedMotion = useChartReducedMotion();
+  const { animationsEnabled = true } = useChartReactions();
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -149,8 +215,19 @@ function RadarBody({
               fillOpacity={variant === "lines" ? 0 : fillOpacity}
               strokeLinejoin="round"
               strokeWidth={2}
-              opacity={muted ? 0.25 : 1}
-              onClick={() => isClickable && setSelected(dataKey)}
+              isAnimationActive={animationsEnabled && !reducedMotion}
+              animationBegin={0}
+              animationDuration={600}
+              shape={(props: InternalRadarProps) => (
+                <InteractiveRadarShape
+                  geometry={props}
+                  label={typeof config[dataKey]?.label === "string" ? String(config[dataKey]?.label) : dataKey}
+                  selected={selected === dataKey}
+                  muted={Boolean(muted)}
+                  glowing={isGlowing}
+                  onActivate={isClickable ? () => setSelected(dataKey) : undefined}
+                />
+              )}
             />
           );
         })}

@@ -2,133 +2,107 @@
 
 import * as React from "react";
 
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChartContainer, colorVar, type ChartConfig } from "@/components/ui/chart";
+import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
+import { useChartReducedMotion, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
-export type FunnelStage = {
-  key: string;
-  label: string;
-  value: number;
-  meta?: string;
-};
-
+export type FunnelStage = { key: string; label: string; value: number; meta?: string };
 export type FunnelChartProps = {
   stages: FunnelStage[];
   config?: ChartConfig;
   title?: string;
   description?: string;
   showConversion?: boolean;
+  formatValue?: (value: number) => string;
   onStageClick?: (stage: FunnelStage) => void;
   emptyLabel?: string;
   className?: string;
   isLoading?: boolean;
-  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
+  reaction?: ChartReactionOptions;
 };
 
-const defaultConfig = {
-  visitors: { label: "Visitors", color: "var(--chart-1)" },
-  signups: { label: "Signups", color: "var(--chart-2)" },
-  activated: { label: "Activated", color: "var(--chart-3)" },
-  paid: { label: "Paid", color: "var(--chart-4)" },
-} satisfies ChartConfig;
-
 const formatNumber = (value: number) => value.toLocaleString("en-US");
+const valid = (value: number) => Number.isFinite(value) && value >= 0;
+const conversion = (value: number, baseline: number) => {
+  const ratio = value / baseline * 100;
+  return valid(value) && valid(baseline) && baseline > 0 && Number.isFinite(ratio) ? `${ratio.toFixed(1)}%` : "—";
+};
 
 export function FunnelChart({
   stages,
-  config = defaultConfig,
+  config = {},
   title = "Conversion funnel",
   description,
   showConversion = true,
+  formatValue = formatNumber,
   onStageClick,
   emptyLabel = "No funnel data available",
   className,
   isLoading,
   reaction,
 }: FunnelChartProps) {
-  const [selected, setSelected] = React.useState<string>();
-  const clean = stages.filter((stage) => Number.isFinite(stage.value) && stage.value > 0);
-  const top = clean[0]?.value ?? 0;
-  const selectedStage = clean.find((stage) => stage.key === selected);
+  const [active, setActive] = React.useState<number | null>(null);
+  const [selected, setSelected] = React.useState<number | null>(null);
+  const reducedMotion = useChartReducedMotion();
+  const settings = useChartReactions();
+  const animate = !reducedMotion && settings.animationsEnabled !== false;
+  const max = stages.reduce((value, stage) => valid(stage.value) ? Math.max(value, stage.value) : value, 0);
+  const available = stages.some((stage) => valid(stage.value));
+  const first = stages[0]?.value ?? 0;
+  const last = stages[stages.length - 1]?.value ?? 0;
+  const width = (value: number) => valid(value) && max > 0 ? value / max * 216 : 0;
+  const activeStage = active === null ? undefined : stages[active];
 
   return (
-    <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-label={title}>
-      <p className="text-sm font-medium tracking-tight">{title}</p>
-      {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
-      <ChartContainer
-        isLoading={isLoading}
-        reaction={reaction}
-        config={{ ...defaultConfig, ...config }}
-        data={clean as unknown as Record<string, unknown>[]}
-        className="mt-5 w-full justify-start"
-        variant="plain"
-      >
-        {!clean.length ? (
-          <p className="flex min-h-40 items-center justify-center text-sm text-muted-foreground" role="status">
-            {emptyLabel}
-          </p>
-        ) : (
-          <ul role="list" aria-label={title} className="flex flex-col gap-1">
-            {clean.map((stage, index) => {
-              const width = top ? Math.max(12, (stage.value / top) * 100) : 12;
-              const share = top ? (stage.value / top) * 100 : 0;
-              const step = index ? (stage.value / clean[index - 1]!.value) * 100 : 100;
-              const drop = 100 - step;
-              const color = colorVar(stage.key);
-              const muted = selected && selected !== stage.key;
-              const summary = `${stage.label}: ${formatNumber(stage.value)}, ${share.toFixed(1)}% of ${clean[0]!.label}`;
-              const interactive = Boolean(onStageClick);
-              const body = (
-                <>
-                  <span className="sr-only">{summary}</span>
-                  <span
-                    aria-hidden
-                    className="block h-10 w-full rounded-md border border-border/60"
-                    style={{
-                      width: `${width}%`,
-                      marginInline: "auto",
-                      backgroundColor: color,
-                      opacity: 0.92,
-                    }}
-                  />
-                </>
-              );
-              return (
-                <li key={stage.key} className={cn("min-w-0", muted && "opacity-40 transition-opacity")}>
-                  <div className="flex items-baseline justify-between gap-3">
-                    <span className="truncate text-xs text-muted-foreground">{stage.label}</span>
-                    <span className="shrink-0 font-mono text-xs text-foreground">{formatNumber(stage.value)}</span>
-                  </div>
-                  {interactive ? (
-                    <button
-                      type="button"
-                      aria-label={summary}
-                      aria-pressed={selected === stage.key}
-                      onClick={() => {
-                        setSelected((current) => (current === stage.key ? undefined : stage.key));
-                        onStageClick?.(stage);
-                      }}
-                      className="mt-1 block w-full rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
-                    >
-                      {body}
-                    </button>
-                  ) : (
-                    <div className="mt-1">{body}</div>
-                  )}
-                  {showConversion && index > 0 ? (
-                    <p className="mt-1 text-center text-[10px] text-muted-foreground">
-                      {Number.isFinite(step) ? `${step.toFixed(1)}% from previous` : "n/a"}
-                      {Number.isFinite(drop) && drop > 0.05 ? ` · −${drop.toFixed(1)}%` : ""}
-                    </p>
-                  ) : null}
-                  {selectedStage?.key === stage.key && stage.meta ? (
-                    <p className="mt-1 text-center font-mono text-[10px] text-muted-foreground">{stage.meta}</p>
-                  ) : null}
-                </li>
-              );
-            })}
-          </ul>
+    <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-label={title} aria-busy={isLoading}>
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <h3 className="text-sm font-medium tracking-tight">{title}</h3>
+          {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
+        </div>
+        {available && showConversion ? <div className="text-right"><p className="font-mono text-xl font-semibold tracking-tight">{conversion(last, first)}</p><p className="text-[10px] text-muted-foreground">Overall conversion</p></div> : null}
+      </div>
+      <ChartContainer config={config} data={stages} isLoading={isLoading} reaction={reaction} variant="plain" className="mt-5 min-h-48">
+        {!available ? <p role="status" className="flex min-h-48 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</p> : (
+          <>
+            <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-4">
+              <svg viewBox={`0 0 240 ${stages.length * 64}`} preserveAspectRatio="none" className="h-full w-full overflow-visible" aria-hidden="true">
+                {stages.map((stage, index) => {
+                  const top = width(stage.value);
+                  const bottom = width(stages[index + 1]?.value ?? stage.value);
+                  const y = index * 64;
+                  const color = config[stage.key]?.color ?? config[stage.key]?.colors?.dark?.[0] ?? "var(--chart-1)";
+                  const fill = config[stage.key] ? `var(--color-${stage.key})` : color;
+                  return (
+                    <path key={`${stage.key}-${index}`} d={`M ${120 - top / 2} ${y} H ${120 + top / 2} L ${120 + bottom / 2} ${y + 64} H ${120 - bottom / 2} Z`}
+                      fill={fill} fillOpacity={active === index || selected === index ? 0.85 : 0.16 + (1 - index / stages.length) * 0.3}
+                      stroke="var(--card)" strokeWidth={1.5} strokeLinejoin="round"
+                      className={cn(animate && "transition-[fill-opacity] duration-200")}
+                      onMouseEnter={() => setActive(index)} onMouseLeave={() => setActive(null)} />
+                  );
+                })}
+              </svg>
+              <ol className="min-w-0">
+                {stages.map((stage, index) => (
+                  <li key={`${stage.key}-${index}`} className="h-16 min-w-0">
+                    <Button type="button" variant="ghost" aria-pressed={selected === index}
+                      aria-label={`${stage.label}: ${valid(stage.value) ? formatValue(stage.value) : "Unavailable"}${index && showConversion ? `, ${conversion(stage.value, stages[index - 1]!.value)} from previous` : ""}`}
+                      className={cn("h-full w-full justify-start whitespace-normal rounded-lg px-2 text-left", !animate && "transition-none", (active === index || selected === index) && "bg-accent")}
+                      onFocus={() => setActive(index)} onBlur={() => setActive(null)}
+                      onMouseEnter={() => setActive(index)} onMouseLeave={() => setActive(null)}
+                      onKeyDown={(event) => { if (event.key === "Escape") { setActive(null); setSelected(null); } }}
+                      onClick={() => { setSelected(selected === index ? null : index); if (valid(stage.value)) onStageClick?.(stage); }}>
+                      <span className="min-w-0 flex-1"><span className="block truncate text-xs text-muted-foreground">{stage.label}</span><span className="mt-1 block font-mono text-base font-medium">{valid(stage.value) ? formatValue(stage.value) : "—"}</span></span>
+                      {showConversion && index > 0 ? <span className="shrink-0 text-right"><span className="block font-mono text-xs">{conversion(stage.value, stages[index - 1]!.value)}</span><span className="text-[9px] text-muted-foreground">of previous</span></span> : null}
+                    </Button>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <p role="status" className="mt-4 min-h-4 border-t border-border pt-3 text-xs text-muted-foreground">{activeStage?.meta ?? (selected !== null ? stages[selected]?.meta : undefined) ?? "Select a stage to inspect conversion. Unavailable and negative counts are shown as —."}</p>
+          </>
         )}
       </ChartContainer>
     </Card>

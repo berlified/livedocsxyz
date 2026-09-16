@@ -6,6 +6,7 @@ import {
   RadialBar,
   RadialBarChart as RechartsRadialBarChart,
   ResponsiveContainer,
+  type RadialBarSectorProps,
 } from "recharts";
 
 import {
@@ -19,7 +20,8 @@ import {
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { useChartReducedMotion, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartInteractiveSector } from "@/components/ui/pie-chart";
 import { cn } from "@/lib/utils";
 
 type RadialSeriesProps = {
@@ -112,7 +114,9 @@ function RadialBody({
   outerRadius: number;
   max?: number;
 }) {
-  const { id, selected, setSelected } = useChart();
+  const { id, config, selected, setSelected } = useChart();
+  const reducedMotion = useChartReducedMotion();
+  const { animationsEnabled = true } = useChartReactions();
   const dataKey = series?.props.dataKey ?? "value";
   const colored = data.map((item) => {
     const key = String(item[nameKey]);
@@ -162,11 +166,23 @@ function RadialBody({
           barSize={series?.props.barSize}
           stroke="var(--background)"
           strokeWidth={2}
-          onClick={(entry: Record<string, unknown>) => {
-            const key = String(entry?.[nameKey] ?? "");
-            if (series?.props.isClickable && key) setSelected(key);
+          isAnimationActive={animationsEnabled && !reducedMotion}
+          animationBegin={0}
+          animationDuration={600}
+          shape={(props: RadialBarSectorProps) => {
+            const item = data[props.index];
+            const key = String(item?.[nameKey] ?? "");
+            const label = config[key]?.label;
+            return (
+              <ChartInteractiveSector
+                geometry={props}
+                label={`${typeof label === "string" ? label : key}: ${String(item?.[dataKey] ?? "")}`}
+                selected={selected === key}
+                muted={Boolean(selected && selected !== key)}
+                onActivate={series?.props.isClickable ? () => setSelected(key) : undefined}
+              />
+            );
           }}
-          style={selected ? { opacity: 0.9 } : undefined}
         />
       </RechartsRadialBarChart>
     </ResponsiveContainer>

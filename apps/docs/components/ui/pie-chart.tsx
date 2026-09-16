@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Cell, Pie, PieChart as RechartsPieChart, ResponsiveContainer } from "recharts";
+import { Cell, Pie, PieChart as RechartsPieChart, ResponsiveContainer, Sector, type SectorProps, type PieSectorShapeProps } from "recharts";
 
 import {
   ChartContainer,
@@ -14,8 +14,82 @@ import {
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
-import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { useChartReducedMotion, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
+
+export function ChartInteractiveSector({
+  geometry,
+  label,
+  selected,
+  muted,
+  emphasized = false,
+  onActivate,
+  onFocus,
+  onBlur,
+}: {
+  geometry: SectorProps;
+  label: string;
+  selected: boolean;
+  muted: boolean;
+  emphasized?: boolean;
+  onActivate?: () => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
+}) {
+  const [hovered, setHovered] = React.useState(false);
+  const [focused, setFocused] = React.useState(false);
+  const reducedMotion = useChartReducedMotion();
+  const { animationsEnabled = true } = useChartReactions();
+  const active = hovered || focused || selected || emphasized;
+  const angle = (((geometry.startAngle ?? 0) + (geometry.endAngle ?? 0)) / 2) * Math.PI / 180;
+  const offset = active ? 6 : 0;
+
+  return (
+    <Sector
+      {...geometry}
+      tabIndex={0}
+      role={onActivate ? "button" : "img"}
+      aria-label={label}
+      aria-pressed={onActivate ? selected : undefined}
+      className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      opacity={muted && !hovered && !focused ? 0.3 : 1}
+      stroke={focused ? "var(--ring)" : geometry.stroke}
+      strokeWidth={focused ? 3 : geometry.strokeWidth}
+      style={{
+        transform: `translate(${Math.cos(angle) * offset}px, ${-Math.sin(angle) * offset}px)`,
+        transition: animationsEnabled && !reducedMotion ? "transform 220ms ease, opacity 220ms ease, stroke-width 220ms ease" : "none",
+        cursor: onActivate ? "pointer" : undefined,
+      }}
+      onMouseEnter={(event) => {
+        setHovered(true);
+        geometry.onMouseEnter?.(event);
+      }}
+      onMouseLeave={(event) => {
+        setHovered(false);
+        geometry.onMouseLeave?.(event);
+      }}
+      onFocus={() => {
+        setFocused(true);
+        onFocus?.();
+      }}
+      onBlur={() => {
+        setFocused(false);
+        onBlur?.();
+      }}
+      onClick={(event) => {
+        geometry.onClick?.(event);
+        onActivate?.();
+      }}
+      onKeyDown={(event) => {
+        if (onActivate && (event.key === "Enter" || event.key === " ")) {
+          event.preventDefault();
+          event.stopPropagation();
+          onActivate();
+        }
+      }}
+    />
+  );
+}
 
 function Tooltip(props: React.ComponentProps<typeof ChartTooltip>) {
   return <ChartTooltip {...props} />;
@@ -123,7 +197,9 @@ function PieBody({
   showLabels?: boolean;
   children?: React.ReactNode;
 }) {
-  const { id, selected, setSelected } = useChart();
+  const { id, config, selected, setSelected } = useChart();
+  const reducedMotion = useChartReducedMotion();
+  const { animationsEnabled = true } = useChartReactions();
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -153,17 +229,32 @@ function PieBody({
           endAngle={endAngle}
           stroke="var(--background)"
           label={showLabels ? ({ name }) => name : false}
+          rootTabIndex={-1}
+          isAnimationActive={animationsEnabled && !reducedMotion}
+          animationBegin={0}
+          animationDuration={600}
+          shape={(props: PieSectorShapeProps) => {
+            const item = data[props.index];
+            const key = String(item?.[nameKey] ?? props.name ?? "");
+            const label = config[key]?.label;
+            return (
+              <ChartInteractiveSector
+                geometry={props}
+                label={`${typeof label === "string" ? label : key}: ${String(item?.[dataKey] ?? props.value)}`}
+                selected={selected === key}
+                muted={Boolean(selected && selected !== key)}
+                emphasized={glowingSectors?.includes(key)}
+                onActivate={() => setSelected(key)}
+              />
+            );
+          }}
         >
           {data.map((item) => {
             const key = String(item[nameKey]);
-            const muted = selected && selected !== key;
             return (
               <Cell
                 key={key}
                 fill={pixelPatternUrl(id, key)}
-                opacity={muted ? 0.25 : 1}
-                onClick={() => setSelected(key)}
-                cursor="pointer"
               />
             );
           })}

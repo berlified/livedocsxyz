@@ -100,40 +100,6 @@ export function ComponentDocLayout({
         </div>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-xl font-semibold tracking-tight">Agent guidance</h2>
-        <div className="space-y-4 rounded-xl border border-border bg-card p-5 text-sm">
-          <div>
-            <p className="mb-1 font-medium">Purpose</p>
-            <p className="text-muted-foreground">{component.ai.purpose}</p>
-          </div>
-          <div>
-            <p className="mb-1 font-medium">Use when</p>
-            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
-              {component.ai.useWhen.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p className="mb-1 font-medium">Compositions</p>
-            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
-              {component.ai.compositions.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p className="mb-1 font-medium">Avoid</p>
-            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
-              {component.ai.avoid.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
       <section id="source" className="scroll-mt-24 space-y-3">
         <h2 className="text-xl font-semibold tracking-tight">Source</h2>
         <CodeBlock language="tsx" title={`${component.name}.tsx`} code={source} />

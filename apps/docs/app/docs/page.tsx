@@ -38,9 +38,9 @@ export default function DocsHomePage() {
             href: "/docs/theming",
           },
           {
-            title: "Agent guidance",
-            description: "Registry metadata for coding agents.",
-            href: "/docs/agents",
+            title: "Design tokens",
+            description: "Shared colors, surfaces, and typography.",
+            href: "/docs/tokens",
           },
         ].map((item) => (
           <Link

@@ -42,8 +42,6 @@ function guideCopy(href: string) {
       return "Light, dark, and semantic color tokens";
     case "/docs/tokens":
       return "Background, border, chart, and type tokens";
-    case "/docs/agents":
-      return "How agents should pick and compose charts";
     default:
       return "Documentation";
   }
@@ -55,7 +53,9 @@ function readRecents(): SearchHit[] {
     const raw = window.localStorage.getItem(RECENTS_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as SearchHit[];
-    return parsed.filter((item) => item?.href && item?.title).slice(0, 5);
+    return parsed
+      .filter((item) => item?.href && item?.title && item.href !== "/docs/agents")
+      .slice(0, 5);
   } catch {
     return [];
   }

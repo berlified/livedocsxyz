@@ -67,7 +67,7 @@ export default function ComponentsCatalogPage() {
             </div>
             <p className="text-sm leading-6 text-muted-foreground">
               Every item ships with live previews, install commands, usage
-              snippets, and agent guidance.
+              snippets, and source code.
             </p>
             <CodeBlock
               language="bash"

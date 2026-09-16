@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Cell, Pie, PieChart as RechartsPieChart, ResponsiveContainer } from "recharts";
+import { Cell, Pie, PieChart as RechartsPieChart, ResponsiveContainer, type PieSectorShapeProps } from "recharts";
 
 import {
   ChartContainer,
@@ -16,6 +16,8 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
+import { ChartInteractiveSector } from "@/components/ui/pie-chart";
+import { useChartReducedMotion, useChartReactions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 export type RingSlice = { key: string; label: string; value: number };
@@ -66,6 +68,10 @@ function RingBody({
   centerLabel?: string;
 }) {
   const { id, selected, setSelected } = useChart();
+  const [focused, setFocused] = React.useState<string>();
+  const [hovered, setHovered] = React.useState<string>();
+  const reducedMotion = useChartReducedMotion();
+  const { animationsEnabled = true } = useChartReactions();
 
   return (
     <div className="grid h-full items-center gap-4 sm:grid-cols-[1fr_8rem]">
@@ -91,14 +97,29 @@ function RingBody({
               paddingAngle={2}
               cornerRadius={0}
               stroke="var(--background)"
+              rootTabIndex={-1}
+              isAnimationActive={animationsEnabled && !reducedMotion}
+              animationBegin={0}
+              animationDuration={600}
+              shape={(props: PieSectorShapeProps) => {
+                const item = data[props.index];
+                if (!item) return <g />;
+                return (
+                  <ChartInteractiveSector
+                    geometry={props}
+                    label={`${item.label}: ${item.value.toLocaleString("en-US")}`}
+                    selected={selected === item.key}
+                    muted={Boolean(selected && selected !== item.key)}
+                    emphasized={focused === item.key || hovered === item.key}
+                    onActivate={() => setSelected(item.key)}
+                  />
+                );
+              }}
             >
               {data.map((item) => (
                 <Cell
                   key={item.key}
                   fill={pixelPatternUrl(id, item.key)}
-                  opacity={selected && selected !== item.key ? 0.25 : 1}
-                  cursor="pointer"
-                  onClick={() => setSelected(item.key)}
                 />
               ))}
             </Pie>
