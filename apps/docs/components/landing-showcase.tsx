@@ -11,6 +11,8 @@ import { TrendCard } from "@/components/ui/trend-card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { type ChartConfig } from "@/components/ui/chart";
+import { ChartReactionProvider } from "@/components/chart-reaction-provider";
+import { type ChartEmotion, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 const ranges = [7, 30, 90] as const;
@@ -47,6 +49,10 @@ export function LandingShowcase() {
   const [range, setRange] = React.useState<(typeof ranges)[number]>(30);
   const [metric, setMetric] = React.useState<Metric>("Revenue");
   const [showData, setShowData] = React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(false);
+  const [animationsEnabled, setAnimationsEnabled] = React.useState(true);
+  const [emotion, setEmotion] = React.useState<ChartEmotion | "off" | "metric">("off");
+  const reactionFor = (current: number, previous: number): ChartReactionOptions => emotion === "off" ? { enabled: false } : emotion === "metric" ? { metric: { current, previous, goal: previous * 1.25 } } : { emotion };
   const current = sampleData.slice(-range);
   const previous = sampleData.slice(-range * 2, -range);
   const sum = (rows: typeof sampleData, key: "revenue" | "orders" | "customers") => rows.reduce((total, row) => total + row[key], 0);
@@ -78,6 +84,7 @@ export function LandingShowcase() {
   ];
 
   return (
+    <ChartReactionProvider animationsEnabled={animationsEnabled}>
     <div className="overflow-hidden rounded-2xl border border-border bg-card">
       <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border px-4 py-4 sm:px-6">
         <div className="flex items-center gap-2.5 text-sm">
@@ -109,16 +116,22 @@ export function LandingShowcase() {
             </div>
           </div>
         </div>
+        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border bg-background p-2" role="group" aria-label="Chart reactions">
+          <Button variant="outline" size="sm" aria-pressed={isLoading} onClick={() => setIsLoading((value) => !value)}>Loading {isLoading ? "on" : "off"}</Button>
+          <Button variant="outline" size="sm" aria-pressed={animationsEnabled} onClick={() => setAnimationsEnabled((value) => !value)}>Animations {animationsEnabled ? "on" : "off"}</Button>
+          {(["off", "metric", "neutral", "sad", "disappointed", "happy", "surprised", "proud"] as const).map((item) => <Button key={item} variant="ghost" size="sm" aria-pressed={emotion === item} className={cn("text-xs capitalize", emotion === item && "bg-accent")} onClick={() => setEmotion(item)}>{item === "metric" ? "From metric" : item}</Button>)}
+          <p className="w-full text-xs text-muted-foreground">Text placeholders until GIFs and static posters are configured. Reduced motion always disables GIFs.</p>
+        </div>
         <p className="sr-only" role="status">Showing {range} days. {metric}: {format(total)}, {delta(total, previousTotal)} compared with the previous {range} days.</p>
         <div className="grid gap-3 md:grid-cols-3">
-          <TrendCard title="Total revenue" value={formatMoney(revenue)} baseline={`${formatMoney(previousRevenue)} previous period`} delta={delta(revenue, previousRevenue)} tone={revenue >= previousRevenue ? "up" : "down"} data={trend("revenue")} config={config} />
-          <TrendCard title="Orders" value={formatNumber(orders)} baseline={`${formatNumber(previousOrders)} previous period`} delta={delta(orders, previousOrders)} tone={orders >= previousOrders ? "up" : "down"} data={trend("orders")} config={config} />
-          <TrendCard title="New customers" value={formatNumber(customers)} baseline={`${formatNumber(previousCustomers)} previous period`} delta={delta(customers, previousCustomers)} tone={customers >= previousCustomers ? "up" : "down"} data={trend("customers")} config={config} />
+          <TrendCard isLoading={isLoading} reaction={reactionFor(revenue, previousRevenue)} title="Total revenue" value={formatMoney(revenue)} baseline={`${formatMoney(previousRevenue)} previous period`} delta={delta(revenue, previousRevenue)} tone={revenue >= previousRevenue ? "up" : "down"} data={trend("revenue")} config={config} />
+          <TrendCard isLoading={isLoading} reaction={reactionFor(orders, previousOrders)} title="Orders" value={formatNumber(orders)} baseline={`${formatNumber(previousOrders)} previous period`} delta={delta(orders, previousOrders)} tone={orders >= previousOrders ? "up" : "down"} data={trend("orders")} config={config} />
+          <TrendCard isLoading={isLoading} reaction={reactionFor(customers, previousCustomers)} title="New customers" value={formatNumber(customers)} baseline={`${formatNumber(previousCustomers)} previous period`} delta={delta(customers, previousCustomers)} tone={customers >= previousCustomers ? "up" : "down"} data={trend("customers")} config={config} />
         </div>
-        <MetricChart title={`${metric} over time`} value={format(total)} delta={delta(total, previousTotal)} tone={total >= previousTotal ? "up" : "down"} data={series} config={config} xDataKey="day" series={[{ key: "current", label: "Selected period" }, { key: "previous", label: "Previous period" }]} />
+        <MetricChart isLoading={isLoading} reaction={reactionFor(total, previousTotal)} title={`${metric} over time`} value={format(total)} delta={delta(total, previousTotal)} tone={total >= previousTotal ? "up" : "down"} data={series} config={config} xDataKey="day" series={[{ key: "current", label: "Selected period" }, { key: "previous", label: "Previous period" }]} />
         <div className="grid gap-3 lg:grid-cols-[1.2fr_1fr]">
-          <CountryChart title={`${metric} by country`} rows={markets} config={config} currency={metric === "Revenue"} />
-          <BreakdownChart title={`${metric} by plan`} items={plans} config={planConfig} currency={metric === "Revenue"} className="p-5" />
+          <CountryChart isLoading={isLoading} reaction={reactionFor(total, previousTotal)} title={`${metric} by country`} rows={markets} config={config} currency={metric === "Revenue"} />
+          <BreakdownChart isLoading={isLoading} reaction={reactionFor(total, previousTotal)} title={`${metric} by plan`} items={plans} config={planConfig} currency={metric === "Revenue"} className="p-5" />
         </div>
         <div className="flex flex-wrap items-center justify-between gap-2 px-1">
           <p className="text-xs leading-5 text-muted-foreground">Explore a range. Compare a series. Select a segment.</p>
@@ -139,5 +152,6 @@ export function LandingShowcase() {
         <Button variant="ghost" size="sm" asChild><Link href="/docs/components/metric-chart">Build this view <ArrowUpRight className="size-3.5" /></Link></Button>
       </div>
     </div>
+    </ChartReactionProvider>
   );
 }

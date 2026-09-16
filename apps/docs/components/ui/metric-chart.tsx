@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 function MetricChartRoot({
@@ -36,6 +37,7 @@ function MetricChartRoot({
   xDataKey = "month",
   className,
   isLoading,
+  reaction,
 }: {
   title: string;
   value: string;
@@ -47,6 +49,7 @@ function MetricChartRoot({
   xDataKey?: string;
   className?: string;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
 }) {
   const [active, setActive] = React.useState(series[0]?.key);
 
@@ -100,15 +103,15 @@ function MetricChartRoot({
 
       <div className="mt-4 h-72">
         <ChartContainer
+          isLoading={isLoading}
+          reaction={reaction}
           config={config}
           data={data}
           className="h-full w-full"
           variant="plain"
           defaultSelectedDataKey={active}
         >
-          {isLoading ? (
-            <div className="h-full animate-pulse bg-muted/40" />
-          ) : (
+          {isLoading ? null : (
             <MetricBody
               data={data}
               xDataKey={xDataKey}

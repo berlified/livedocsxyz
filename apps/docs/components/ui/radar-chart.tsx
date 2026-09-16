@@ -21,6 +21,7 @@ import {
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 type RadarSeriesProps = {
@@ -49,6 +50,7 @@ function ChartRadar({
   className,
   children,
   isLoading,
+  reaction,
   gridType = "polygon",
   defaultSelectedDataKey,
   onSelectionChange,
@@ -58,6 +60,7 @@ function ChartRadar({
   className?: string;
   children: React.ReactNode;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
   gridType?: "polygon" | "circle";
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
@@ -72,15 +75,15 @@ function ChartRadar({
 
   return (
     <ChartContainer
+      isLoading={isLoading}
+      reaction={reaction}
       config={config}
       data={data}
       className={cn("h-72 w-full", className)}
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      {isLoading ? (
-        <div className="h-full w-full animate-pulse bg-muted/40" />
-      ) : (
+      {isLoading ? null : (
         <RadarBody
           data={data}
           series={series}

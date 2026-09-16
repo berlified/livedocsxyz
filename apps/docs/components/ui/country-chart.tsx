@@ -31,11 +31,15 @@ function CountryChartRoot({
   config,
   className,
   currency = true,
+  isLoading,
+  reaction,
 }: {
   title?: string;
   rows: CountryRow[];
   config: ChartConfig;
   className?: string;
+  isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
   currency?: boolean;
 }) {
   const max = Math.max(...rows.flatMap((row) => [row.current, row.previous ?? 0]), 1);
@@ -44,6 +48,8 @@ function CountryChartRoot({
   return (
     <Card className={cn("p-5", className)}>
       <ChartContainer
+        isLoading={isLoading}
+        reaction={reaction}
         config={config}
         data={rows as unknown as Record<string, unknown>[]}
         className="w-full justify-start"

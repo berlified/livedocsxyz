@@ -1,5 +1,6 @@
 import type { RegistryComponent, RegistryIndex } from "./types";
 import chart from "./components/chart.json";
+import chartReactions from "./components/chart-reactions.json";
 import sparkline from "./components/sparkline.json";
 import areaChart from "./components/area-chart.json";
 import lineChart from "./components/line-chart.json";
@@ -34,6 +35,7 @@ export type {
 
 export const components: RegistryComponent[] = [
   chart,
+  chartReactions,
   sparkline,
   areaChart,
   lineChart,

@@ -18,6 +18,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 function TrendCardRoot({
@@ -34,6 +35,7 @@ function TrendCardRoot({
   xDataKey = "day",
   className,
   isLoading,
+  reaction,
 }: {
   title: string;
   value: string;
@@ -48,6 +50,7 @@ function TrendCardRoot({
   xDataKey?: string;
   className?: string;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
 }) {
   const deltaClass =
     tone === "down"
@@ -87,14 +90,14 @@ function TrendCardRoot({
       ) : null}
 
       <ChartContainer
+        isLoading={isLoading}
+        reaction={reaction}
         config={config}
         data={data}
         className="mt-3 h-24 w-full"
         variant="plain"
       >
-        {isLoading ? (
-          <div className="h-full animate-pulse bg-muted/40" />
-        ) : (
+        {isLoading ? null : (
           <ResponsiveContainer width="100%" height="100%">
             <RechartsLineChart data={data} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
               <Tooltip

@@ -26,12 +26,16 @@ function RingMetricRoot({
   data,
   config,
   className,
+  isLoading,
+  reaction,
 }: {
   title?: string;
   centerLabel?: string;
   data: RingSlice[];
   config: ChartConfig;
   className?: string;
+  isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
@@ -39,6 +43,8 @@ function RingMetricRoot({
     <Card className={cn("p-5", className)}>
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       <ChartContainer
+        isLoading={isLoading}
+        reaction={reaction}
         config={config}
         data={data as unknown as Record<string, unknown>[]}
         className="mt-2 h-64 w-full justify-center"

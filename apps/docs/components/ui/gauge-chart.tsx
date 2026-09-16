@@ -16,6 +16,8 @@ export type GaugeChartProps = {
   formatValue?: (value: number) => string;
   ariaLabel?: string;
   className?: string;
+  isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 };
 
 const defaultConfig = {
@@ -56,6 +58,8 @@ export function GaugeChart({
   formatValue,
   ariaLabel,
   className,
+  isLoading,
+  reaction,
 }: GaugeChartProps) {
   const safeMin = Number.isFinite(min) ? min : 0;
   const safeMax = Number.isFinite(max) && max > safeMin ? max : safeMin + 100;
@@ -84,6 +88,8 @@ export function GaugeChart({
         ) : null}
       </div>
       <ChartContainer
+        isLoading={isLoading}
+        reaction={reaction}
         config={defaultConfig}
         data={[{ value: clamped }]}
         variant="plain"

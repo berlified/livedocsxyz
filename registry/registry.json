@@ -119,12 +119,25 @@
       ]
     },
     {
+      "name": "chart-reactions",
+      "type": "registry:ui",
+      "title": "Chart Reactions",
+      "description": "Configurable meme loading and explicit metric emotions with reduced-motion-safe fallbacks.",
+      "files": [
+        {
+          "path": "apps/docs/components/ui/chart-reactions.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/chart-reactions.tsx"
+        }
+      ]
+    },
+    {
       "name": "chart",
       "type": "registry:ui",
       "title": "Chart",
       "description": "Modern, smooth Geist-inspired chart primitives: config, container, tooltip, legend, grid, and theme tokens.",
       "dependencies": ["recharts"],
-      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json", "https://livedocs.xyz/r/chart-reactions.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/chart.tsx",
@@ -138,7 +151,7 @@
       "type": "registry:ui",
       "title": "Sparkline",
       "description": "Smooth SVG trend with a scrubbable marker, value tooltip, and size tones. No Recharts.",
-      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json", "https://livedocs.xyz/r/chart-reactions.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/sparkline.tsx",
@@ -488,6 +501,7 @@
       "title": "Usage Meter",
       "description": "Quota remaining with a used track and a reset caption.",
       "registryDependencies": [
+        "https://livedocs.xyz/r/chart-reactions.json",
         "https://livedocs.xyz/r/card.json",
         "https://livedocs.xyz/r/utils.json"
       ],

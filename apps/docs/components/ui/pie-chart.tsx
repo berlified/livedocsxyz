@@ -14,6 +14,7 @@ import {
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 function Tooltip(props: React.ComponentProps<typeof ChartTooltip>) {
@@ -33,6 +34,7 @@ function ChartPie({
   className,
   children,
   isLoading,
+  reaction,
   innerRadius = 0,
   outerRadius = 110,
   paddingAngle = 2,
@@ -51,6 +53,7 @@ function ChartPie({
   className?: string;
   children?: React.ReactNode;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
   innerRadius?: number;
   outerRadius?: number;
   paddingAngle?: number;
@@ -64,15 +67,15 @@ function ChartPie({
 }) {
   return (
     <ChartContainer
+      isLoading={isLoading}
+      reaction={reaction}
       config={config}
       data={data}
       className={cn("h-72 w-full", className)}
       defaultSelectedDataKey={defaultSelectedSector}
       onSelectionChange={onSelectionChange}
     >
-      {isLoading ? (
-        <div className="mx-auto size-48 animate-pulse bg-muted/40" />
-      ) : (
+      {isLoading ? null : (
         <PieBody
           data={data}
           dataKey={dataKey}

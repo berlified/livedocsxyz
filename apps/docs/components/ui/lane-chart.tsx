@@ -13,11 +13,15 @@ function LaneChartRoot({
   rows,
   config,
   className,
+  isLoading,
+  reaction,
 }: {
   title?: string;
   rows: LaneRow[];
   config: ChartConfig;
   className?: string;
+  isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   const max = Math.max(...rows.map((row) => row.value), 1);
   const [selected, setSelected] = React.useState<string>();
@@ -25,6 +29,8 @@ function LaneChartRoot({
   return (
     <Card className={cn("p-5", className)}>
       <ChartContainer
+        isLoading={isLoading}
+        reaction={reaction}
         config={config}
         data={rows as unknown as Record<string, unknown>[]}
         className="w-full justify-start"

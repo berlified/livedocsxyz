@@ -19,6 +19,7 @@ import {
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 type RadialSeriesProps = {
@@ -48,6 +49,7 @@ function ChartRadial({
   className,
   children,
   isLoading,
+  reaction,
   variant = "full",
   innerRadius = 24,
   outerRadius = 120,
@@ -59,6 +61,7 @@ function ChartRadial({
   className?: string;
   children: React.ReactNode;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
   variant?: "full" | "semi";
   innerRadius?: number;
   outerRadius?: number;
@@ -73,10 +76,8 @@ function ChartRadial({
   );
 
   return (
-    <ChartContainer config={config} data={data} className={cn("h-72 w-full", className)}>
-      {isLoading ? (
-        <div className="mx-auto size-48 animate-pulse bg-muted/40" />
-      ) : (
+    <ChartContainer isLoading={isLoading} reaction={reaction} config={config} data={data} className={cn("h-72 w-full", className)}>
+      {isLoading ? null : (
         <RadialBody
           data={data}
           nameKey={nameKey}

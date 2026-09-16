@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import { ChartReaction, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 const SAMPLE = Array.from({ length: 42 }, (_, index) => {
@@ -29,6 +30,8 @@ const toneClass = {
 
 export type SparklineProps = React.ComponentProps<"div"> & {
   data?: number[];
+  isLoading?: boolean;
+  reaction?: ChartReactionOptions;
   markerIndex?: number;
   markerLabel?: string;
   interactive?: boolean;
@@ -80,6 +83,8 @@ function Sparkline({
     value.toLocaleString("en-US", { maximumFractionDigits: 1 }),
   size = "lg",
   tone = "neutral",
+  isLoading,
+  reaction,
   ...props
 }: SparklineProps) {
   const uid = React.useId().replace(/:/g, "");
@@ -141,6 +146,10 @@ function Sparkline({
 
   const caption = markerLabel ?? (marker ? format(marker.value) : "");
 
+  if (isLoading) {
+    return <div {...props} aria-busy="true" className={cn("rounded-lg border border-border bg-card", sizeClass[size], className)}><ChartReaction isLoading reaction={reaction} /></div>;
+  }
+
   return (
     <div
       className={cn(
@@ -149,6 +158,7 @@ function Sparkline({
       )}
       {...props}
     >
+      <ChartReaction reaction={reaction} className="absolute bottom-1 left-1 z-10" />
       <svg
         ref={svgRef}
         viewBox={`0 0 ${width} ${height}`}

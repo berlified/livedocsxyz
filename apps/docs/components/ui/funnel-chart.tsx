@@ -22,6 +22,8 @@ export type FunnelChartProps = {
   onStageClick?: (stage: FunnelStage) => void;
   emptyLabel?: string;
   className?: string;
+  isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 };
 
 const defaultConfig = {
@@ -42,6 +44,8 @@ export function FunnelChart({
   onStageClick,
   emptyLabel = "No funnel data available",
   className,
+  isLoading,
+  reaction,
 }: FunnelChartProps) {
   const [selected, setSelected] = React.useState<string>();
   const clean = stages.filter((stage) => Number.isFinite(stage.value) && stage.value > 0);
@@ -53,6 +57,8 @@ export function FunnelChart({
       <p className="text-sm font-medium tracking-tight">{title}</p>
       {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
       <ChartContainer
+        isLoading={isLoading}
+        reaction={reaction}
         config={{ ...defaultConfig, ...config }}
         data={clean as unknown as Record<string, unknown>[]}
         className="mt-5 w-full justify-start"

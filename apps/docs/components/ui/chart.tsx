@@ -4,6 +4,7 @@ import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 
 import { cn } from "@/lib/utils";
+import { ChartReaction, ChartReactionScope, useChartReaction, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 
 export type ChartConfig = Record<
   string,
@@ -51,6 +52,8 @@ export function ChartContainer({
   defaultSelectedDataKey,
   onSelectionChange,
   variant = "panel",
+  isLoading = false,
+  reaction,
 }: {
   id?: string;
   config: ChartConfig;
@@ -60,7 +63,10 @@ export function ChartContainer({
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
   variant?: "panel" | "plain";
+  isLoading?: boolean;
+  reaction?: ChartReactionOptions;
 }) {
+  const { emotion } = useChartReaction({ isLoading, reaction });
   const generatedId = React.useId().replace(/:/g, "");
   const chartId = id ?? generatedId;
   const [selected, setSelectedState] = React.useState<string | undefined>(
@@ -99,7 +105,14 @@ export function ChartContainer({
       >
         <ChartStyle id={chartId} config={config} />
         <div className="relative z-[1] flex h-full min-h-0 w-full flex-1 flex-col justify-end">
-          {children}
+          {isLoading ? (
+            <ChartReaction isLoading reaction={reaction} />
+          ) : (
+            <>
+              <ChartReactionScope active={Boolean(emotion)}>{children}</ChartReactionScope>
+              {emotion ? <ChartReaction reaction={reaction} className="mt-2 shrink-0 self-end" /> : null}
+            </>
+          )}
         </div>
       </div>
     </ChartContext.Provider>
@@ -200,9 +213,9 @@ export function ChartTooltipContent({
   if (!rows.length) return null;
 
   return (
-    <div className="relative min-w-40 overflow-hidden rounded-none border-2 border-border bg-background px-3 py-2 font-mono text-[11px] shadow-[3px_3px_0_0_var(--border)]">
+    <div className="pointer-events-none relative min-w-36 overflow-hidden rounded-lg border border-border bg-popover/95 px-3 py-2 text-xs shadow-lg backdrop-blur">
       {label ? (
-        <p className="mb-1.5 font-medium uppercase tracking-wide text-foreground">{label}</p>
+        <p className="mb-1.5 text-[11px] font-medium text-muted-foreground">{label}</p>
       ) : null}
       <div className="space-y-1">
         {rows.map(({ item, key, index }) => {
@@ -215,13 +228,13 @@ export function ChartTooltipContent({
             >
               <span className="flex items-center gap-2 text-muted-foreground">
                 {Icon ? (
-                  <Icon className="size-2.5" />
+                  <Icon className="size-3" />
                 ) : (
                   <PixelSwatch color={colorVar(key)} />
                 )}
                 {series?.label ?? key}
               </span>
-              <span className="font-mono text-foreground">
+              <span className="font-medium tabular-nums text-foreground">
                 {formatChartNumber(item.value)}
               </span>
             </div>

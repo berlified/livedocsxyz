@@ -4,12 +4,14 @@
   "category": "charts",
   "description": "Modern, smooth Geist-inspired chart primitives: config, container, tooltip, legend, grid, and theme tokens.",
   "dependencies": ["recharts"],
-  "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+  "registryDependencies": ["https://livedocs.xyz/r/utils.json", "https://livedocs.xyz/r/chart-reactions.json"],
   "files": ["apps/docs/components/ui/chart.tsx"],
   "examples": ["config", "tooltip", "legend"],
   "variants": ["default"],
   "keywords": ["chart", "config", "tooltip", "legend", "recharts", "theme", "smooth", "geist"],
   "props": [
+    { "name": "isLoading", "type": "boolean", "description": "Replace chart contents with shared loading feedback" },
+    { "name": "reaction", "type": "ChartReactionOptions", "description": "Optional explicit emotion or metric comparison; inherits provider assets and resolver" },
     {
       "name": "config",
       "type": "ChartConfig",

@@ -36,6 +36,8 @@ function CashflowChartRoot({
   data,
   config,
   className,
+  isLoading,
+  reaction,
 }: {
   title?: string;
   inflowLabel?: string;
@@ -45,10 +47,12 @@ function CashflowChartRoot({
   data: Record<string, unknown>[];
   config: ChartConfig;
   className?: string;
+  isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   return (
     <Card className={cn("p-5", className)}>
-      <ChartContainer config={config} data={data} className="w-full justify-start" variant="plain">
+      <ChartContainer isLoading={isLoading} reaction={reaction} config={config} data={data} className="w-full justify-start" variant="plain">
         {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
         <div className="mt-3 flex flex-wrap gap-6">
         <div>

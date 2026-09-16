@@ -45,6 +45,7 @@ export type ScatterChartProps = {
   onPointClick?: (point: ScatterPoint) => void;
   emptyLabel?: string;
   isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
   className?: string;
 };
 
@@ -97,6 +98,7 @@ export function ScatterChart(props: ScatterChartProps) {
     onPointClick,
     emptyLabel = "No points to plot",
     isLoading = false,
+    reaction,
     className,
   } = props;
   const clean = data.filter(
@@ -120,14 +122,16 @@ export function ScatterChart(props: ScatterChartProps) {
       {title ? <p className="text-sm font-medium tracking-tight">{title}</p> : null}
       {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
       <ChartContainer
+        isLoading={isLoading}
+        reaction={reaction}
         config={{ ...defaultConfig, ...config }}
         data={clean as unknown as Record<string, unknown>[]}
         className={cn("mt-4 h-64 w-full", isLoading && "bg-muted/40")}
         variant="plain"
       >
-        {isLoading || !clean.length ? (
+        {isLoading ? null : !clean.length ? (
           <p className="flex h-full items-center justify-center text-sm text-muted-foreground" role="status">
-            {isLoading ? "Loading…" : emptyLabel}
+            {emptyLabel}
           </p>
         ) : (
           <ScatterBody

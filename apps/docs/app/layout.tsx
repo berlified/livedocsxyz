@@ -1,14 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
+
+import { ChartReactionProvider } from "@/components/chart-reaction-provider";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { DocsShell } from "@/components/docs-shell";
 
 import "./globals.css";
 
-const geist = Geist({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
+const acidGrotesk = localFont({
+  src: "../public/acid-grotesk-medium.otf",
+  variable: "--font-acid-grotesk",
+  weight: "500",
+  style: "normal",
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
@@ -60,10 +66,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="dark">
       <body
-        className={`${geist.variable} ${geistMono.variable} min-h-screen bg-background font-sans text-foreground antialiased`}
+        className={`${acidGrotesk.variable} min-h-screen bg-background font-sans text-foreground antialiased`}
       >
         <ThemeProvider>
-          <DocsShell>{children}</DocsShell>
+          <ChartReactionProvider>
+            <DocsShell>{children}</DocsShell>
+          </ChartReactionProvider>
         </ThemeProvider>
       </body>
     </html>

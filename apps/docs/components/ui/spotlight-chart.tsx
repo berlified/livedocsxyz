@@ -36,6 +36,8 @@ function SpotlightChartRoot({
   markerLabel,
   xDataKey = "day",
   className,
+  isLoading,
+  reaction,
 }: {
   title?: string;
   value?: string;
@@ -47,6 +49,8 @@ function SpotlightChartRoot({
   markerLabel?: string;
   xDataKey?: string;
   className?: string;
+  isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   const peak =
     markerIndex ??
@@ -76,7 +80,7 @@ function SpotlightChartRoot({
           ) : null}
         </div>
       ) : null}
-      <ChartContainer config={config} data={data} className="mt-4 h-52 w-full" variant="plain">
+      <ChartContainer isLoading={isLoading} reaction={reaction} config={config} data={data} className="mt-4 h-52 w-full" variant="plain">
         <SpotlightBody
           data={data}
           xDataKey={xDataKey}

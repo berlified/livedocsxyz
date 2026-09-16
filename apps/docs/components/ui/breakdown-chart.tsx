@@ -25,18 +25,24 @@ function BreakdownChartRoot({
   config,
   currency = true,
   className,
+  isLoading,
+  reaction,
 }: {
   title: string;
   items: BreakdownItem[];
   config: ChartConfig;
   currency?: boolean;
   className?: string;
+  isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   const [selected, setSelected] = React.useState<string>();
 
   return (
     <Card className={cn("p-4", className)}>
       <ChartContainer
+        isLoading={isLoading}
+        reaction={reaction}
         config={config}
         data={items as unknown as Record<string, unknown>[]}
         className="w-full justify-start"
