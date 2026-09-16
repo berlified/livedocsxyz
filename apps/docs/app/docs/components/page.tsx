@@ -34,8 +34,8 @@ export default function ComponentsCatalogPage() {
             <Badge variant="outline">Chart catalog</Badge>
           </div>
           <div className="space-y-4">
-            <h1 className="max-w-3xl text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
-              Browse the chart library
+            <h1 className="max-w-3xl text-balance text-3xl font-medium tracking-[-0.03em] sm:text-4xl md:text-5xl">
+              Charts that work the way your product does.
             </h1>
             <p className="max-w-2xl text-base leading-7 text-muted-foreground md:text-lg">
               Open a chart, preview the demo, then copy the shadcn install
@@ -82,7 +82,7 @@ export default function ComponentsCatalogPage() {
         {catalogGroups.map((group) => (
           <div
             key={group.id}
-            className="min-w-0 rounded-none border-2 border-border bg-background p-5 shadow-[4px_4px_0_0_var(--border)]"
+            className="min-w-0 rounded-xl border border-border bg-card p-5"
           >
             <div className="mb-2 flex items-center justify-between gap-3">
               <div className="min-w-0">

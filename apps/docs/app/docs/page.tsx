@@ -13,7 +13,7 @@ export default function DocsHomePage() {
           <LivedocsLogo className="h-7" />
           <Badge variant="outline">Documentation</Badge>
         </div>
-        <h1 className="text-4xl font-semibold tracking-tight">Docs</h1>
+        <h1 className="text-4xl font-medium tracking-[-0.03em]">Docs</h1>
         <p className="text-base leading-7 text-muted-foreground">
           Preview components, copy a shadcn command, and drop the source into
           any project.
@@ -46,7 +46,7 @@ export default function DocsHomePage() {
           <Link
             key={item.href}
             href={item.href}
-            className="rounded-none border-2 border-border bg-card p-5 no-underline shadow-[4px_4px_0_0_var(--border)] hover:bg-accent"
+            className="rounded-xl border border-border bg-card p-5 no-underline transition-colors hover:bg-accent"
           >
             <h2 className="text-base font-semibold">{item.title}</h2>
             <p className="mt-2 text-sm text-muted-foreground">

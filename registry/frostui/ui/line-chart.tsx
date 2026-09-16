@@ -147,7 +147,6 @@ function LineBody({
             strokeWidth = 2,
             curveType = "monotone",
             isClickable,
-            isGlowing,
             connectNulls,
             dot = false,
           } = item.props;
@@ -159,6 +158,8 @@ function LineBody({
               dataKey={dataKey}
               stroke={colorVar(dataKey)}
               strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeLinejoin="round"
               strokeDasharray={strokeVariant === "dashed" ? "6 4" : undefined}
               connectNulls={connectNulls}
               dot={dot ? { r: 3, fill: colorVar(dataKey) } : false}

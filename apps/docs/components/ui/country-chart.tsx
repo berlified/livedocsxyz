@@ -57,7 +57,7 @@ function CountryChartRoot({
           </span>
           <span className="flex items-center gap-1.5">
             <span
-              className="h-2.5 w-1 rounded-none bg-foreground"
+              className="h-2.5 w-1 rounded-full bg-foreground"
               aria-hidden
             />
             {config.previous?.label ?? "Last period"}
@@ -79,21 +79,21 @@ function CountryChartRoot({
                     )
                   }
                   className={cn(
-                    "grid w-full grid-cols-[7.5rem_1fr_3.5rem] items-center gap-3 text-left transition-opacity",
+                    "grid w-full grid-cols-[7.5rem_1fr_3.5rem] items-center gap-3 rounded-lg text-left transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     muted && "opacity-35"
                   )}
                 >
                   <span className="flex min-w-0 items-center gap-2">
                     {row.code ? (
-                      <span className="rounded-none border-2 border-border bg-background px-1 py-px font-mono text-[10px] uppercase text-muted-foreground">
+                      <span className="rounded-md border border-border bg-muted/40 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                         {row.code}
                       </span>
                     ) : null}
                     <span className="truncate text-sm text-foreground">{row.region}</span>
                   </span>
-                  <span className="relative h-3.5 overflow-visible rounded-none border-2 border-border bg-muted">
+                  <span className="relative h-2 overflow-visible rounded-full bg-muted">
                     <span
-                      className="absolute inset-y-0 left-0 rounded-none"
+                      className="absolute inset-y-0 left-0 rounded-full"
                       style={{
                         width: `${currentPct}%`,
                         ...pixelFillStyle(colorVar("current")),
@@ -101,13 +101,13 @@ function CountryChartRoot({
                     />
                     {previousPct != null ? (
                       <span
-                        className="absolute top-1/2 z-10 h-3.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-none bg-foreground"
+                        className="absolute top-1/2 z-10 h-3.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground"
                         style={{ left: `${previousPct}%` }}
                         title="Last period"
                       />
                     ) : null}
                   </span>
-                  <span className="text-right font-mono text-xs text-foreground">
+                  <span className="text-right tabular-nums text-xs text-foreground">
                     {currency ? formatCompact(row.current) : row.current.toLocaleString("en-US")}
                   </span>
                 </button>

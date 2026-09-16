@@ -169,9 +169,8 @@ function ComposedBody({
           <Bar
             key={`${item.props.dataKey}-bar`}
             dataKey={item.props.dataKey}
-            fill={`url(#${id}-${item.props.dataKey}-fill)`}
-            fillOpacity={1}
-            radius={0}
+            fill={colorVar(item.props.dataKey)}
+            radius={[4, 4, 0, 0]}
             maxBarSize={42}
             isAnimationActive={false}
             opacity={selected && selected !== item.props.dataKey ? 0.25 : 1}

@@ -57,13 +57,14 @@ function toPoints(data: number[], width: number, height: number) {
   });
 }
 
-function pixelPath(points: Array<{ x: number; y: number }>) {
+function smoothPath(points: Array<{ x: number; y: number }>) {
   if (points.length === 0) return "";
   return points
     .map((point, index) => {
-      const x = Math.round(point.x);
-      const y = Math.round(point.y);
-      return `${index === 0 ? "M" : "L"}${x} ${y}`;
+      if (index === 0) return `M${point.x} ${point.y}`;
+      const previous = points[index - 1] ?? point;
+      const middle = (previous.x + point.x) / 2;
+      return `C${middle} ${previous.y} ${middle} ${point.y} ${point.x} ${point.y}`;
     })
     .join(" ");
 }
@@ -94,7 +95,7 @@ function Sparkline({
   const height = 280;
   const baseline = height - 18;
   const points = toPoints(data, width, height);
-  const line = pixelPath(points);
+  const line = smoothPath(points);
   const last = points[points.length - 1];
   const area = last
     ? `${line} L${last.x} ${baseline} L${points[0]?.x ?? 0} ${baseline} Z`
@@ -143,7 +144,7 @@ function Sparkline({
   return (
     <div
       className={cn(
-        "relative w-full rounded-none border-2 border-border bg-background shadow-[4px_4px_0_0_var(--border)]",
+        "relative w-full rounded-lg border border-border bg-card text-card-foreground",
         className
       )}
       {...props}
@@ -151,11 +152,14 @@ function Sparkline({
       <svg
         ref={svgRef}
         viewBox={`0 0 ${width} ${height}`}
-        className={cn("block w-full select-none", sizeClass[size], toneClass[tone])}
-        style={{ shapeRendering: "crispEdges", imageRendering: "pixelated" }}
-        role="img"
+        className={cn("block w-full select-none rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", sizeClass[size], toneClass[tone])}
+        role={interactive && points.length ? "slider" : "img"}
         aria-label={caption || "Trend"}
-        tabIndex={interactive ? 0 : undefined}
+        aria-valuemin={interactive && points.length ? 1 : undefined}
+        aria-valuemax={interactive && points.length ? points.length : undefined}
+        aria-valuenow={interactive && marker ? points.indexOf(marker) + 1 : undefined}
+        aria-valuetext={interactive && marker ? format(marker.value) : undefined}
+        tabIndex={interactive && points.length ? 0 : undefined}
         onPointerDown={(event) => {
           if (!interactive) return;
           if (event.pointerType !== "mouse") {
@@ -181,23 +185,10 @@ function Sparkline({
         {area ? (
           <>
             <defs>
-              <pattern
-                id={`${uid}-area`}
-                width="8"
-                height="8"
-                patternUnits="userSpaceOnUse"
-              >
-                <rect width="8" height="8" fill="currentColor" fillOpacity="0.16" />
-                <rect width="4" height="4" fill="currentColor" />
-                <rect
-                  x="4"
-                  y="4"
-                  width="4"
-                  height="4"
-                  fill="currentColor"
-                  fillOpacity="0.72"
-                />
-              </pattern>
+              <linearGradient id={`${uid}-area`} x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="currentColor" stopOpacity={0.14} />
+                <stop offset="100%" stopColor="currentColor" stopOpacity={0} />
+              </linearGradient>
             </defs>
             <path d={area} fill={`url(#${uid}-area)`} />
           </>
@@ -214,16 +205,16 @@ function Sparkline({
           d={line}
           fill="none"
           stroke="currentColor"
-          strokeWidth="3"
-          strokeLinejoin="miter"
-          strokeLinecap="square"
+          strokeWidth="2"
+          vectorEffect="non-scaling-stroke"
+          strokeLinejoin="round"
+          strokeLinecap="round"
         />
         {last ? (
-          <rect
-            x={last.x - 3}
-            y={last.y - 3}
-            width="6"
-            height="6"
+          <circle
+            cx={last.x}
+            cy={last.y}
+            r="3"
             fill="currentColor"
             className="opacity-40"
           />
@@ -238,19 +229,13 @@ function Sparkline({
               className="stroke-border"
               strokeWidth="2"
             />
-            <rect
-              x={marker.x - 5}
-              y={marker.y - 5}
-              width="10"
-              height="10"
+            <circle
+              cx={marker.x}
+              cy={marker.y}
+              r="4"
               fill="currentColor"
-            />
-            <rect
-              x={marker.x - 3}
-              y={marker.y - 3}
-              width="6"
-              height="6"
-              fill="var(--background)"
+              stroke="var(--card)"
+              strokeWidth="2"
             />
           </g>
         ) : null}
@@ -262,14 +247,14 @@ function Sparkline({
             left: `${Math.min(86, Math.max(14, (marker.x / width) * 100))}%`,
           }}
         >
-          <div className="rounded-none border-2 border-border bg-background px-2 py-1 font-mono shadow-[3px_3px_0_0_var(--border)]">
+          <div className="rounded-lg border border-border bg-popover px-2.5 py-1.5 tabular-nums shadow-sm">
             {markerLabel ? (
-              <p className="text-[11px] text-muted-foreground">{markerLabel}</p>
+              <p className="text-xs text-muted-foreground">{markerLabel}</p>
             ) : null}
             {showValue ? (
               <p
                 className={cn(
-                  "font-mono text-[11px] font-medium text-foreground",
+                  "text-xs font-medium text-foreground",
                   markerLabel && "mt-0.5"
                 )}
               >

@@ -192,9 +192,8 @@ function BarBody({
             dataKey,
             variant = "default",
             isClickable,
-            isGlowing,
             stackId,
-            radius = 0,
+            radius = 4,
           } = item.props;
           const muted = selected && selected !== dataKey;
           const fill =
@@ -202,7 +201,11 @@ function BarBody({
               ? `url(#${id}-${dataKey}-hatch)`
               : variant === "stripped"
                 ? `url(#${id}-${dataKey}-strip)`
-                : `url(#${id}-${dataKey}-fill)`;
+                : variant === "duotone"
+                  ? `url(#${id}-${dataKey}-duo)`
+                  : variant === "gradient"
+                    ? `url(#${id}-${dataKey}-fill)`
+                    : colorVar(dataKey);
           return (
             <Bar
               key={dataKey}

@@ -36,7 +36,7 @@ function ChartPie({
   innerRadius = 0,
   outerRadius = 110,
   paddingAngle = 2,
-  cornerRadius = 0,
+  cornerRadius = 4,
   startAngle = 90,
   endAngle = -270,
   glowingSectors,

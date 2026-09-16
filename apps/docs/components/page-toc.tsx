@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { usePathname } from "next/navigation";
 
 const sections = [
   { id: "overview", label: "Overview" },
@@ -12,7 +13,12 @@ const sections = [
 ];
 
 export function PageToc() {
+  const pathname = usePathname();
   const [active, setActive] = React.useState("overview");
+
+  React.useEffect(() => {
+    setActive("overview");
+  }, [pathname]);
 
   React.useEffect(() => {
     const elements = sections

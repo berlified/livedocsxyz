@@ -498,6 +498,79 @@
           "target": "components/ui/usage-meter.tsx"
         }
       ]
+    },
+    {
+      "name": "heatmap-chart",
+      "type": "registry:ui",
+      "title": "Heatmap Chart",
+      "description": "Keyboard-navigable activity grid with intensity fills, legend scale, and null-safe cells.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/button.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/heatmap-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/heatmap-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "funnel-chart",
+      "type": "registry:ui",
+      "title": "Funnel Chart",
+      "description": "Centered stage funnel with step conversion rates and optional interactive stages.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/funnel-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/funnel-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "gauge-chart",
+      "type": "registry:ui",
+      "title": "Gauge Chart",
+      "description": "Semicircular needle gauge with threshold bands and a numeric readout.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/gauge-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/gauge-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scatter-chart",
+      "type": "registry:ui",
+      "title": "Scatter Chart",
+      "description": "XY point plot with series groups, optional bubbles, mean quadrants, and labeled axes.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/scatter-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/scatter-chart.tsx"
+        }
+      ]
     }
   ]
 }

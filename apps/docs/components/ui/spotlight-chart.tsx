@@ -61,7 +61,7 @@ function SpotlightChartRoot({
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       {value ? (
         <div className="mt-2 flex items-end gap-2">
-          <p className="font-mono text-3xl font-semibold tracking-tight">{value}</p>
+          <p className="tabular-nums text-3xl font-semibold tracking-tight">{value}</p>
           {delta ? (
             <Badge
               variant="outline"
@@ -123,7 +123,7 @@ function SpotlightBody({
           content={<ChartTooltipContent />}
         />
         <Area
-          type="linear"
+          type="monotone"
           dataKey="previous"
           stroke={colorVar("previous")}
           fill="none"
@@ -132,7 +132,7 @@ function SpotlightBody({
           isAnimationActive={false}
         />
         <Area
-          type="linear"
+          type="monotone"
           dataKey="current"
           stroke={colorVar("current")}
           fill={pixelPatternUrl(id, "current")}

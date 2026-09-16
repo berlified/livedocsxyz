@@ -68,7 +68,7 @@ export function ComponentDocLayout({
 
       <section id="props" className="scroll-mt-24 space-y-3">
         <h2 className="text-xl font-semibold tracking-tight">Props</h2>
-        <div className="overflow-x-auto rounded-none border-2 border-border">
+        <div className="overflow-x-auto rounded-xl border border-border">
           <table className="w-full min-w-[36rem] text-left text-sm">
             <thead className="bg-card text-muted-foreground">
               <tr>
@@ -102,7 +102,7 @@ export function ComponentDocLayout({
 
       <section className="space-y-3">
         <h2 className="text-xl font-semibold tracking-tight">Agent guidance</h2>
-        <div className="space-y-4 rounded-none border-2 border-border bg-card p-5 text-sm shadow-[4px_4px_0_0_var(--border)]">
+        <div className="space-y-4 rounded-xl border border-border bg-card p-5 text-sm">
           <div>
             <p className="mb-1 font-medium">Purpose</p>
             <p className="text-muted-foreground">{component.ai.purpose}</p>

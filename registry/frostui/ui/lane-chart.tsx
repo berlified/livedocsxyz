@@ -49,16 +49,16 @@ function LaneChartRoot({
                   <span className="truncate text-sm text-muted-foreground">
                     {config[row.key]?.label ?? row.label}
                   </span>
-                  <span className="h-3 overflow-hidden rounded-none border-2 border-border bg-muted">
+                  <span className="h-3 overflow-hidden rounded-full bg-muted">
                     <span
-                      className="block h-full rounded-none"
+                      className="block h-full rounded-full"
                       style={{
                         width: `${(row.value / max) * 100}%`,
                         ...pixelFillStyle(colorVar(row.key)),
                       }}
                     />
                   </span>
-                  <span className="text-right font-mono text-xs">{row.value}</span>
+                  <span className="text-right tabular-nums text-xs">{row.value}</span>
                 </button>
               </li>
             );

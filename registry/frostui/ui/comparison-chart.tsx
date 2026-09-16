@@ -53,7 +53,7 @@ function ComparisonChartRoot({
         <div>
           <p className="text-sm text-muted-foreground">{title}</p>
           <div className="mt-2 flex items-center gap-2">
-            <p className="font-mono text-3xl font-semibold tracking-tight">{value}</p>
+            <p className="tabular-nums text-3xl font-semibold tracking-tight">{value}</p>
             {delta ? (
               <Badge
                 variant="outline"

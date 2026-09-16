@@ -164,20 +164,22 @@ function AreaBody({
             variant = "gradient",
             strokeVariant = "solid",
             strokeWidth = 2,
-            curveType = "monotone",
+            curveType,
+            type,
             isClickable,
-            isGlowing,
             connectNulls,
           } = item.props;
           const muted = selected && selected !== dataKey;
           const fill =
             variant === "hatched"
               ? `url(#${id}-${dataKey}-hatch)`
-              : `url(#${id}-${dataKey}-fill)`;
+              : variant === "default"
+                ? colorVar(dataKey)
+                : `url(#${id}-${dataKey}-fill)`;
           return (
             <Area
               key={dataKey}
-              type={curveType}
+              type={curveType ?? type ?? "monotone"}
               dataKey={dataKey}
               stroke={colorVar(dataKey)}
               fill={fill}

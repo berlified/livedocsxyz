@@ -35,6 +35,15 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   React.useEffect(() => {
+    if (!mobileOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
+
+  React.useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
         event.preventDefault();
@@ -71,11 +80,11 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
           <button
             type="button"
             onClick={() => setSearchOpen(true)}
-            className="ml-2 hidden h-9 min-w-0 w-full max-w-md items-center gap-2 rounded-none border-2 border-border bg-background px-3 text-left text-sm text-muted-foreground shadow-[2px_2px_0_0_var(--border)] transition-colors hover:bg-accent hover:text-foreground sm:flex"
+            className="ml-2 hidden h-9 min-w-0 w-full max-w-md items-center gap-2 rounded-full border border-border bg-background px-3.5 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:flex"
           >
             <Search className="size-3.5 shrink-0" aria-hidden />
             <span className="flex-1 truncate">Search charts and docs…</span>
-            <kbd className="rounded-none border-2 border-border bg-card px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+            <kbd className="rounded-full border border-border bg-card px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
               ⌘K
             </kbd>
           </button>
@@ -165,7 +174,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
-            className="absolute inset-0 bg-black/70"
+            className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
             aria-label="Close navigation"
             onClick={() => setMobileOpen(false)}
           />
@@ -213,7 +222,7 @@ export function DocsSidebarLink({
   return (
     <Link
       href={href}
-      className={`block rounded-md px-2.5 py-1.5 text-sm no-underline transition-colors ${
+      className={`block rounded-md px-2.5 py-1.5 text-sm no-underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
         active
           ? "bg-primary text-primary-foreground"
           : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
@@ -234,7 +243,7 @@ export function CatalogLink({
   description: string;
 }) {
   return (
-    <Link href={href} className="catalog-item group">
+    <Link href={href} className="catalog-item group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
       <div className="min-w-0">
         <p className="text-sm font-medium">{title}</p>
         <p className="mt-1 text-sm text-muted-foreground">{description}</p>

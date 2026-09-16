@@ -56,7 +56,7 @@ function MetricChartRoot({
         <div>
           <p className="text-sm text-muted-foreground">{title}</p>
           <div className="mt-2 flex items-center gap-2.5">
-            <p className="font-mono text-4xl font-semibold leading-none tracking-tight">{value}</p>
+            <p className="tabular-nums text-4xl font-semibold leading-none tracking-tight">{value}</p>
             {delta ? (
               <Badge
                 variant="outline"
@@ -72,7 +72,7 @@ function MetricChartRoot({
           </div>
         </div>
         <div
-          className="inline-flex flex-wrap rounded-none border-2 border-border bg-background p-0.5"
+          className="inline-flex flex-wrap gap-0.5 rounded-lg border border-border bg-muted/40 p-0.5"
           role="radiogroup"
           aria-label="Series"
         >
@@ -86,7 +86,7 @@ function MetricChartRoot({
                 aria-checked={selected}
                 onClick={() => setActive(item.key)}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-none px-2 py-1 font-mono text-[10px] uppercase tracking-wide text-muted-foreground",
+                  "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   selected && "bg-accent text-foreground"
                 )}
               >

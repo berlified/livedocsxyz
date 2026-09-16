@@ -1,0 +1,34 @@
+{
+  "name": "gauge-chart",
+  "title": "Gauge Chart",
+  "description": "Semicircular needle gauge with threshold bands and a numeric readout.",
+  "category": "charts",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/gauge-chart.tsx"],
+  "examples": ["ops"],
+  "variants": ["default"],
+  "keywords": ["chart", "gauge", "meter", "kpi", "threshold", "capacity", "sla"],
+  "props": [
+    { "name": "label", "type": "string", "description": "Metric name" },
+    { "name": "value", "type": "number", "description": "Current value" },
+    { "name": "min", "type": "number", "description": "Range minimum" },
+    { "name": "max", "type": "number", "description": "Range maximum" },
+    { "name": "unit", "type": "string", "description": "Unit suffix" },
+    { "name": "thresholds", "type": "number[]", "description": "Band boundaries inside the range" },
+    { "name": "formatValue", "type": "(value: number) => string", "description": "Readout formatter" },
+    { "name": "ariaLabel", "type": "string", "description": "Override the announced value" },
+    { "name": "className", "type": "string", "description": "Card class passthrough" }
+  ],
+  "ai": {
+    "purpose": "Display a single value against a bounded range with target bands.",
+    "useWhen": ["Capacity", "SLA attainment", "Utilization"],
+    "preferOver": ["A radial bar when a needle and thresholds read better"],
+    "avoid": ["Unbounded metrics", "Multi-series comparison"],
+    "compositions": ["GaugeChart in a KPI row with TrendCard"]
+  }
+}

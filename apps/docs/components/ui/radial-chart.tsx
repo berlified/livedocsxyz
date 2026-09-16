@@ -157,7 +157,8 @@ function RadialBody({
               ? { fill: "var(--border)", fillOpacity: 0.45 }
               : undefined
           }
-          cornerRadius={series?.props.cornerRadius ?? 0}
+          cornerRadius={series?.props.cornerRadius ?? 8}
+          barSize={series?.props.barSize}
           stroke="var(--background)"
           strokeWidth={2}
           onClick={(entry: Record<string, unknown>) => {

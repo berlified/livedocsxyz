@@ -75,7 +75,7 @@ function TrendCardRoot({
       </div>
 
       <div className="mt-3 flex items-end gap-2">
-        <p className="font-mono text-3xl font-semibold tracking-tight">{value}</p>
+        <p className="tabular-nums text-3xl font-semibold tracking-tight">{value}</p>
         {delta ? (
           <Badge variant="outline" className={cn("mb-1", deltaClass)}>
             {delta}
@@ -83,7 +83,7 @@ function TrendCardRoot({
         ) : null}
       </div>
       {baseline ? (
-        <p className="mt-1 font-mono text-xs text-muted-foreground">{baseline}</p>
+        <p className="mt-1 tabular-nums text-xs text-muted-foreground">{baseline}</p>
       ) : null}
 
       <ChartContainer
@@ -102,7 +102,7 @@ function TrendCardRoot({
                 content={<ChartTooltipContent />}
               />
               <Line
-                type="linear"
+                type="monotone"
                 dataKey={compareKey}
                 stroke={colorVar(compareKey)}
                 strokeWidth={2}
@@ -111,7 +111,7 @@ function TrendCardRoot({
                 isAnimationActive={false}
               />
               <Line
-                type="linear"
+                type="monotone"
                 dataKey={currentKey}
                 stroke={colorVar(currentKey)}
                 strokeWidth={3}

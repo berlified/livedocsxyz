@@ -99,11 +99,11 @@ function RingBody({
           </RechartsPieChart>
         </ResponsiveContainer>
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <p className="font-mono text-2xl font-semibold tracking-tight">
+          <p className="tabular-nums text-2xl font-semibold tracking-tight">
             {total.toLocaleString("en-US")}
           </p>
           {centerLabel ? (
-            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {centerLabel}
             </p>
           ) : null}
@@ -127,11 +127,11 @@ function RingBody({
                   <PixelSwatch color={colorVar(item.key)} />
                   {item.label}
                 </span>
-                <span className="font-mono text-xs text-foreground">
+                <span className="tabular-nums text-xs text-foreground">
                   {item.value.toLocaleString("en-US")}
                 </span>
               </button>
-              <p className="pl-4 font-mono text-[10px] text-muted-foreground">
+              <p className="pl-4 tabular-nums text-[10px] text-muted-foreground">
                 {share.toFixed(1)}%
               </p>
             </li>

@@ -18,10 +18,10 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "livedocs: Pixel-art chart components for billing companies.",
+    default: "livedocs: Beautiful charts. Built for your product.",
     template: "%s — livedocs",
   },
-  description: "Pixel-art chart components for shadcn.",
+  description: "Modern, composable React charts for dashboards and data-rich products. Install with shadcn. Make them yours.",
   metadataBase: new URL("https://www.livedocs.xyz"),
 
   icons: {
@@ -32,22 +32,22 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "https://www.livedocs.xyz",
-    title: "livedocs: Pixel-art chart components for billing companies.",
-    description: "Pixel-art chart components for shadcn.",
+    title: "livedocs: Beautiful charts. Built for your product.",
+    description: "Modern, composable React charts for dashboards and data-rich products. Install with shadcn. Make them yours.",
     images: [
       {
         url: "/livedocs.png",
         width: 1200,
         height: 630,
-        alt: "livedocs — Pixel-art chart components for billing companies.",
+        alt: "livedocs — Beautiful charts. Built for your product.",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "livedocs: Pixel-art chart components for billing companies.",
-    description: "Pixel-art chart components for shadcn.",
+    title: "livedocs: Beautiful charts. Built for your product.",
+    description: "Modern, composable React charts for dashboards and data-rich products. Install with shadcn. Make them yours.",
     images: ["/livedocs.png"],
   },
 };

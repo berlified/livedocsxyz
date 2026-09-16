@@ -57,7 +57,7 @@ function CashflowChartRoot({
             {inflowLabel ?? config.inflow?.label ?? "Inflow"}
           </p>
           {inflowValue ? (
-            <p className="mt-1 font-mono text-2xl font-semibold tracking-tight">{inflowValue}</p>
+            <p className="mt-1 tabular-nums text-2xl font-semibold tracking-tight">{inflowValue}</p>
           ) : null}
         </div>
         <div>
@@ -66,7 +66,7 @@ function CashflowChartRoot({
             {outflowLabel ?? config.outflow?.label ?? "Outflow"}
           </p>
           {outflowValue ? (
-            <p className="mt-1 font-mono text-2xl font-semibold tracking-tight">{outflowValue}</p>
+            <p className="mt-1 tabular-nums text-2xl font-semibold tracking-tight">{outflowValue}</p>
           ) : null}
         </div>
         </div>

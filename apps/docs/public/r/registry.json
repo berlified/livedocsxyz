@@ -176,6 +176,30 @@
       "type": "registry:ui",
       "title": "Usage Meter",
       "description": "Quota remaining with a used track and a reset caption."
+    },
+    {
+      "name": "heatmap-chart",
+      "type": "registry:ui",
+      "title": "Heatmap Chart",
+      "description": "Keyboard-navigable activity grid with intensity fills, legend scale, and null-safe cells."
+    },
+    {
+      "name": "funnel-chart",
+      "type": "registry:ui",
+      "title": "Funnel Chart",
+      "description": "Centered stage funnel with step conversion rates and optional interactive stages."
+    },
+    {
+      "name": "gauge-chart",
+      "type": "registry:ui",
+      "title": "Gauge Chart",
+      "description": "Semicircular needle gauge with threshold bands and a numeric readout."
+    },
+    {
+      "name": "scatter-chart",
+      "type": "registry:ui",
+      "title": "Scatter Chart",
+      "description": "XY point plot with series groups, optional bubbles, mean quadrants, and labeled axes."
     }
   ]
 }

@@ -20,6 +20,10 @@ import cashflowChart from "./components/cashflow-chart.json";
 import spotlightChart from "./components/spotlight-chart.json";
 import laneChart from "./components/lane-chart.json";
 import usageMeter from "./components/usage-meter.json";
+import heatmapChart from "./components/heatmap-chart.json";
+import funnelChart from "./components/funnel-chart.json";
+import gaugeChart from "./components/gauge-chart.json";
+import scatterChart from "./components/scatter-chart.json";
 
 export type {
   ComponentAIGuidance,
@@ -50,6 +54,10 @@ export const components: RegistryComponent[] = [
   spotlightChart,
   laneChart,
   usageMeter,
+  heatmapChart,
+  funnelChart,
+  gaugeChart,
+  scatterChart,
 ] as RegistryComponent[];
 
 export const registry: RegistryIndex = {

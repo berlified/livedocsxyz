@@ -43,7 +43,7 @@ function BreakdownChartRoot({
         variant="plain"
       >
       <p className="text-sm text-muted-foreground">{title}</p>
-      <div className="mt-3 flex h-3 overflow-hidden rounded-none border-2 border-border bg-muted">
+      <div className="mt-3 flex h-3 overflow-hidden rounded-full bg-muted">
         {items.map((item) => (
           <button
             key={item.key}
@@ -74,7 +74,7 @@ function BreakdownChartRoot({
                   setSelected((current) => (current === item.key ? undefined : item.key))
                 }
                 className={cn(
-                  "flex w-full items-center justify-between gap-3 rounded-none px-1 py-0.5 text-left text-sm transition-opacity",
+                  "flex w-full items-center justify-between gap-3 rounded-lg px-2 py-1 text-left text-sm transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   muted && "opacity-40"
                 )}
               >
@@ -82,7 +82,7 @@ function BreakdownChartRoot({
                   <PixelSwatch color={colorVar(item.key)} />
                   {config[item.key]?.label ?? item.label}
                 </span>
-                <span className="flex items-center gap-3 font-mono text-xs">
+                <span className="flex items-center gap-3 tabular-nums text-xs">
                   <span className="text-foreground">
                     {currency
                       ? item.value.toLocaleString("en-US", {

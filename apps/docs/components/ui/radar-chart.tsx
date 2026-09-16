@@ -142,8 +142,9 @@ function RadarBody({
               key={dataKey}
               dataKey={dataKey}
               stroke={colorVar(dataKey)}
-              fill={pixelPatternUrl(id, dataKey)}
-              fillOpacity={variant === "lines" ? 0 : Math.max(fillOpacity, 0.85)}
+              fill={variant === "lines" ? "none" : colorVar(dataKey)}
+              fillOpacity={variant === "lines" ? 0 : fillOpacity}
+              strokeLinejoin="round"
               strokeWidth={2}
               opacity={muted ? 0.25 : 1}
               onClick={() => isClickable && setSelected(dataKey)}

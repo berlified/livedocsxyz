@@ -21,13 +21,13 @@ function UsageMeterRoot({
   resetLabel?: string;
   className?: string;
 }) {
-  const used = max === 0 ? 0 : Math.min(1, value / max) * 100;
+  const used = max <= 0 ? 0 : Math.max(0, Math.min(1, value / max)) * 100;
   const left = Math.max(0, max - value);
 
   return (
     <Card className={cn("p-5", className)}>
       <p className="text-sm text-muted-foreground">{title}</p>
-      <p className="mt-2 font-mono text-3xl font-semibold tracking-tight">
+      <p className="mt-2 tabular-nums text-3xl font-semibold tracking-tight">
         {left.toLocaleString("en-US", {
           style: "currency",
           currency: "USD",
@@ -36,9 +36,9 @@ function UsageMeterRoot({
       {remainingLabel ? (
         <p className="mt-1 text-xs text-muted-foreground">{remainingLabel}</p>
       ) : null}
-      <div className="mt-4 h-3 overflow-hidden rounded-none border-2 border-border bg-muted">
+      <div className="mt-4 h-3 overflow-hidden rounded-full bg-muted">
         <div
-          className="h-full rounded-none"
+          className="h-full rounded-full"
           style={{ width: `${used}%`, ...pixelFillStyle("var(--primary)") }}
         />
       </div>

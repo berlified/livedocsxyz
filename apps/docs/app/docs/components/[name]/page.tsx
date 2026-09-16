@@ -39,6 +39,12 @@ import {
   LaneChartPreview,
   UsageMeterPreview,
 } from "@/components/chart-previews";
+import {
+  HeatmapChartPreview,
+  FunnelChartPreview,
+  GaugeChartPreview,
+  ScatterChartPreview,
+} from "@/components/chart-previews-extended";
 
 const usageByName: Record<string, string> = {
   chart: `import { monthlyData, trafficConfig } from "@/components/ui/chart"
@@ -308,6 +314,59 @@ export function Example() {
     />
   )
 }`,
+  "heatmap-chart": `import { heatmapCells, heatmapConfig } from "@/components/chart-previews-extended"
+import { HeatmapChart } from "@/components/ui/heatmap-chart"
+
+export function Example() {
+  return (
+    <HeatmapChart
+      title="Orders by hour"
+      data={heatmapCells}
+      config={heatmapConfig}
+    />
+  )
+}`,
+  "funnel-chart": `import { funnelStages, funnelConfig } from "@/components/chart-previews-extended"
+import { FunnelChart } from "@/components/ui/funnel-chart"
+
+export function Example() {
+  return (
+    <FunnelChart
+      title="Acquisition funnel"
+      stages={funnelStages}
+      config={funnelConfig}
+    />
+  )
+}`,
+  "gauge-chart": `import { GaugeChart } from "@/components/ui/gauge-chart"
+
+export function Example() {
+  return (
+    <GaugeChart
+      label="Capacity"
+      value={72}
+      min={0}
+      max={100}
+      unit="%"
+      thresholds={[60, 85]}
+    />
+  )
+}`,
+  "scatter-chart": `import { scatterCohorts, scatterConfig } from "@/components/chart-previews-extended"
+import { ScatterChart } from "@/components/ui/scatter-chart"
+
+export function Example() {
+  return (
+    <ScatterChart
+      title="Spend vs retention"
+      data={scatterCohorts}
+      config={scatterConfig}
+      xLabel="Spend ($)"
+      yLabel="Retention (%)"
+      meanLine
+    />
+  )
+}`,
 };
 
 const previewByName: Record<string, ReactNode> = {
@@ -332,6 +391,10 @@ const previewByName: Record<string, ReactNode> = {
   "spotlight-chart": <SpotlightChartPreview />,
   "lane-chart": <LaneChartPreview />,
   "usage-meter": <UsageMeterPreview />,
+  "heatmap-chart": <HeatmapChartPreview />,
+  "funnel-chart": <FunnelChartPreview />,
+  "gauge-chart": <GaugeChartPreview />,
+  "scatter-chart": <ScatterChartPreview />,
 };
 
 const examplesByName: Record<string, ReactNode> = {
@@ -369,6 +432,10 @@ const sourcePaths: Record<string, string> = {
   "spotlight-chart": "apps/docs/components/ui/spotlight-chart.tsx",
   "lane-chart": "apps/docs/components/ui/lane-chart.tsx",
   "usage-meter": "apps/docs/components/ui/usage-meter.tsx",
+  "heatmap-chart": "apps/docs/components/ui/heatmap-chart.tsx",
+  "funnel-chart": "apps/docs/components/ui/funnel-chart.tsx",
+  "gauge-chart": "apps/docs/components/ui/gauge-chart.tsx",
+  "scatter-chart": "apps/docs/components/ui/scatter-chart.tsx",
 };
 
 function readRegistrySource(name: string) {
