@@ -68,7 +68,7 @@ export function FunnelChart({
         {!available ? <p role="status" className="flex min-h-48 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</p> : (
           <>
             <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-4">
-              <svg viewBox={`0 0 240 ${stages.length * 64}`} preserveAspectRatio="none" className="h-full w-full overflow-visible" aria-hidden="true">
+              <svg viewBox={`0 0 240 ${stages.length * 64}`} preserveAspectRatio="none" className="w-full overflow-visible" style={{ height: stages.length * 64 }} aria-hidden="true">
                 {stages.map((stage, index) => {
                   const top = width(stage.value);
                   const bottom = width(stages[index + 1]?.value ?? stage.value);

@@ -58,6 +58,16 @@ import { TrendCard } from "@/components/ui/trend-card";
 
 import { ComponentPreview } from "@/components/component-preview";
 
+export {
+  WaterfallChartPreview,
+  WaterfallChartExamples,
+  CandlestickChartPreview,
+  CandlestickChartExamples,
+  ChartReactionsPreview,
+  ChartReactionsExamples,
+  FunnelConversionExamples,
+} from "@/components/financial-chart-previews";
+
 function PreviewPair({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid gap-3 p-4 sm:grid-cols-2 [&>*]:min-w-0 [&>*]:w-full">

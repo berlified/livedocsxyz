@@ -25,6 +25,8 @@ import heatmapChart from "./components/heatmap-chart.json";
 import funnelChart from "./components/funnel-chart.json";
 import gaugeChart from "./components/gauge-chart.json";
 import scatterChart from "./components/scatter-chart.json";
+import waterfallChart from "./components/waterfall-chart.json";
+import candlestickChart from "./components/candlestick-chart.json";
 
 export type {
   ComponentAIGuidance,
@@ -60,6 +62,8 @@ export const components: RegistryComponent[] = [
   funnelChart,
   gaugeChart,
   scatterChart,
+  waterfallChart,
+  candlestickChart,
 ] as RegistryComponent[];
 
 export const registry: RegistryIndex = {

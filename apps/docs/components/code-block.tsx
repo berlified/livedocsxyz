@@ -52,8 +52,6 @@ const languageRules: Record<string, TokenRule[]> = {
     ["operator", String.raw`[>+~:=]`],
   ],
 };
-languageRules.sh = languageRules.bash;
-languageRules.shell = languageRules.bash;
 
 const syntaxStyles = {
   "--syntax-comment": "var(--muted-foreground)",

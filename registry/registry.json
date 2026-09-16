@@ -536,8 +536,10 @@
       "name": "funnel-chart",
       "type": "registry:ui",
       "title": "Funnel Chart",
-      "description": "Centered stage funnel with step conversion rates and optional interactive stages.",
+      "description": "Connected tapered stages with overall conversion, keyboard-selectable metrics, and quiet hover emphasis.",
       "registryDependencies": [
+        "https://livedocs.xyz/r/chart-reactions.json",
+        "https://livedocs.xyz/r/button.json",
         "https://livedocs.xyz/r/chart.json",
         "https://livedocs.xyz/r/card.json",
         "https://livedocs.xyz/r/utils.json"
@@ -583,6 +585,44 @@
           "path": "apps/docs/components/ui/scatter-chart.tsx",
           "type": "registry:ui",
           "target": "components/ui/scatter-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "waterfall-chart",
+      "type": "registry:ui",
+      "title": "Waterfall Chart",
+      "description": "Connected balance bridge with signed changes, absolute totals, keyboard exploration, and an accessible data table.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/chart-reactions.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/waterfall-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/waterfall-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "candlestick-chart",
+      "type": "registry:ui",
+      "title": "Candlestick Chart",
+      "description": "OHLC candles with hollow up bodies, filled down bodies, optional volume, keyboard details, and an accessible data table.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/chart-reactions.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/candlestick-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/candlestick-chart.tsx"
         }
       ]
     }

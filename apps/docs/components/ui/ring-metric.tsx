@@ -145,10 +145,16 @@ function RingBody({
               <button
                 type="button"
                 onClick={() => setSelected(item.key)}
+                aria-pressed={selected === item.key}
+                onMouseEnter={() => setHovered(item.key)}
+                onMouseLeave={() => setHovered(undefined)}
+                onFocus={() => setFocused(item.key)}
+                onBlur={() => setFocused(undefined)}
                 className={cn(
-                  "flex w-full items-center justify-between gap-2 text-left transition-opacity",
-                  muted && "opacity-40"
+                  "flex w-full items-center justify-between gap-2 rounded-md text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                  muted && focused !== item.key && hovered !== item.key && "opacity-40"
                 )}
+                style={{ transition: animationsEnabled && !reducedMotion ? "opacity 220ms ease" : "none" }}
               >
                 <span className="flex items-center gap-2 text-muted-foreground">
                   <PixelSwatch color={colorVar(item.key)} />

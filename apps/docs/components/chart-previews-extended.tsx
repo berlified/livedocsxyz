@@ -91,7 +91,6 @@ export function FunnelChartPreview() {
       title="Acquisition funnel"
       description="Visitors to paid conversion"
       stages={funnelStages}
-      config={funnelConfig}
     />
   );
 }

@@ -1,0 +1,33 @@
+{
+  "name": "candlestick-chart",
+  "title": "Candlestick Chart",
+  "category": "charts",
+  "description": "OHLC candles with hollow up bodies, filled down bodies, optional volume, keyboard details, and an accessible data table.",
+  "dependencies": [],
+  "registryDependencies": ["https://livedocs.xyz/r/chart.json", "https://livedocs.xyz/r/chart-reactions.json", "https://livedocs.xyz/r/card.json", "https://livedocs.xyz/r/utils.json"],
+  "files": ["apps/docs/components/ui/candlestick-chart.tsx"],
+  "examples": ["price-and-volume", "negative-prices", "doji", "empty", "loading"],
+  "variants": ["with-volume", "price-only"],
+  "keywords": ["candlestick", "ohlc", "trading", "price", "volume", "financial", "doji"],
+  "props": [
+    { "name": "data", "type": "CandlestickDatum[]", "description": "Ordered label, open, high, low, close, and optional volume. Invalid OHLC records remain as gaps; negative prices are allowed." },
+    { "name": "title", "type": "string", "description": "Accessible chart heading" },
+    { "name": "description", "type": "string", "description": "Secondary caption" },
+    { "name": "config", "type": "ChartConfig", "description": "up and down semantic colors" },
+    { "name": "showVolume", "type": "boolean", "default": "true", "description": "Show a separate normalized volume pane when valid nonnegative volume exists" },
+    { "name": "formatValue", "type": "(value: number) => string", "description": "OHLC and price axis formatter" },
+    { "name": "formatVolume", "type": "(value: number) => string", "description": "Volume details formatter" },
+    { "name": "onCandleClick", "type": "(datum: CandlestickDatum, index: number) => void", "description": "Pointer or keyboard activation with original data index" },
+    { "name": "isLoading", "type": "boolean", "description": "Shared loading reaction" },
+    { "name": "reaction", "type": "ChartReactionOptions", "description": "Per-chart emotion, metric, asset, and resolver overrides" },
+    { "name": "emptyLabel", "type": "string", "description": "Message when no valid OHLC records remain" },
+    { "name": "className", "type": "string", "description": "Card classes" }
+  ],
+  "ai": {
+    "purpose": "Show within-period price movement and traded volume without losing OHLC information.",
+    "useWhen": ["Market sessions", "Commodity prices", "Financial dashboards"],
+    "preferOver": ["A closing-price line when intraday range matters"],
+    "avoid": ["Non-OHLC data", "Categorical comparisons"],
+    "compositions": ["CandlestickChart beside a volume metric"]
+  }
+}

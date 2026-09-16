@@ -52,7 +52,7 @@ export function ChartInteractiveSector({
       aria-label={label}
       aria-pressed={onActivate ? selected : undefined}
       className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-      opacity={muted && !hovered && !focused ? 0.3 : 1}
+      opacity={muted && !active ? 0.3 : 1}
       stroke={focused ? "var(--ring)" : geometry.stroke}
       strokeWidth={focused ? 3 : geometry.strokeWidth}
       style={{

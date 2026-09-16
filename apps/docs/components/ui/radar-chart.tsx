@@ -16,10 +16,7 @@ import {
   ChartContainer,
   ChartLegend,
   ChartTooltip,
-  GradientFill,
   colorVar,
-  pixelPatternId,
-  pixelPatternUrl,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
@@ -170,22 +167,13 @@ function RadarBody({
   extras: React.ReactNode[];
   gridType: "polygon" | "circle";
 }) {
-  const { id, config, selected, setSelected } = useChart();
+  const { config, selected, setSelected } = useChart();
   const reducedMotion = useChartReducedMotion();
   const { animationsEnabled = true } = useChartReactions();
 
   return (
     <ResponsiveContainer width="100%" height="100%">
       <RechartsRadarChart data={data} cx="50%" cy="50%" outerRadius="72%">
-        <defs>
-          {series.map((item) => (
-            <GradientFill
-              key={item.props.dataKey}
-              id={pixelPatternId(id, item.props.dataKey)}
-              color={colorVar(item.props.dataKey)}
-            />
-          ))}
-        </defs>
         <PolarGrid
           gridType={gridType}
           stroke="var(--border)"

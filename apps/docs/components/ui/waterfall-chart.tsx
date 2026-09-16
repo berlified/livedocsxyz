@@ -47,7 +47,7 @@ export function WaterfallChart({ data, title = "Balance movement", description, 
   const validRows = rows.filter((row) => row.valid);
   const magnitude = validRows.reduce((max, row) => Math.max(max, Math.abs(row.start), Math.abs(row.end)), 1);
   const low = validRows.reduce((min, row) => Math.min(min, row.start / magnitude, row.end / magnitude), 0);
-  const high = validRows.reduce((max, row) => Math.max(max, row.start / magnitude, row.end / magnitude), 0);
+  const high = validRows.reduce((max, row) => Math.max(max, row.start / magnitude, row.end / magnitude), 0) || (low === 0 ? 1 : 0);
   const span = high - low || 1;
   const y = (value: number) => 28 + (high - value / magnitude) / span * 208;
   const chartWidth = Math.max(560, rows.length * 78 + 96);
