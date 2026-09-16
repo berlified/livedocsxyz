@@ -84,7 +84,7 @@ function renderSankeyNode(props: SankeyNodeProps, fillId: string) {
         width={width}
         height={height}
         fill={`url(#${fillId})`}
-        radius={0}
+        radius={2}
       />
       <text
         x={x + width + 8}

@@ -42,7 +42,7 @@ function LaneChartRoot({
                     setSelected((current) => (current === row.key ? undefined : row.key))
                   }
                   className={cn(
-                    "grid w-full grid-cols-[7rem_1fr_3rem] items-center gap-3 text-left transition-opacity",
+                    "grid w-full grid-cols-[7rem_1fr_3rem] items-center gap-3 rounded-lg text-left transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     muted && "opacity-35"
                   )}
                 >

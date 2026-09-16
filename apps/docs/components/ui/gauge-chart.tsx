@@ -90,8 +90,8 @@ export function GaugeChart({
         className="mt-2 h-44 w-full justify-center"
       >
         <div className="grid h-full place-items-center">
-          <div className="relative pb-2">
-            <svg viewBox="0 0 160 104" className="w-56 max-w-full" role="img" aria-label={describe}>
+          <div className="relative">
+            <svg viewBox="0 0 160 148" className="w-56 max-w-full" role="img" aria-label={describe}>
               <path d={arcPath(safeMin, safeMax, safeMin, safeMax, R)} stroke="var(--muted)" strokeWidth={12} fill="none" />
               {segments.map((seg, i) => (
                 <path
@@ -131,7 +131,7 @@ export function GaugeChart({
                 );
               })}
             </svg>
-            <p className="pointer-events-none absolute inset-x-0 bottom-0 text-center font-mono text-2xl font-semibold tracking-tight">
+            <p className="pointer-events-none absolute inset-x-0 top-[76%] text-center font-mono text-2xl font-semibold tracking-tight">
               {format(clamped)}
             </p>
           </div>

@@ -74,7 +74,7 @@ function BreakdownChartRoot({
                   setSelected((current) => (current === item.key ? undefined : item.key))
                 }
                 className={cn(
-                  "flex w-full items-center justify-between gap-3 rounded-lg px-2 py-1 text-left text-sm transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  "flex w-full items-center justify-between gap-3 rounded-lg px-2 py-1 text-left text-sm transition-colors hover:bg-accent",
                   muted && "opacity-40"
                 )}
               >

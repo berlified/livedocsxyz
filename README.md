@@ -9,7 +9,7 @@
 
 <img src="apps/docs/public/logo.svg" alt="livedocs" width="37" height="48" />
 
-Pixel-art chart components for [shadcn](https://ui.shadcn.com). Preview on [livedocs.xyz](https://livedocs.xyz), copy the command, own the source.
+Modern, smooth Geist-inspired chart components for [shadcn](https://ui.shadcn.com). Preview on [livedocs.xyz](https://livedocs.xyz), copy the command, own the source.
 
 Built by [@oX8erlin](https://x.com/oX8erlin)
 

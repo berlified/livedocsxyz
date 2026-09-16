@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { Card } from "@/components/ui/card";
-import { ChartContainer, colorVar, pixelFillStyle, type ChartConfig } from "@/components/ui/chart";
+import { ChartContainer, colorVar, type ChartConfig } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
 
 export type FunnelStage = {
@@ -78,11 +78,12 @@ export function FunnelChart({
                   <span className="sr-only">{summary}</span>
                   <span
                     aria-hidden
-                    className="block h-10 w-full border border-border/60"
+                    className="block h-10 w-full rounded-md border border-border/60"
                     style={{
                       width: `${width}%`,
                       marginInline: "auto",
-                      ...pixelFillStyle(color),
+                      backgroundColor: color,
+                      opacity: 0.92,
                     }}
                   />
                 </>

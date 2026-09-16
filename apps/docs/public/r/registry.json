@@ -55,7 +55,7 @@
       "name": "chart",
       "type": "registry:ui",
       "title": "Chart",
-      "description": "Shared chart primitives: config, container, tooltip, legend, grid, and theme tokens."
+      "description": "Modern, smooth Geist-inspired chart primitives: config, container, tooltip, legend, grid, and theme tokens."
     },
     {
       "name": "sparkline",

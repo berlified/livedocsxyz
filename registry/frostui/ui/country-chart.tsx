@@ -79,7 +79,7 @@ function CountryChartRoot({
                     )
                   }
                   className={cn(
-                    "grid w-full grid-cols-[7.5rem_1fr_3.5rem] items-center gap-3 text-left transition-opacity",
+                    "grid w-full grid-cols-[7.5rem_1fr_3.5rem] items-center gap-3 rounded-lg text-left transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     muted && "opacity-35"
                   )}
                 >

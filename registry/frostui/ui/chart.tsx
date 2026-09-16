@@ -86,20 +86,18 @@ export function ChartContainer({
         data-chart={chartId}
         className={cn(
           "relative flex aspect-auto w-full flex-col justify-end text-xs",
-          "[&_svg]:[shape-rendering:crispEdges] [&_svg]:[image-rendering:pixelated]",
           "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-axis-tick_text]:font-mono",
           "[&_.recharts-cartesian-grid-horizontal_line]:stroke-border [&_.recharts-cartesian-grid-vertical_line]:stroke-border",
           "[&_.recharts-rectangle.recharts-tooltip-cursor]:fill-foreground/15 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-foreground",
-          "[&_.recharts-dot]:stroke-background [&_.recharts-area-curve]:[stroke-linejoin:miter] [&_.recharts-line-curve]:[stroke-linejoin:miter]",
+          "[&_.recharts-dot]:stroke-background [&_.recharts-curve]:[stroke-linejoin:round] [&_.recharts-curve]:[stroke-linecap:round]", 
           "[&_.recharts-tooltip-wrapper]:z-10",
           variant === "panel" &&
-            "rounded-none border-2 border-border bg-background shadow-[4px_4px_0_0_var(--border)]",
+            "rounded-lg border border-border bg-card p-3", 
           variant === "plain" && "rounded-none border-0 bg-transparent shadow-none",
           className
         )}
       >
         <ChartStyle id={chartId} config={config} />
-        <PixelScreen id={chartId} />
         <div className="relative z-[1] flex h-full min-h-0 w-full flex-1 flex-col justify-end">
           {children}
         </div>
@@ -327,46 +325,16 @@ export function pixelPatternUrl(scope: string, key: string) {
 }
 
 export function pixelFillStyle(color: string): React.CSSProperties {
-  return {
-    backgroundColor: `color-mix(in oklab, ${color} 28%, transparent)`,
-    backgroundImage: `linear-gradient(90deg, ${color} 50%, transparent 50%), linear-gradient(${color} 50%, transparent 50%)`,
-    backgroundSize: "4px 4px",
-    backgroundPosition: "0 0, 2px 2px",
-  };
+  return { backgroundColor: color };
 }
 
 export function PixelSwatch({ color }: { color: string }) {
   return (
     <span
-      className="size-2.5 shrink-0 rounded-none border border-border"
+      aria-hidden="true"
+      className="size-2 shrink-0 rounded-full"
       style={pixelFillStyle(color)}
     />
-  );
-}
-
-function PixelScreen({ id }: { id: string }) {
-  return (
-    <svg
-      className="pointer-events-none absolute inset-0 size-full text-border"
-      aria-hidden
-    >
-      <defs>
-        <pattern
-          id={`${id}-screen`}
-          width="8"
-          height="8"
-          patternUnits="userSpaceOnUse"
-        >
-          <path
-            d="M8 0H0V8"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="1"
-          />
-        </pattern>
-      </defs>
-      <rect width="100%" height="100%" fill={`url(#${id}-screen)`} />
-    </svg>
   );
 }
 
@@ -378,9 +346,9 @@ export function HatchPattern({
   color: string;
 }) {
   return (
-    <pattern id={id} width="8" height="8" patternUnits="userSpaceOnUse">
-      <rect width="4" height="4" fill={color} fillOpacity={0.7} />
-      <rect x="4" y="4" width="4" height="4" fill={color} fillOpacity={0.7} />
+    <pattern id={id} width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <rect width="6" height="6" fill={color} fillOpacity={0.08} />
+      <line x1="0" y1="0" x2="0" y2="6" stroke={color} strokeOpacity={0.45} strokeWidth={1.5} />
     </pattern>
   );
 }
@@ -393,11 +361,10 @@ export function GradientFill({
   color: string;
 }) {
   return (
-    <pattern id={id} width="8" height="8" patternUnits="userSpaceOnUse">
-      <rect width="8" height="8" fill={color} fillOpacity={0.16} />
-      <rect width="4" height="4" fill={color} />
-      <rect x="4" y="4" width="4" height="4" fill={color} fillOpacity={0.72} />
-    </pattern>
+    <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stopColor={color} stopOpacity={0.4} />
+      <stop offset="100%" stopColor={color} stopOpacity={0.04} />
+    </linearGradient>
   );
 }
 

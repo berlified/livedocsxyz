@@ -2,7 +2,7 @@
 @import "../../../registry/frostui/style/theme.css";
 
 @theme inline {
-  --font-sans: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  --font-sans: var(--font-acid-grotesk, "Acid Grotesk"), var(--font-geist-sans), Arial, Helvetica, sans-serif;
   --font-mono: var(--font-geist-mono), monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);

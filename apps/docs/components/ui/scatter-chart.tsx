@@ -16,8 +16,6 @@ import {
 import {
   ChartContainer,
   colorVar,
-  pixelPatternId,
-  pixelPatternUrl,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
@@ -185,21 +183,6 @@ function ScatterBody({
         margin={{ ...baseMargin, bottom: 20 }}
         style={{ outline: "none" }}
       >
-        <defs>
-          {groups.map((group) => (
-            <pattern
-              key={group.name}
-              id={pixelPatternId(id, group.name)}
-              width="8"
-              height="8"
-              patternUnits="userSpaceOnUse"
-            >
-              <rect width="8" height="8" fill={colorVar(group.name)} fillOpacity={0.24} />
-              <rect width="4" height="4" fill={colorVar(group.name)} />
-              <rect x="4" y="4" width="4" height="4" fill={colorVar(group.name)} fillOpacity={0.72} />
-            </pattern>
-          ))}
-        </defs>
         <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" />
         <XAxis
           type="number"
@@ -241,7 +224,7 @@ function ScatterBody({
             key={group.name}
             name={group.name}
             data={group.points}
-            fill={pixelPatternUrl(id, group.name)}
+            fill={colorVar(group.name)}
             fillOpacity={1}
             onClick={() => setSelected(group.name)}
             cursor={onPointClick ? "pointer" : undefined}
@@ -279,7 +262,7 @@ function ScatterTooltipContent({
   const key = String(row.series ?? "series");
   const series = config[key];
   return (
-    <div className="relative min-w-40 overflow-hidden rounded-none border-2 border-border bg-background px-3 py-2 font-mono shadow-[3px_3px_0_0_var(--border)]">
+    <div className="relative min-w-40 overflow-hidden rounded-md border border-border bg-card px-3 py-2 font-mono shadow-sm">
       <p className="mb-1.5 font-medium uppercase tracking-wide text-foreground">
         {String(row.label ?? series?.label ?? key)}
       </p>
