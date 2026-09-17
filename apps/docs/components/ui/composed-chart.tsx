@@ -32,7 +32,11 @@ type SeriesProps = {
 function AreaSeries(_props: SeriesProps) {
   return null;
 }
-function BarSeries(_props: SeriesProps) {
+type BarSeriesProps = SeriesProps & {
+  maxBarSize?: number;
+};
+
+function BarSeries(_props: BarSeriesProps) {
   return null;
 }
 function LineSeries(_props: SeriesProps) {
@@ -72,6 +76,7 @@ function ChartComposed({
   isLoading,
   reaction,
   xDataKey = "month",
+  height = 288,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
@@ -80,6 +85,7 @@ function ChartComposed({
   isLoading?: boolean;
   reaction?: ChartReactionOptions;
   xDataKey?: string;
+  height?: number;
 }) {
   const childArray = React.Children.toArray(children);
   const areas = childArray.filter(
@@ -87,7 +93,7 @@ function ChartComposed({
   ) as React.ReactElement<SeriesProps>[];
   const bars = childArray.filter(
     (child) => React.isValidElement(child) && child.type === BarSeries
-  ) as React.ReactElement<SeriesProps>[];
+  ) as React.ReactElement<BarSeriesProps>[];
   const lines = childArray.filter(
     (child) => React.isValidElement(child) && child.type === LineSeries
   ) as React.ReactElement<SeriesProps>[];
@@ -102,7 +108,15 @@ function ChartComposed({
   );
 
   return (
-    <ChartContainer isLoading={isLoading} loadingVariant="bar" reaction={reaction} config={config} data={data} className={cn("h-72 w-full", className)}>
+    <ChartContainer
+      isLoading={isLoading}
+      loadingVariant="bar"
+      reaction={reaction}
+      config={config}
+      data={data}
+      className={cn("w-full", className)}
+      style={{ height }}
+    >
       <ComposedBody
         data={data}
         xDataKey={xDataKey}
@@ -126,7 +140,7 @@ function ComposedBody({
   data: Record<string, unknown>[];
   xDataKey: string;
   areas: React.ReactElement<SeriesProps>[];
-  bars: React.ReactElement<SeriesProps>[];
+  bars: React.ReactElement<BarSeriesProps>[];
   lines: React.ReactElement<SeriesProps>[];
   extras: React.ReactNode[];
 }) {
@@ -164,22 +178,10 @@ function ComposedBody({
           ))}
         </defs>
         {backdrop}
-        {bars.map((item) => (
-          <Bar
-            key={`${item.props.dataKey}-bar`}
-            dataKey={item.props.dataKey}
-            fill={colorVar(item.props.dataKey)}
-            radius={[4, 4, 0, 0]}
-            maxBarSize={42}
-            isAnimationActive={false}
-            opacity={selected && selected !== item.props.dataKey ? 0.25 : 1}
-            onClick={() => item.props.isClickable && setSelected(item.props.dataKey)}
-            cursor={item.props.isClickable ? "pointer" : undefined}
-          />
-        ))}
         {areas.map((item) => (
           <Area
             key={`${item.props.dataKey}-area`}
+            zIndex={100}
             type="monotone"
             dataKey={item.props.dataKey}
             stroke={colorVar(item.props.dataKey)}
@@ -189,9 +191,25 @@ function ComposedBody({
             opacity={selected && selected !== item.props.dataKey ? 0.25 : 1}
           />
         ))}
+        {bars.map((item) => (
+          <Bar
+            key={`${item.props.dataKey}-bar`}
+            zIndex={200}
+            dataKey={item.props.dataKey}
+            fill={colorVar(item.props.dataKey)}
+            radius={[4, 4, 0, 0]}
+            maxBarSize={item.props.maxBarSize ?? 42}
+            activeBar={false}
+            isAnimationActive={false}
+            opacity={selected && selected !== item.props.dataKey ? 0.25 : 1}
+            onClick={() => item.props.isClickable && setSelected(item.props.dataKey)}
+            cursor={item.props.isClickable ? "pointer" : undefined}
+          />
+        ))}
         {lines.map((item) => (
           <Line
             key={`${item.props.dataKey}-line`}
+            zIndex={300}
             type="monotone"
             dataKey={item.props.dataKey}
             stroke={colorVar(item.props.dataKey)}
@@ -212,9 +230,9 @@ function ComposedBody({
             dataKey={xDataKey}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(value: string) =>
-              typeof value === "string" ? value.slice(0, 3) : value
-            }
+             tickFormatter={(value: string) =>
+               xDataKey === "month" && typeof value === "string" ? value.slice(0, 3) : value
+             }
           />
         )}
         {overlays}

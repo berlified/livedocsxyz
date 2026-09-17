@@ -1,7 +1,7 @@
 {
   "name": "funnel-chart",
   "title": "Funnel Chart",
-  "description": "Connected curved funnel with conversion pills, keyboard-selectable stages, smooth hover emphasis, and reduced-motion-aware draw-in.",
+  "description": "Horizontal symmetric funnel with smooth narrowing flow, layered halos, stage totals, conversion pills, and reduced-motion-aware staggered entrance.",
   "category": "charts",
   "dependencies": [],
   "registryDependencies": [

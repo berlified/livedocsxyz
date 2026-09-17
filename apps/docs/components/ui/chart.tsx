@@ -13,6 +13,7 @@ export type ChartConfig = Record<
     label?: React.ReactNode;
     icon?: React.ComponentType<{ className?: string }>;
     color?: string;
+    valueFormatter?: (value: number | string) => React.ReactNode;
     colors?: {
       light?: string[];
       dark?: string[];
@@ -56,6 +57,7 @@ export function ChartContainer({
   isLoading = false,
   loadingVariant,
   reaction,
+  style,
 }: {
   id?: string;
   config: ChartConfig;
@@ -68,6 +70,7 @@ export function ChartContainer({
   isLoading?: boolean;
   loadingVariant?: ChartReactionOptions["loadingVariant"];
   reaction?: ChartReactionOptions;
+  style?: React.CSSProperties;
 }) {
   const settings = useChartReactions();
   const reducedMotion = useChartReducedMotion();
@@ -107,6 +110,7 @@ export function ChartContainer({
       <div
         data-chart={chartId}
         aria-busy={isLoading}
+        style={style}
         className={cn(
           "relative flex aspect-auto w-full flex-col justify-end text-xs",
           "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-axis-tick_text]:font-mono",
@@ -165,9 +169,9 @@ function seriesKey(
   const fromDataKey = String(item.dataKey ?? "");
   const fromName = String(item.name ?? "");
   const fromValue = String(item.value ?? "");
-  if (config[fromDataKey]) return fromDataKey;
   if (config[fromName]) return fromName;
   if (config[fromValue]) return fromValue;
+  if (config[fromDataKey]) return fromDataKey;
   return fromDataKey || fromName || fromValue;
 }
 
@@ -192,27 +196,31 @@ function formatChartNumber(value: number | string | undefined) {
   return value ?? "";
 }
 
+type ChartTooltipPayload = {
+  dataKey?: string | number;
+  name?: string;
+  value?: number | string;
+  color?: string;
+  payload?: Record<string, unknown>;
+};
+
 export function ChartTooltipContent({
   active,
   payload,
   label,
-  roundness = "lg",
+  labelFormatter,
+  roundness = "sm",
+  variant = "reference",
+  className,
 }: {
   active?: boolean;
-  payload?: Array<{
-    dataKey?: string | number;
-    name?: string;
-    value?: number | string;
-    color?: string;
-    payload?: Record<string, unknown>;
-  }>;
-  label?: string;
+  payload?: ChartTooltipPayload[];
+  label?: string | number;
+  labelFormatter?: (label: React.ReactNode, payload: ChartTooltipPayload[]) => React.ReactNode;
   roundness?: "sm" | "md" | "lg" | "full";
 }) {
   const { config, selected } = useChart();
   if (!active || !payload?.length) return null;
-
-  void roundness;
 
   const rows = uniquePayload(payload, config).filter(
     ({ key, item }) =>
@@ -224,12 +232,17 @@ export function ChartTooltipContent({
 
   if (!rows.length) return null;
 
+  const header = labelFormatter ? labelFormatter(label, payload) : label;
+
   return (
-    <div className="pointer-events-none relative min-w-36 overflow-hidden rounded-lg border border-border/60 bg-popover/95 px-3 py-2 text-xs shadow-lg backdrop-blur">
-      {label ? (
-        <p className="mb-1.5 text-[11px] font-medium text-muted-foreground">{label}</p>
+    <div className={cn(
+      "pointer-events-none relative min-w-48 overflow-hidden border-0 bg-[var(--chart-tooltip-background,var(--popover))] px-3.5 py-3 text-xs text-[var(--chart-tooltip-foreground,var(--popover-foreground))] shadow-lg",
+      { sm: "rounded-sm", md: "rounded-md", lg: "rounded-lg", full: "rounded-2xl" }[roundness]
+    )}>
+      {header !== undefined && header !== null && header !== "" ? (
+        <p className="mb-2 text-[11px] font-bold">{header}</p>
       ) : null}
-      <div className="space-y-1">
+      <div className="space-y-2">
         {rows.map(({ item, key, index }) => {
           const series = config[key];
           const Icon = series?.icon;
@@ -238,16 +251,18 @@ export function ChartTooltipContent({
               key={`${key}-${index}`}
               className="flex items-center justify-between gap-6"
             >
-              <span className="flex items-center gap-2 text-muted-foreground">
+              <span className="flex items-center gap-2 text-[var(--chart-tooltip-muted,var(--muted-foreground))]">
                 {Icon ? (
                   <Icon className="size-3" />
                 ) : (
-                  <PixelSwatch color={colorVar(key)} />
+                  <PixelSwatch color={series ? colorVar(key) : item.color ?? "var(--chart-1)"} />
                 )}
                 {series?.label ?? key}
               </span>
-              <span className="font-medium tabular-nums text-foreground">
-                {formatChartNumber(item.value)}
+              <span className="ml-auto text-right font-mono font-bold tabular-nums">
+                {series?.valueFormatter && item.value !== undefined
+                  ? series.valueFormatter(item.value)
+                  : formatChartNumber(item.value)}
               </span>
             </div>
           );
@@ -267,6 +282,28 @@ export function ChartTooltip(props: React.ComponentProps<typeof RechartsPrimitiv
   );
 }
 ChartTooltip.displayName = "Tooltip";
+
+export function ChartTooltipLabelFormatter({
+  labelFormatter,
+  ...props
+}: Omit<React.ComponentProps<typeof RechartsPrimitive.Tooltip>, "content">) {
+  return (
+    <RechartsPrimitive.Tooltip
+      content={
+        <ChartTooltipContent
+          labelFormatter={
+            labelFormatter as
+              | ((label: React.ReactNode, payload: ChartTooltipPayload[]) => React.ReactNode)
+              | undefined
+          }
+        />
+      }
+      {...props}
+      cursor={false}
+    />
+  );
+}
+ChartTooltipLabelFormatter.displayName = "Tooltip";
 
 export function ChartLegendContent({
   payload,
@@ -439,6 +476,37 @@ export const shareData = [
   { browser: "other", visitors: 90 },
 ];
 
+export const salesByCategory = [
+  { category: "electronics", sales: 4250 },
+  { category: "clothing", sales: 3120 },
+  { category: "food", sales: 2100 },
+  { category: "home", sales: 1580 },
+  { category: "other", sales: 1050 },
+];
+
+export const salesByCategoryConfig = {
+  electronics: {
+    label: "Electronics",
+    colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] },
+  },
+  clothing: {
+    label: "Clothing",
+    colors: { dark: ["var(--chart-4)"], light: ["var(--chart-4)"] },
+  },
+  food: {
+    label: "Food",
+    colors: { dark: ["var(--chart-3)"], light: ["var(--chart-3)"] },
+  },
+  home: {
+    label: "Home",
+    colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] },
+  },
+  other: {
+    label: "Other",
+    colors: { dark: ["var(--chart-5)"], light: ["var(--chart-5)"] },
+  },
+} satisfies ChartConfig;
+
 export const shareConfig = {
   chrome: {
     label: "Chrome",
@@ -463,6 +531,41 @@ export const shareConfig = {
   visitors: {
     label: "Visitors",
     colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] },
+  },
+} satisfies ChartConfig;
+
+export function formatChartCurrency(value: number | string) {
+  return Number(value).toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    maximumFractionDigits: 0,
+  });
+}
+
+export const composedDaily = Array.from({ length: 30 }, (_, index) => {
+  const daily = Math.round(
+    10200 + index * 90 + Math.sin(index / 2.6) * 1200 + Math.exp(-((index - 14) ** 2) / 40) * 3600
+  );
+  const average = Math.round(daily * 0.95 + 2600);
+  const trend = Math.round(daily * 0.9 + 6400);
+  return { day: `Jan ${index + 1}`, daily, average, trend };
+});
+
+export const composedDailyConfig = {
+  daily: {
+    label: "Sales",
+    valueFormatter: formatChartCurrency,
+    colors: { dark: ["var(--chart-teal)"], light: ["var(--chart-teal)"] },
+  },
+  average: {
+    label: "Average",
+    valueFormatter: formatChartCurrency,
+    colors: { dark: ["var(--chart-turquoise)"], light: ["var(--chart-turquoise)"] },
+  },
+  trend: {
+    label: "Trend",
+    valueFormatter: formatChartCurrency,
+    colors: { dark: ["var(--chart-teal-strong)"], light: ["var(--chart-teal-strong)"] },
   },
 } satisfies ChartConfig;
 

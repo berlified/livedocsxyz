@@ -16,52 +16,36 @@ export {
 } from "@/components/financial-chart-previews";
 
 export const funnelStages = [
-  { key: "visitors", label: "Visitors", value: 12480 },
-  { key: "signups", label: "Signups", value: 3960 },
-  { key: "activated", label: "Activated", value: 2180 },
-  { key: "paid", label: "Paid", value: 860 },
+  { key: "visitors", label: "Visitors", value: 12400 },
+  { key: "leads", label: "Leads", value: 6800 },
+  { key: "qualified", label: "Qualified", value: 3200 },
+  { key: "proposals", label: "Proposals", value: 1500 },
+  { key: "closed", label: "Closed", value: 620 },
 ];
 
 export const funnelConfig = {
-  visitors: { label: "Visitors", colors: { dark: ["var(--chart-1)"], light: ["var(--chart-1)"] } },
-  signups: { label: "Signups", colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] } },
-  activated: { label: "Activated", colors: { dark: ["var(--chart-3)"], light: ["var(--chart-3)"] } },
-  paid: { label: "Paid", colors: { dark: ["var(--chart-4)"], light: ["var(--chart-4)"] } },
+  visitors: { label: "Visitors", color: "var(--chart-2)" },
+  leads: { label: "Leads", color: "var(--chart-2)" },
+  qualified: { label: "Qualified", color: "var(--chart-2)" },
+  proposals: { label: "Proposals", color: "var(--chart-2)" },
+  closed: { label: "Closed", color: "var(--chart-2)" },
 };
 
-export const heatmapCells = [
-  { x: "Mon", y: "9am", value: 12 },
-  { x: "Tue", y: "9am", value: 18 },
-  { x: "Wed", y: "9am", value: 9 },
-  { x: "Thu", y: "9am", value: 24 },
-  { x: "Fri", y: "9am", value: 31 },
-  { x: "Sat", y: "9am", value: 6 },
-  { x: "Sun", y: "9am", value: null },
-  { x: "Mon", y: "12pm", value: 44 },
-  { x: "Tue", y: "12pm", value: 52 },
-  { x: "Wed", y: "12pm", value: 38 },
-  { x: "Thu", y: "12pm", value: 61 },
-  { x: "Fri", y: "12pm", value: 72 },
-  { x: "Sat", y: "12pm", value: 19 },
-  { x: "Sun", y: "12pm", value: 8 },
-  { x: "Mon", y: "3pm", value: 28 },
-  { x: "Tue", y: "3pm", value: 35 },
-  { x: "Wed", y: "3pm", value: null },
-  { x: "Thu", y: "3pm", value: 41 },
-  { x: "Fri", y: "3pm", value: 47 },
-  { x: "Sat", y: "3pm", value: 22 },
-  { x: "Sun", y: "3pm", value: 11 },
-  { x: "Mon", y: "6pm", value: 16 },
-  { x: "Tue", y: "6pm", value: 21 },
-  { x: "Wed", y: "6pm", value: 14 },
-  { x: "Thu", y: "6pm", value: 26 },
-  { x: "Fri", y: "6pm", value: 33 },
-  { x: "Sat", y: "6pm", value: 15 },
-  { x: "Sun", y: "6pm", value: 7 },
-];
+export const heatmapWeeks = Array.from({ length: 52 }, (_, week) => {
+  const date = new Date(Date.UTC(2023, 9, 1 + week * 7));
+  return date.toISOString().slice(0, 10);
+});
+
+export const heatmapCells = heatmapWeeks.flatMap((x, week) =>
+  ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((y, day) => {
+    const seed = (week * 37 + day * 19 + week * day * 7) % 101;
+    const value = seed < 30 ? 0 : seed < 53 ? 2 : seed < 74 ? 5 : seed < 90 ? 8 : 12;
+    return { x, y, value };
+  }),
+);
 
 export const heatmapConfig = {
-  value: { label: "Orders", colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] } },
+  value: { label: "Contributions", color: "var(--chart-2)" },
 };
 
 export const scatterCohorts = [
@@ -85,7 +69,7 @@ export function FunnelChartPreview() {
     <FunnelChart
       className="w-full"
       title="Acquisition funnel"
-      description="Visitors to paid conversion"
+      description="Visitors to closed deals"
       config={funnelConfig}
       stages={funnelStages}
     />
@@ -95,8 +79,9 @@ export function FunnelChartPreview() {
 export function HeatmapChartPreview() {
   return (
     <HeatmapChart
-      title="Orders by hour"
-      description="Sales activity across the week"
+      title="Contributions"
+      description="A year of activity · Oct 2023 – Sep 2024"
+      layout="calendar"
       data={heatmapCells}
       config={heatmapConfig}
     />
@@ -124,13 +109,25 @@ export function HeatmapChartExamples() {
       <ComponentPreview label="Missing values" className="p-4">
         <HeatmapChart
           title="Sparse activity"
-          data={heatmapCells.filter((cell) => cell.value !== null)}
+          layout="calendar"
+          columns={heatmapWeeks}
+          data={heatmapCells.filter((_, index) => index % 9 !== 0)}
+          config={heatmapConfig}
+        />
+      </ComponentPreview>
+      <ComponentPreview label="Categorical matrix" className="p-4">
+        <HeatmapChart
+          title="Activity by time of day"
+          layout="matrix"
+          data={["Morning", "Afternoon", "Evening"].flatMap((y, row) =>
+            ["Mon", "Tue", "Wed", "Thu", "Fri"].map((x, column) => ({ x, y, value: (row * 13 + column * 7) % 40 })),
+          )}
           config={heatmapConfig}
         />
       </ComponentPreview>
       <h2 className="text-xl font-semibold">Empty</h2>
       <ComponentPreview label="No data" className="p-4">
-        <HeatmapChart data={[]} config={heatmapConfig} emptyLabel="No orders in this period" />
+        <HeatmapChart data={[]} config={heatmapConfig} emptyLabel="No activity in this period" />
       </ComponentPreview>
     </section>
   );

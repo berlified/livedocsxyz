@@ -23,6 +23,7 @@ export function ChartInteractiveSector({
   onActivate,
   onFocus,
   onBlur,
+  onHoverChange,
 }: {
   geometry: SectorProps;
   label: string;
@@ -32,6 +33,7 @@ export function ChartInteractiveSector({
   onActivate?: () => void;
   onFocus?: () => void;
   onBlur?: () => void;
+  onHoverChange?: (hovered: boolean) => void;
 }) {
   const [hovered, setHovered] = React.useState(false);
   const [focused, setFocused] = React.useState(false);
@@ -40,10 +42,12 @@ export function ChartInteractiveSector({
   const active = hovered || focused || selected || emphasized;
   const angle = (((geometry.startAngle ?? 0) + (geometry.endAngle ?? 0)) / 2) * Math.PI / 180;
   const offset = active ? 6 : 0;
+  const { key: sectorKey, ...sectorProps } = geometry as SectorProps & { key?: React.Key };
 
   return (
     <Sector
-      {...geometry}
+      key={sectorKey}
+      {...sectorProps}
       tabIndex={0}
       role={onActivate ? "button" : "img"}
       aria-label={label}
@@ -59,10 +63,12 @@ export function ChartInteractiveSector({
       }}
       onMouseEnter={(event) => {
         setHovered(true);
+        onHoverChange?.(true);
         geometry.onMouseEnter?.(event);
       }}
       onMouseLeave={(event) => {
         setHovered(false);
+        onHoverChange?.(false);
         geometry.onMouseLeave?.(event);
       }}
       onPointerDown={() => setFocused(false)}
@@ -115,6 +121,7 @@ function ChartPie({
   endAngle = -270,
   glowingSectors,
   showLabels,
+  legendTitle,
   defaultSelectedSector,
   onSelectionChange,
 }: {
@@ -134,6 +141,7 @@ function ChartPie({
   endAngle?: number;
   glowingSectors?: string[];
   showLabels?: boolean;
+  legendTitle?: React.ReactNode;
   defaultSelectedSector?: string;
   onSelectionChange?: (key?: string) => void;
 }) {
@@ -144,7 +152,7 @@ function ChartPie({
       reaction={reaction}
       config={config}
       data={data}
-      className={cn("h-80 w-full", className)}
+      className={cn("h-80 w-full", legendTitle && "h-auto sm:h-[340px]", className)}
       defaultSelectedDataKey={defaultSelectedSector}
       onSelectionChange={onSelectionChange}
     >
@@ -160,6 +168,7 @@ function ChartPie({
         endAngle={endAngle}
         glowingSectors={glowingSectors}
         showLabels={showLabels}
+        legendTitle={legendTitle}
       >
         {children}
       </PieBody>
@@ -179,6 +188,7 @@ function PieBody({
   endAngle,
   glowingSectors,
   showLabels,
+  legendTitle,
   children,
 }: {
   data: Record<string, unknown>[];
@@ -192,13 +202,18 @@ function PieBody({
   endAngle: number;
   glowingSectors?: string[];
   showLabels?: boolean;
+  legendTitle?: React.ReactNode;
   children?: React.ReactNode;
 }) {
   const { config, selected, setSelected } = useChart();
+  const [hoveredKey, setHoveredKey] = React.useState<string>();
+  const [focusedKey, setFocusedKey] = React.useState<string>();
+  const activeKey = hoveredKey ?? focusedKey ?? selected;
+  const legendId = React.useId();
   const reducedMotion = useChartReducedMotion();
   const { animationsEnabled = true } = useChartReactions();
 
-  return (
+  const chart = (
     <ResponsiveContainer width="100%" height="100%">
       <RechartsPieChart>
         {children}
@@ -227,9 +242,12 @@ function PieBody({
                 geometry={props}
                 label={`${typeof label === "string" ? label : key}: ${String(item?.[dataKey] ?? props.value)}`}
                 selected={selected === key}
-                muted={Boolean(selected && selected !== key)}
-                emphasized={glowingSectors?.includes(key)}
+                muted={Boolean(activeKey && activeKey !== key)}
+                emphasized={activeKey === key || glowingSectors?.includes(key)}
                 onActivate={() => setSelected(key)}
+                onHoverChange={(hovered) => setHoveredKey(hovered ? key : undefined)}
+                onFocus={() => setFocusedKey(key)}
+                onBlur={() => setFocusedKey(undefined)}
               />
             );
           }}
@@ -246,6 +264,51 @@ function PieBody({
         </Pie>
       </RechartsPieChart>
     </ResponsiveContainer>
+  );
+
+  if (!legendTitle) return chart;
+
+  return (
+    <div className="grid h-full min-h-0 w-full items-center gap-6 sm:grid-cols-[minmax(0,1fr)_minmax(180px,0.8fr)]">
+      <div className="h-64 min-w-0 sm:h-full">{chart}</div>
+      <div role="group" aria-labelledby={legendId} className="min-w-0 space-y-3">
+        <h3 id={legendId} className="px-3 text-sm font-semibold text-foreground">{legendTitle}</h3>
+        <div className="space-y-1">
+          {data.map((item) => {
+            const key = String(item[nameKey]);
+            const value = item[dataKey];
+            const series = config[key];
+            return (
+              <Button
+                key={key}
+                type="button"
+                variant="ghost"
+                size="sm"
+                aria-pressed={selected === key}
+                onClick={() => setSelected(key)}
+                onMouseEnter={() => setHoveredKey(key)}
+                onMouseLeave={() => setHoveredKey(undefined)}
+                onFocus={() => setFocusedKey(key)}
+                onBlur={() => setFocusedKey(undefined)}
+                className={cn(
+                  "h-9 w-full justify-start gap-3 px-3 text-muted-foreground",
+                  activeKey === key && "bg-accent text-foreground",
+                  activeKey && activeKey !== key && "opacity-50"
+                )}
+              >
+                <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: colorVar(key) }} />
+                <span className="truncate">{series?.label ?? key}</span>
+                <span className="ml-auto font-mono font-bold tabular-nums text-foreground">
+                  {typeof value === "number" || typeof value === "string"
+                    ? series?.valueFormatter?.(value) ?? value.toLocaleString("en-US")
+                    : ""}
+                </span>
+              </Button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
   );
 }
 

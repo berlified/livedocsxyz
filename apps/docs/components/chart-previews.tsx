@@ -8,6 +8,8 @@ import {
   cashflowConfig,
   cashflowMonths,
   cohortMix,
+  composedDaily,
+  composedDailyConfig,
   dailyOverlay,
   laneConfig,
   laneRows,
@@ -27,6 +29,8 @@ import {
   ringConfig,
   ringMembers,
   ringPayments,
+  salesByCategoryConfig,
+  salesByCategory,
   sankeyConfig,
   sankeyLinks,
   sankeyNodes,
@@ -228,13 +232,12 @@ export function BarChartExamples() {
 
 export function ComposedChartPreview() {
   return (
-    <ComposedChart data={monthlyData} config={trafficConfig} className="w-full">
+    <ComposedChart data={salesByCategory} config={salesByCategoryConfig} className="w-full" height={340}>
       <ComposedChart.Grid />
       <ComposedChart.Tooltip />
       <ComposedChart.Legend isClickable />
-      <ComposedChart.Bar dataKey="desktop" isClickable />
-      <ComposedChart.Area dataKey="mobile" />
-      <ComposedChart.Line dataKey="tablet" />
+      <ComposedChart.Bar dataKey="sales" maxBarSize={10} />
+      <ComposedChart.Line dataKey="sales" />
     </ComposedChart>
   );
 }
@@ -246,6 +249,15 @@ export function ComposedChartExamples() {
       <ComponentPreview label="Bar + area + line" className="p-4">
         <ComposedChartPreview />
       </ComponentPreview>
+      <ComponentPreview label="Area behind bars" className="p-4">
+        <ComposedChart data={monthlyData} config={trafficConfig} className="w-full">
+          <ComposedChart.Grid />
+          <ComposedChart.Tooltip />
+          <ComposedChart.Legend isClickable />
+          <ComposedChart.Area dataKey="desktop" />
+          <ComposedChart.Bar dataKey="mobile" isClickable />
+        </ComposedChart>
+      </ComponentPreview>
     </section>
   );
 }
@@ -253,15 +265,14 @@ export function ComposedChartExamples() {
 export function PieChartPreview() {
   return (
     <PieChart
-      data={shareData}
-      config={shareConfig}
-      dataKey="visitors"
-      nameKey="browser"
-      innerRadius={64}
+      data={salesByCategory}
+      config={salesByCategoryConfig}
+      dataKey="sales"
+      nameKey="category"
+      legendTitle="Sales by Category"
       className="w-full"
     >
       <PieChart.Tooltip />
-      <PieChart.Legend isClickable />
     </PieChart>
   );
 }
