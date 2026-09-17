@@ -46,6 +46,7 @@ function RingMetricRoot({
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       <ChartContainer
         isLoading={isLoading}
+        loadingVariant="ring"
         reaction={reaction}
         config={config}
         data={data as unknown as Record<string, unknown>[]}

@@ -42,6 +42,7 @@ function BreakdownChartRoot({
     <Card className={cn("p-4", className)}>
       <ChartContainer
         isLoading={isLoading}
+        loadingVariant="meter"
         reaction={reaction}
         config={config}
         data={items as unknown as Record<string, unknown>[]}

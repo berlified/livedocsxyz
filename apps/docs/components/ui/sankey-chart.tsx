@@ -41,9 +41,7 @@ function ChartSankey({
       data={nodes as unknown as Record<string, unknown>[]}
       className={cn("h-80 w-full", className)}
     >
-      {isLoading ? null : (
-        <SankeyBody nodes={nodes} links={links} />
-      )}
+      <SankeyBody nodes={nodes} links={links} />
     </ChartContainer>
   );
 }

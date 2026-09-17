@@ -150,23 +150,21 @@ function ChartPie({
       defaultSelectedDataKey={defaultSelectedSector}
       onSelectionChange={onSelectionChange}
     >
-      {isLoading ? null : (
-        <PieBody
-          data={data}
-          dataKey={dataKey}
-          nameKey={nameKey}
-          innerRadius={innerRadius}
-          outerRadius={outerRadius}
-          paddingAngle={paddingAngle}
-          cornerRadius={cornerRadius}
-          startAngle={startAngle}
-          endAngle={endAngle}
-          glowingSectors={glowingSectors}
-          showLabels={showLabels}
-        >
-          {children}
-        </PieBody>
-      )}
+      <PieBody
+        data={data}
+        dataKey={dataKey}
+        nameKey={nameKey}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        paddingAngle={paddingAngle}
+        cornerRadius={cornerRadius}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        glowingSectors={glowingSectors}
+        showLabels={showLabels}
+      >
+        {children}
+      </PieBody>
     </ChartContainer>
   );
 }

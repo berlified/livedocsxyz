@@ -145,14 +145,12 @@ function ChartRadar({
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      {isLoading ? null : (
-        <RadarBody
-          data={data}
-          series={series}
-          extras={extras}
-          gridType={gridType}
-        />
-      )}
+      <RadarBody
+        data={data}
+        series={series}
+        extras={extras}
+        gridType={gridType}
+      />
     </ChartContainer>
   );
 }

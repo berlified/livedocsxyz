@@ -98,34 +98,32 @@ function TrendCardRoot({
         className="mt-3 h-24 w-full"
         variant="plain"
       >
-        {isLoading ? null : (
-          <ResponsiveContainer width="100%" height="100%">
-            <RechartsLineChart data={data} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
-              <Tooltip
-                cursor={{ stroke: "var(--foreground)", strokeDasharray: "4 4", strokeWidth: 2 }}
-                content={<ChartTooltipContent />}
-              />
-              <Line
-                type="monotone"
-                dataKey={compareKey}
-                stroke={colorVar(compareKey)}
-                strokeWidth={2}
-                dot={false}
-                opacity={0.45}
-                isAnimationActive={false}
-              />
-              <Line
-                type="monotone"
-                dataKey={currentKey}
-                stroke={colorVar(currentKey)}
-                strokeWidth={3}
-                dot={false}
-                isAnimationActive={false}
-                activeDot={{ r: 0 }}
-              />
-            </RechartsLineChart>
-          </ResponsiveContainer>
-        )}
+        <ResponsiveContainer width="100%" height="100%">
+          <RechartsLineChart data={data} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
+            <Tooltip
+              cursor={{ stroke: "var(--foreground)", strokeDasharray: "4 4", strokeWidth: 2 }}
+              content={<ChartTooltipContent />}
+            />
+            <Line
+              type="monotone"
+              dataKey={compareKey}
+              stroke={colorVar(compareKey)}
+              strokeWidth={2}
+              dot={false}
+              opacity={0.45}
+              isAnimationActive={false}
+            />
+            <Line
+              type="monotone"
+              dataKey={currentKey}
+              stroke={colorVar(currentKey)}
+              strokeWidth={3}
+              dot={false}
+              isAnimationActive={false}
+              activeDot={{ r: 0 }}
+            />
+          </RechartsLineChart>
+        </ResponsiveContainer>
       </ChartContainer>
       <p className="mt-1 flex justify-between text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
         <span>{String(data[0]?.[xDataKey] ?? "")}</span>

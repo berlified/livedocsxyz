@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { ChartReaction, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartReaction, ChartSkeleton, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 const SAMPLE = Array.from({ length: 42 }, (_, index) => {
@@ -148,10 +148,6 @@ function Sparkline({
 
   const caption = markerLabel ?? (marker ? format(marker.value) : "");
 
-  if (isLoading) {
-    return <div {...props} aria-busy="true" className={cn("rounded-lg border border-border bg-card", sizeClass[size], className)}><ChartReaction isLoading reaction={reaction} /></div>;
-  }
-
   return (
     <div
       className={cn(
@@ -160,122 +156,124 @@ function Sparkline({
       )}
       {...props}
     >
-      <ChartReaction reaction={reaction} className="absolute bottom-1 left-1 z-10" />
-      <svg
-        ref={svgRef}
-        viewBox={`0 0 ${width} ${height}`}
-        className={cn("block w-full select-none rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", sizeClass[size], toneClass[tone])}
-        role={interactive && points.length ? "slider" : "img"}
-        aria-label={caption || "Trend"}
-        aria-valuemin={interactive && points.length ? 1 : undefined}
-        aria-valuemax={interactive && points.length ? points.length : undefined}
-        aria-valuenow={interactive && marker ? points.indexOf(marker) + 1 : undefined}
-        aria-valuetext={interactive && marker ? format(marker.value) : undefined}
-        tabIndex={interactive && points.length ? 0 : undefined}
-        onPointerDown={(event) => {
-          if (!interactive) return;
-          if (event.pointerType !== "mouse") {
-            event.currentTarget.setPointerCapture(event.pointerId);
-          }
-          moveTo(event.clientX);
-        }}
-        onPointerMove={(event) => {
-          if (!interactive) return;
-          if (
-            event.pointerType === "mouse" ||
-            event.currentTarget.hasPointerCapture(event.pointerId)
-          ) {
+      {!isLoading ? <ChartReaction reaction={reaction} className="absolute bottom-1 left-1 z-10" /> : null}
+      <ChartSkeleton isLoading={isLoading}>
+        <svg
+          ref={svgRef}
+          viewBox={`0 0 ${width} ${height}`}
+          className={cn("block w-full select-none rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", sizeClass[size], toneClass[tone])}
+          role={interactive && points.length ? "slider" : "img"}
+          aria-label={caption || "Trend"}
+          aria-valuemin={interactive && points.length ? 1 : undefined}
+          aria-valuemax={interactive && points.length ? points.length : undefined}
+          aria-valuenow={interactive && marker ? points.indexOf(marker) + 1 : undefined}
+          aria-valuetext={interactive && marker ? format(marker.value) : undefined}
+          tabIndex={interactive && points.length ? 0 : undefined}
+          onPointerDown={(event) => {
+            if (!interactive) return;
+            if (event.pointerType !== "mouse") {
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }
             moveTo(event.clientX);
-          }
-        }}
-        onPointerUp={(event) => {
-          if (event.pointerType !== "mouse") reset();
-        }}
-        onPointerLeave={reset}
-        onKeyDown={onKeyDown}
-      >
-        {area ? (
-          <>
-            <defs>
-              <linearGradient id={`${uid}-area`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="currentColor" stopOpacity={0.14} />
-                <stop offset="100%" stopColor="currentColor" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <path d={area} fill={`url(#${uid}-area)`} />
-          </>
-        ) : null}
-        <line
-          x1="0"
-          x2={width}
-          y1={baseline}
-          y2={baseline}
-          className="stroke-border"
-          strokeDasharray="4 4"
-        />
-        <path
-          d={line}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          vectorEffect="non-scaling-stroke"
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        />
-        {last ? (
-          <circle
-            cx={last.x}
-            cy={last.y}
-            r="3"
-            fill="currentColor"
-            className="opacity-40"
-          />
-        ) : null}
-        {marker ? (
-          <g>
-            <line
-              x1={marker.x}
-              x2={marker.x}
-              y1="20"
-              y2={baseline}
-              className="stroke-border"
-              strokeWidth="2"
-            />
-            <circle
-              cx={marker.x}
-              cy={marker.y}
-              r="4"
-              fill="currentColor"
-              stroke="var(--card)"
-              strokeWidth="2"
-            />
-          </g>
-        ) : null}
-      </svg>
-      {marker && (markerLabel || showValue) ? (
-        <div
-          className="pointer-events-none absolute top-1 max-w-[calc(100%-1rem)] -translate-x-1/2"
-          style={{
-            left: `${Math.min(86, Math.max(14, (marker.x / width) * 100))}%`,
           }}
+          onPointerMove={(event) => {
+            if (!interactive) return;
+            if (
+              event.pointerType === "mouse" ||
+              event.currentTarget.hasPointerCapture(event.pointerId)
+            ) {
+              moveTo(event.clientX);
+            }
+          }}
+          onPointerUp={(event) => {
+            if (event.pointerType !== "mouse") reset();
+          }}
+          onPointerLeave={reset}
+          onKeyDown={onKeyDown}
         >
-          <div className="rounded-lg border border-border bg-popover px-2.5 py-1.5 tabular-nums shadow-sm">
-            {markerLabel ? (
-              <p className="text-xs text-muted-foreground">{markerLabel}</p>
-            ) : null}
-            {showValue ? (
-              <p
-                className={cn(
-                  "text-xs font-medium text-foreground",
-                  markerLabel && "mt-0.5"
-                )}
-              >
-                {format(marker.value)}
-              </p>
-            ) : null}
+          {area ? (
+            <>
+              <defs>
+                <linearGradient id={`${uid}-area`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="currentColor" stopOpacity={0.14} />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <path d={area} fill={`url(#${uid}-area)`} />
+            </>
+          ) : null}
+          <line
+            x1="0"
+            x2={width}
+            y1={baseline}
+            y2={baseline}
+            className="stroke-border"
+            strokeDasharray="4 4"
+          />
+          <path
+            d={line}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            vectorEffect="non-scaling-stroke"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+          {last ? (
+            <circle
+              cx={last.x}
+              cy={last.y}
+              r="3"
+              fill="currentColor"
+              className="opacity-40"
+            />
+          ) : null}
+          {marker ? (
+            <g>
+              <line
+                x1={marker.x}
+                x2={marker.x}
+                y1="20"
+                y2={baseline}
+                className="stroke-border"
+                strokeWidth="2"
+              />
+              <circle
+                cx={marker.x}
+                cy={marker.y}
+                r="4"
+                fill="currentColor"
+                stroke="var(--card)"
+                strokeWidth="2"
+              />
+            </g>
+          ) : null}
+        </svg>
+        {marker && (markerLabel || showValue) ? (
+          <div
+            className="pointer-events-none absolute top-1 max-w-[calc(100%-1rem)] -translate-x-1/2"
+            style={{
+              left: `${Math.min(86, Math.max(14, (marker.x / width) * 100))}%`,
+            }}
+          >
+            <div className="rounded-lg border border-border bg-popover px-2.5 py-1.5 tabular-nums shadow-sm">
+              {markerLabel ? (
+                <p className="text-xs text-muted-foreground">{markerLabel}</p>
+              ) : null}
+              {showValue ? (
+                <p
+                  className={cn(
+                    "text-xs font-medium text-foreground",
+                    markerLabel && "mt-0.5"
+                  )}
+                >
+                  {format(marker.value)}
+                </p>
+              ) : null}
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
+      </ChartSkeleton>
     </div>
   );
 }

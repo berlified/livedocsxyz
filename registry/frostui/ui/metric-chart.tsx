@@ -104,6 +104,7 @@ function MetricChartRoot({
       <div className="mt-4 h-72">
         <ChartContainer
           isLoading={isLoading}
+          loadingVariant="line"
           reaction={reaction}
           config={config}
           data={data}
@@ -111,14 +112,12 @@ function MetricChartRoot({
           variant="plain"
           defaultSelectedDataKey={active}
         >
-          {isLoading ? null : (
-            <MetricBody
-              data={data}
-              xDataKey={xDataKey}
-              series={series}
-              active={active}
-            />
-          )}
+          <MetricBody
+            data={data}
+            xDataKey={xDataKey}
+            series={series}
+            active={active}
+          />
         </ChartContainer>
       </div>
     </Card>

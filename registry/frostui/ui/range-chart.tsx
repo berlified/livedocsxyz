@@ -46,15 +46,14 @@ function RangeChartRoot({
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       <ChartContainer
         isLoading={isLoading}
+        loadingVariant="range"
         reaction={reaction}
         config={config}
         data={data}
         className={cn("w-full", title ? "mt-3 h-64" : "h-64")}
         variant="plain"
       >
-        {isLoading ? null : (
-          <RangeBody data={data} xDataKey={xDataKey} />
-        )}
+        <RangeBody data={data} xDataKey={xDataKey} />
       </ChartContainer>
     </Card>
   );

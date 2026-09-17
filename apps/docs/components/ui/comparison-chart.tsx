@@ -83,14 +83,12 @@ function ComparisonChartRoot({
       </div>
 
       <ChartContainer isLoading={isLoading} loadingVariant="line" reaction={reaction} config={config} data={data} className="mt-4 h-44 w-full" variant="plain">
-        {isLoading ? null : (
-          <ComparisonBody
-            data={data}
-            xDataKey={xDataKey}
-            primaryKey={primaryKey}
-            compareKey={compareKey}
-          />
-        )}
+        <ComparisonBody
+          data={data}
+          xDataKey={xDataKey}
+          primaryKey={primaryKey}
+          compareKey={compareKey}
+        />
       </ChartContainer>
     </Card>
   );

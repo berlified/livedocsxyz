@@ -78,19 +78,17 @@ function ChartRadial({
   );
 
   return (
-    <ChartContainer isLoading={isLoading} reaction={reaction} config={config} data={data} className={cn("h-72 w-full", className)}>
-      {isLoading ? null : (
-        <RadialBody
-          data={data}
-          nameKey={nameKey}
-          series={series}
-          extras={extras}
-          variant={variant}
-          innerRadius={innerRadius}
-          outerRadius={outerRadius}
-          max={max}
-        />
-      )}
+    <ChartContainer isLoading={isLoading} loadingVariant="radial" reaction={reaction} config={config} data={data} className={cn("h-72 w-full", className)}>
+      <RadialBody
+        data={data}
+        nameKey={nameKey}
+        series={series}
+        extras={extras}
+        variant={variant}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius}
+        max={max}
+      />
     </ChartContainer>
   );
 }

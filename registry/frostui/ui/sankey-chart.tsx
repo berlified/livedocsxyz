@@ -35,14 +35,13 @@ function ChartSankey({
   return (
     <ChartContainer
       isLoading={isLoading}
+      loadingVariant="sankey"
       reaction={reaction}
       config={config}
       data={nodes as unknown as Record<string, unknown>[]}
       className={cn("h-80 w-full", className)}
     >
-      {isLoading ? null : (
-        <SankeyBody nodes={nodes} links={links} />
-      )}
+      <SankeyBody nodes={nodes} links={links} />
     </ChartContainer>
   );
 }

@@ -108,6 +108,7 @@ function ChartArea({
   return (
     <ChartContainer
       isLoading={isLoading}
+      loadingVariant="area"
       reaction={reaction}
       config={config}
       data={data}
@@ -120,7 +121,6 @@ function ChartArea({
         xDataKey={xDataKey}
         series={series}
         extras={extras}
-        isLoading={isLoading}
       />
     </ChartContainer>
   );
@@ -131,17 +131,13 @@ function AreaBody({
   xDataKey,
   series,
   extras,
-  isLoading,
 }: {
   data: Record<string, unknown>[];
   xDataKey: string;
   series: React.ReactElement<AreaSeriesProps>[];
   extras: React.ReactNode[];
-  isLoading?: boolean;
 }) {
   const { id, selected, setSelected } = useChart();
-
-  if (isLoading) return null;
 
   return (
     <ResponsiveContainer width="100%" height="100%">

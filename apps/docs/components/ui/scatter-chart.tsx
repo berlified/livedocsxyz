@@ -130,7 +130,7 @@ export function ScatterChart(props: ScatterChartProps) {
         className={cn("mt-4 h-64 w-full", isLoading && "bg-muted/40")}
         variant="plain"
       >
-        {isLoading ? null : !clean.length ? (
+        {!clean.length ? (
           <p className="flex h-full items-center justify-center text-sm text-muted-foreground" role="status">
             {emptyLabel}
           </p>

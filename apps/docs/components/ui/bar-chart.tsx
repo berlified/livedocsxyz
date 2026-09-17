@@ -123,7 +123,6 @@ function ChartBar({
         xDataKey={xDataKey}
         series={series}
         extras={extras}
-        isLoading={isLoading}
         layout={layout}
         stackType={stackType}
       />
@@ -136,7 +135,6 @@ function BarBody({
   xDataKey,
   series,
   extras,
-  isLoading,
   layout,
   stackType,
 }: {
@@ -144,13 +142,10 @@ function BarBody({
   xDataKey: string;
   series: React.ReactElement<BarSeriesProps>[];
   extras: React.ReactNode[];
-  isLoading?: boolean;
   layout: "horizontal" | "vertical";
   stackType?: "none" | "stacked" | "percent";
 }) {
   const { id, selected, setSelected } = useChart();
-
-  if (isLoading) return null;
 
   const stacked = stackType === "stacked" || stackType === "percent";
   const vertical = layout === "vertical";

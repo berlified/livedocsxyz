@@ -5,7 +5,7 @@ import * as RechartsPrimitive from "recharts";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ChartReaction, ChartReactionScope, useChartReaction, useChartReactions, useChartReducedMotion, type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartReaction, ChartReactionScope, ChartSkeleton, useChartReaction, useChartReactions, useChartReducedMotion, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 
 export type ChartConfig = Record<
   string,
@@ -122,14 +122,10 @@ export function ChartContainer({
       >
         <ChartStyle id={chartId} config={config} />
         <div ref={contentRef} key={settings.replayKey} className="relative z-[1] flex h-full min-h-0 w-full flex-1 flex-col justify-end">
-          {isLoading ? (
-            <ChartReaction isLoading loadingVariant={loadingVariant} reaction={reaction} />
-          ) : (
-            <>
-              <ChartReactionScope active={Boolean(emotion)}>{children}</ChartReactionScope>
-              {emotion ? <ChartReaction reaction={reaction} className="mt-2 shrink-0 self-end" /> : null}
-            </>
-          )}
+          <ChartSkeleton isLoading={isLoading}>
+            <ChartReactionScope active={Boolean(emotion)}>{children}</ChartReactionScope>
+          </ChartSkeleton>
+          {emotion ? <ChartReaction isLoading={isLoading} reaction={reaction} className={isLoading ? "absolute bottom-2 right-2" : "mt-2 shrink-0 self-end"} /> : null}
         </div>
       </div>
     </ChartContext.Provider>

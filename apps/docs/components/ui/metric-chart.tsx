@@ -112,14 +112,12 @@ function MetricChartRoot({
           variant="plain"
           defaultSelectedDataKey={active}
         >
-          {isLoading ? null : (
-            <MetricBody
-              data={data}
-              xDataKey={xDataKey}
-              series={series}
-              active={active}
-            />
-          )}
+          <MetricBody
+            data={data}
+            xDataKey={xDataKey}
+            series={series}
+            active={active}
+          />
         </ChartContainer>
       </div>
     </Card>

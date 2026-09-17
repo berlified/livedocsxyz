@@ -96,7 +96,7 @@ export function CodeBlock({
   title,
   className,
   collapsible = false,
-  collapsedHeight = 420,
+  collapsedHeight = 108,
 }: {
   code: string;
   language?: string;
@@ -109,7 +109,8 @@ export function CodeBlock({
   const [expanded, setExpanded] = React.useState(false);
   const resetTimeout = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const highlighted = React.useMemo(() => highlightCode(code, language), [code, language]);
-  const needsCollapse = collapsible && code.split("\n").length > 24;
+  const needsCollapse = collapsible;
+  const codeId = React.useId();
 
   React.useEffect(() => {
     setCopyStatus("idle");
@@ -137,7 +138,7 @@ export function CodeBlock({
       )}
       style={syntaxStyles}
     >
-      <div className="flex items-center justify-between border-b border-border px-3 py-2">
+      <div className={cn("flex items-center justify-between border-b border-border px-3 py-2", needsCollapse && !expanded && "hidden")}>
         <span className="text-xs text-muted-foreground">
           {title ?? language}
         </span>
@@ -148,6 +149,7 @@ export function CodeBlock({
               size="sm"
               className="h-7 gap-1.5 rounded-full px-2.5 text-xs"
               aria-expanded={expanded}
+              aria-controls={codeId}
               onClick={() => setExpanded((current) => !current)}
             >
               <ChevronDown
@@ -175,8 +177,10 @@ export function CodeBlock({
       <span role="status" className="sr-only">
         {copyStatus === "copied" ? "Code copied to clipboard." : copyStatus === "error" ? "Could not copy code. Select the code to copy it manually." : ""}
       </span>
+      <div className="relative">
       <pre
-        tabIndex={0}
+        id={codeId}
+        tabIndex={needsCollapse && !expanded ? -1 : 0}
         aria-label={title ? `${title} code` : `${language} code`}
         className={cn(
           "overflow-auto whitespace-pre p-4 font-mono text-[13px] leading-6 text-foreground outline-offset-[-2px] [tab-size:2] focus-visible:outline-2 focus-visible:outline-ring sm:p-5",
@@ -184,21 +188,17 @@ export function CodeBlock({
         )}
         style={needsCollapse && !expanded ? { maxHeight: collapsedHeight, overflowY: "hidden" } : { maxHeight: expanded ? 720 : undefined }}
       >
-        <code className={`language-${language} font-mono`}>{highlighted}</code>
+        <span className="flex min-w-max">
+          {collapsible ? <span aria-hidden="true" className="mr-5 select-none text-right text-muted-foreground/50">{code.split("\n").map((_, index) => <span key={index} className="block">{index + 1}</span>)}</span> : null}
+          <code className={`language-${language} font-mono`}>{highlighted}</code>
+        </span>
       </pre>
-      {needsCollapse ? (
-        <div className="border-t border-border px-3 py-2 text-center sm:hidden">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="h-7 rounded-full px-2.5 text-xs"
-            aria-expanded={expanded}
-            onClick={() => setExpanded((current) => !current)}
-          >
-            {expanded ? "Collapse" : "Expand"}
-          </Button>
+      {needsCollapse && !expanded ? (
+        <div className="absolute inset-0 flex items-center justify-center" style={{ background: "linear-gradient(to bottom, color-mix(in oklab, var(--card) 25%, transparent), var(--card))" }}>
+          <Button variant="outline" size="sm" className="rounded-xl bg-background px-4 font-mono text-xs shadow-sm" aria-expanded={expanded} aria-controls={codeId} onClick={() => setExpanded(true)}>View Code</Button>
         </div>
       ) : null}
+      </div>
     </div>
   );
 }

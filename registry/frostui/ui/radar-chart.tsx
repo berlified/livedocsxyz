@@ -137,6 +137,7 @@ function ChartRadar({
   return (
     <ChartContainer
       isLoading={isLoading}
+      loadingVariant="radar"
       reaction={reaction}
       config={config}
       data={data}
@@ -144,14 +145,12 @@ function ChartRadar({
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      {isLoading ? null : (
-        <RadarBody
-          data={data}
-          series={series}
-          extras={extras}
-          gridType={gridType}
-        />
-      )}
+      <RadarBody
+        data={data}
+        series={series}
+        extras={extras}
+        gridType={gridType}
+      />
     </ChartContainer>
   );
 }

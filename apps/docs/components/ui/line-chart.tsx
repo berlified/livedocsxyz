@@ -115,7 +115,6 @@ function ChartLine({
         xDataKey={xDataKey}
         series={series}
         extras={extras}
-        isLoading={isLoading}
       />
     </ChartContainer>
   );
@@ -126,17 +125,13 @@ function LineBody({
   xDataKey,
   series,
   extras,
-  isLoading,
 }: {
   data: Record<string, unknown>[];
   xDataKey: string;
   series: React.ReactElement<LineSeriesProps>[];
   extras: React.ReactNode[];
-  isLoading?: boolean;
 }) {
   const { selected, setSelected } = useChart();
-
-  if (isLoading) return null;
 
   return (
     <ResponsiveContainer width="100%" height="100%">
