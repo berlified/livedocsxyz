@@ -11,6 +11,7 @@ export type ChartReactionOptions = {
   metric?: ChartReactionMetric;
   assets?: Partial<Record<ChartEmotion, ChartReactionAsset>>;
   resolver?: ChartReactionResolver;
+  loadingVariant?: "line" | "bar" | "ring" | "radar" | "heatmap" | "funnel";
 };
 export type ChartReactionResolver = (options: ChartReactionOptions) => ChartEmotion | undefined;
 export type ChartReactionsSettings = {
@@ -106,13 +107,37 @@ function ReactionMedia({ asset, emotion, animationsEnabled }: { asset?: ChartRea
   );
 }
 
+function ChartLoadingShape({ variant = "line", animated }: { variant?: ChartReactionOptions["loadingVariant"]; animated: boolean }) {
+  const id = React.useId().replace(/:/g, "");
+  const paint = `url(#${id}-light)`;
+  return (
+    <svg viewBox="0 0 480 160" className="h-full max-h-48 min-h-12 w-full text-chart-1" aria-hidden="true" data-chart-loading-shape={variant}>
+      <defs>
+        <linearGradient id={`${id}-light`} x1="0" x2="1" y1="0" y2="0">
+          <stop offset="0" stopColor="currentColor" stopOpacity="0.15" />
+          <stop offset="0.5" stopColor="currentColor" stopOpacity="0.85" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0.15" />
+          {animated ? <animateTransform attributeName="gradientTransform" type="translate" values="-1 0;1 0;-1 0" dur="2.4s" repeatCount="indefinite" /> : null}
+        </linearGradient>
+      </defs>
+      {variant === "ring" ? <circle cx="240" cy="80" r="55" fill="none" stroke={paint} strokeWidth="18" strokeDasharray="240 110" /> : variant === "radar" ? <path d="M240 15 310 60 285 140 195 140 170 60Z M240 42 283 70 266 119 214 119 197 70Z" fill="none" stroke={paint} strokeWidth="3" /> : variant === "funnel" ? <path d="M35 25C140 25 150 64 240 64S350 73 445 73V87C350 87 330 96 240 96S140 135 35 135Z" fill={paint} /> : variant === "heatmap" ? Array.from({ length: 56 }, (_, i) => <rect key={i} x={34 + (i % 14) * 30} y={20 + Math.floor(i / 14) * 30} width="24" height="24" rx="4" fill={paint} opacity={0.25 + ((i * 7) % 11) / 15} />) : variant === "bar" ? Array.from({ length: 24 }, (_, i) => { const height = 25 + ((i * 29) % 100); return <rect key={i} x={24 + i * 18} y={145 - height} width="11" height={height} rx="3" fill={paint} />; }) : <>
+        {[40, 85, 130].map((y) => <line key={y} x1="20" x2="460" y1={y} y2={y} stroke="var(--border)" strokeDasharray="3 5" />)}
+        <path d="M20 128C55 128 65 85 95 92S145 120 175 78 215 100 250 58 300 85 345 40 405 64 460 20" fill="none" stroke={paint} strokeWidth="3" strokeLinecap="round" />
+      </>}
+    </svg>
+  );
+}
+
 export function ChartReaction({ isLoading, reaction, className }: { isLoading?: boolean; reaction?: ChartReactionOptions; className?: string }) {
   const { emotion, asset, animationsEnabled } = useChartReaction({ isLoading, reaction });
   const scoped = useChartReactionScope();
   if (!emotion || scoped) return null;
   return (
-    <div role="status" aria-live="polite" aria-atomic="true" data-chart-reaction={emotion} className={["flex items-center justify-center gap-2 rounded-md bg-card p-2 text-xs text-muted-foreground", emotion === "loading" ? "h-full min-h-10 w-full" : "w-fit", className].filter(Boolean).join(" ")}>
-      <ReactionMedia key={`${emotion}:${asset?.src}:${asset?.poster}`} asset={asset} emotion={emotion} animationsEnabled={animationsEnabled} />
+    <div role="status" aria-live="polite" aria-atomic="true" data-chart-reaction={emotion} className={["flex items-center justify-center gap-2 rounded-md bg-card p-2 text-xs text-muted-foreground", emotion === "loading" ? "h-full min-h-20 w-full flex-col" : "w-fit", className].filter(Boolean).join(" ")}>
+      {emotion === "loading" ? <ChartLoadingShape variant={reaction?.loadingVariant} animated={animationsEnabled} /> : null}
+      <div className={emotion === "loading" && animationsEnabled ? "motion-safe:animate-pulse" : undefined}>
+        <ReactionMedia key={`${emotion}:${asset?.src}:${asset?.poster}`} asset={asset} emotion={emotion} animationsEnabled={animationsEnabled} />
+      </div>
     </div>
   );
 }

@@ -78,31 +78,34 @@ export default function ComponentsCatalogPage() {
         </Card>
       </section>
 
-      <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
+      <div className="space-y-8">
         {catalogGroups.map((group) => (
-          <div
+          <section
             key={group.id}
-            className="min-w-0 rounded-xl border border-border bg-card p-5"
+            aria-labelledby={`category-${group.id}`}
+            className="min-w-0 space-y-3"
           >
-            <div className="mb-2 flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-sm font-semibold">{group.title}</p>
-                <p className="text-xs text-muted-foreground">
-                  {group.items.length} components
-                </p>
-              </div>
+            <div className="flex min-w-0 items-center gap-3">
+              <h2 id={`category-${group.id}`} className="truncate text-sm font-medium tracking-tight">
+                {group.title}
+              </h2>
+              <span className="shrink-0 text-xs tabular-nums text-muted-foreground">
+                {group.items.length} components
+              </span>
             </div>
-            {group.items.map((item) => (
-              <CatalogLink
-                key={item.name}
-                href={`/docs/components/${item.name}`}
-                title={item.title}
-                description={item.description}
-              />
-            ))}
-          </div>
+            <div className="grid auto-rows-fr grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {group.items.map((item) => (
+                <CatalogLink
+                  key={item.name}
+                  href={`/docs/components/${item.name}`}
+                  title={item.title}
+                  description={item.description}
+                />
+              ))}
+            </div>
+          </section>
         ))}
-      </section>
+      </div>
     </div>
   );
 }

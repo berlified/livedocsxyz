@@ -4,6 +4,7 @@ import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { ChartReaction, ChartReactionScope, useChartReaction, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 
 export type ChartConfig = Record<
@@ -271,33 +272,41 @@ export function ChartLegendContent({
   if (!payload?.length) return null;
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-1.5 pt-2">
-      {uniquePayload(payload, config).map(({ item, key, index }) => {
-        const series = config[key];
-        const Icon = series?.icon;
-        const active = !selected || selected === key;
-        return (
-          <button
-            key={`${key}-${index}`}
-            type="button"
-            disabled={!isClickable}
-            onClick={() => isClickable && setSelected(key)}
-            className={cn(
-              "inline-flex items-center gap-1.5 rounded-none border-2 border-border bg-background px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-muted-foreground",
-              isClickable &&
-                "cursor-pointer hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              !active && "opacity-40"
-            )}
-          >
-            {Icon ? (
-              <Icon className="size-3" />
-            ) : (
-              <PixelSwatch color={colorVar(key)} />
-            )}
-            {series?.label ?? key}
-          </button>
-        );
-      })}
+    <div className="flex justify-center pt-2">
+      <div
+        role="group"
+        aria-label="Chart series"
+        className="inline-flex max-w-full flex-wrap items-center justify-center gap-1 rounded-full border border-border bg-muted/40 p-1"
+      >
+        {uniquePayload(payload, config).map(({ key, index }) => {
+          const series = config[key];
+          const Icon = series?.icon;
+          const active = selected === key;
+          return (
+            <Button
+              key={`${key}-${index}`}
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={!isClickable}
+              aria-pressed={isClickable ? active : undefined}
+              onClick={() => isClickable && setSelected(key)}
+              className={cn(
+                "h-7 min-w-0 shrink gap-1.5 rounded-full border border-transparent px-2.5 font-sans text-xs font-medium normal-case tracking-normal text-muted-foreground disabled:opacity-100",
+                active && "border-border bg-background text-foreground shadow-sm",
+                isClickable && "cursor-pointer hover:bg-accent hover:text-foreground"
+              )}
+            >
+              {Icon ? (
+                <Icon className="size-3 shrink-0" aria-hidden="true" />
+              ) : (
+                <PixelSwatch color={colorVar(key)} />
+              )}
+              <span className="truncate">{series?.label ?? key}</span>
+            </Button>
+          );
+        })}
+      </div>
     </div>
   );
 }

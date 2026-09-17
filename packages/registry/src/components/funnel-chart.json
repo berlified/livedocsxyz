@@ -1,13 +1,14 @@
 {
   "name": "funnel-chart",
   "title": "Funnel Chart",
-  "description": "Connected tapered stages with overall conversion, keyboard-selectable metrics, and quiet hover emphasis.",
+  "description": "Connected curved funnel with conversion pills, keyboard-selectable stages, smooth hover emphasis, and reduced-motion-aware draw-in.",
   "category": "charts",
   "dependencies": [],
   "registryDependencies": [
     "https://livedocs.xyz/r/chart.json",
     "https://livedocs.xyz/r/chart-reactions.json",
     "https://livedocs.xyz/r/button.json",
+    "https://livedocs.xyz/r/badge.json",
     "https://livedocs.xyz/r/card.json",
     "https://livedocs.xyz/r/utils.json"
   ],

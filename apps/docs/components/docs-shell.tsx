@@ -9,6 +9,7 @@ import { useTheme } from "next-themes";
 import { LivedocsLogo } from "@/components/livedocs-logo";
 import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { PageToc } from "@/components/page-toc";
 import { SearchDialog } from "@/components/search-dialog";
@@ -243,12 +244,21 @@ export function CatalogLink({
   description: string;
 }) {
   return (
-    <Link href={href} className="catalog-item group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-      <div className="min-w-0">
-        <p className="text-sm font-medium">{title}</p>
-        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-      </div>
-      <ArrowUpRight className="catalog-arrow mt-0.5 size-4 shrink-0 text-muted-foreground" />
+    <Link
+      href={href}
+      className="group block h-full min-w-0 rounded-xl no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    >
+      <Card className="h-full min-w-0 shadow-none transition-colors group-hover:border-muted-foreground/30 group-hover:bg-accent/50 group-focus-visible:border-muted-foreground/30">
+        <CardContent className="flex h-full items-start gap-3 p-4">
+          <div className="min-w-0 flex-1">
+            <h3 className="truncate text-sm font-medium tracking-tight">{title}</h3>
+            <p className="mt-2 line-clamp-2 min-h-10 break-words text-sm leading-5 text-muted-foreground">
+              {description}
+            </p>
+          </div>
+          <ArrowUpRight aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground group-focus-visible:text-foreground" />
+        </CardContent>
+      </Card>
     </Link>
   );
 }

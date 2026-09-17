@@ -536,8 +536,9 @@
       "name": "funnel-chart",
       "type": "registry:ui",
       "title": "Funnel Chart",
-      "description": "Connected tapered stages with overall conversion, keyboard-selectable metrics, and quiet hover emphasis.",
+      "description": "Connected curved funnel with conversion pills, keyboard-selectable stages, smooth hover emphasis, and reduced-motion-aware draw-in.",
       "registryDependencies": [
+        "https://livedocs.xyz/r/badge.json",
         "https://livedocs.xyz/r/chart-reactions.json",
         "https://livedocs.xyz/r/button.json",
         "https://livedocs.xyz/r/chart.json",
@@ -611,7 +612,7 @@
       "name": "candlestick-chart",
       "type": "registry:ui",
       "title": "Candlestick Chart",
-      "description": "OHLC candles with hollow up bodies, filled down bodies, optional volume, keyboard details, and an accessible data table.",
+      "description": "OHLC candles with hollow up bodies, filled down bodies, crosshair tooltips on hover or focus, optional volume, and an accessible data table.",
       "registryDependencies": [
         "https://livedocs.xyz/r/chart.json",
         "https://livedocs.xyz/r/chart-reactions.json",

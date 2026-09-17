@@ -44,8 +44,6 @@ import {
   FunnelChartPreview,
   GaugeChartPreview,
   ScatterChartPreview,
-} from "@/components/chart-previews-extended";
-import {
   WaterfallChartPreview,
   WaterfallChartExamples,
   CandlestickChartPreview,
@@ -53,7 +51,7 @@ import {
   ChartReactionsPreview,
   ChartReactionsExamples,
   FunnelConversionExamples,
-} from "@/components/financial-chart-previews";
+} from "@/components/chart-previews-extended";
 
 const usageByName: Record<string, string> = {
   "waterfall-chart": `import { WaterfallChart } from "@/components/ui/waterfall-chart"

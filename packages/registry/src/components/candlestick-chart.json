@@ -2,7 +2,7 @@
   "name": "candlestick-chart",
   "title": "Candlestick Chart",
   "category": "charts",
-  "description": "OHLC candles with hollow up bodies, filled down bodies, optional volume, keyboard details, and an accessible data table.",
+  "description": "OHLC candles with hollow up bodies, filled down bodies, crosshair tooltips on hover or focus, optional volume, and an accessible data table.",
   "dependencies": [],
   "registryDependencies": ["https://livedocs.xyz/r/chart.json", "https://livedocs.xyz/r/chart-reactions.json", "https://livedocs.xyz/r/card.json", "https://livedocs.xyz/r/utils.json"],
   "files": ["apps/docs/components/ui/candlestick-chart.tsx"],

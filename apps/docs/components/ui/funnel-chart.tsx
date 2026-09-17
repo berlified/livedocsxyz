@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import { badgeVariants } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
@@ -43,6 +44,7 @@ export function FunnelChart({
   isLoading,
   reaction,
 }: FunnelChartProps) {
+  const drawing = React.useRef<HTMLDivElement>(null);
   const [active, setActive] = React.useState<number | null>(null);
   const [selected, setSelected] = React.useState<number | null>(null);
   const reducedMotion = useChartReducedMotion();
@@ -54,6 +56,15 @@ export function FunnelChart({
   const last = stages[stages.length - 1]?.value ?? 0;
   const width = (value: number) => valid(value) && max > 0 ? value / max * 216 : 0;
   const activeStage = active === null ? undefined : stages[active];
+
+  React.useEffect(() => {
+    if (!animate || isLoading || !available || !drawing.current?.animate) return;
+    const animation = drawing.current.animate(
+      [{ clipPath: "inset(0 0 100% 0)" }, { clipPath: "inset(0 0 0% 0)" }],
+      { duration: 850, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+    );
+    return () => animation.cancel();
+  }, [animate, isLoading, available]);
 
   return (
     <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-label={title} aria-busy={isLoading}>
@@ -67,26 +78,29 @@ export function FunnelChart({
       <ChartContainer config={config} data={stages} isLoading={isLoading} reaction={reaction} variant="plain" className="mt-5 min-h-48">
         {!available ? <p role="status" className="flex min-h-48 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</p> : (
           <>
-            <div className="grid grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] gap-4">
-              <svg viewBox={`0 0 240 ${stages.length * 64}`} preserveAspectRatio="none" className="w-full overflow-visible" style={{ height: stages.length * 64 }} aria-hidden="true">
-                {stages.map((stage, index) => {
-                  const top = width(stage.value);
-                  const bottom = width(stages[index + 1]?.value ?? stage.value);
-                  const y = index * 64;
-                  const color = config[stage.key]?.color ?? config[stage.key]?.colors?.dark?.[0] ?? "var(--chart-1)";
-                  const fill = config[stage.key] ? `var(--color-${stage.key})` : color;
-                  return (
-                    <path key={`${stage.key}-${index}`} d={`M ${120 - top / 2} ${y} H ${120 + top / 2} L ${120 + bottom / 2} ${y + 64} H ${120 - bottom / 2} Z`}
-                      fill={fill} fillOpacity={active === index || selected === index ? 0.85 : 0.16 + (1 - index / stages.length) * 0.3}
-                      stroke="var(--card)" strokeWidth={1.5} strokeLinejoin="round"
-                      className={cn(animate && "transition-[fill-opacity] duration-200")}
-                      onMouseEnter={() => setActive(index)} onMouseLeave={() => setActive(null)} />
-                  );
-                })}
-              </svg>
+            <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.2fr)] gap-3 sm:gap-6">
+              <div ref={drawing} className="rounded-xl bg-accent/20">
+                <svg viewBox={`0 0 240 ${stages.length * 72}`} preserveAspectRatio="none" className="w-full" style={{ height: stages.length * 72 }} aria-hidden="true">
+                  {stages.map((stage, index) => {
+                    const top = width(stage.value);
+                    const bottom = width(stages[index + 1]?.value ?? stage.value * 0.7);
+                    const y = index * 72;
+                    const fill = config[stage.key] ? `var(--color-${stage.key}, var(--chart-1))` : "var(--chart-1)";
+                    const emphasized = active === index || selected === index;
+                    return (
+                      <path key={`${stage.key}-${index}`} d={`M ${120 - top / 2} ${y} H ${120 + top / 2} C ${120 + top / 2} ${y + 30} ${120 + bottom / 2} ${y + 42} ${120 + bottom / 2} ${y + 72} H ${120 - bottom / 2} C ${120 - bottom / 2} ${y + 42} ${120 - top / 2} ${y + 30} ${120 - top / 2} ${y} Z`}
+                        fill={fill} fillOpacity={emphasized ? 0.9 : 0.65 - index / stages.length * 0.3}
+                        stroke="var(--card)" strokeWidth={1.5} strokeLinejoin="round"
+                        className={cn("cursor-pointer", animate && "transition-[fill-opacity] duration-300")}
+                        onClick={() => { setSelected(selected === index ? null : index); if (valid(stage.value)) onStageClick?.(stage); }}
+                        onMouseEnter={() => setActive(index)} onMouseLeave={() => setActive(null)} />
+                    );
+                  })}
+                </svg>
+              </div>
               <ol className="min-w-0">
                 {stages.map((stage, index) => (
-                  <li key={`${stage.key}-${index}`} className="h-16 min-w-0">
+                  <li key={`${stage.key}-${index}`} className="h-[72px] min-w-0">
                     <Button type="button" variant="ghost" aria-pressed={selected === index}
                       aria-label={`${stage.label}: ${valid(stage.value) ? formatValue(stage.value) : "Unavailable"}${index && showConversion ? `, ${conversion(stage.value, stages[index - 1]!.value)} from previous` : ""}`}
                       className={cn("h-full w-full justify-start whitespace-normal rounded-lg px-2 text-left", !animate && "transition-none", (active === index || selected === index) && "bg-accent")}
@@ -95,7 +109,7 @@ export function FunnelChart({
                       onKeyDown={(event) => { if (event.key === "Escape") { setActive(null); setSelected(null); } }}
                       onClick={() => { setSelected(selected === index ? null : index); if (valid(stage.value)) onStageClick?.(stage); }}>
                       <span className="min-w-0 flex-1"><span className="block truncate text-xs text-muted-foreground">{stage.label}</span><span className="mt-1 block font-mono text-base font-medium">{valid(stage.value) ? formatValue(stage.value) : "—"}</span></span>
-                      {showConversion && index > 0 ? <span className="shrink-0 text-right"><span className="block font-mono text-xs">{conversion(stage.value, stages[index - 1]!.value)}</span><span className="text-[9px] text-muted-foreground">of previous</span></span> : null}
+                      {showConversion ? <span className="shrink-0 text-right"><span className={cn(badgeVariants({ variant: "outline" }), "bg-card font-mono text-[11px]")}>{conversion(stage.value, index > 0 ? stages[index - 1]!.value : first)}</span><span className="mt-1 block text-[9px] text-muted-foreground">{index > 0 ? "of previous" : "baseline"}</span></span> : null}
                     </Button>
                   </li>
                 ))}

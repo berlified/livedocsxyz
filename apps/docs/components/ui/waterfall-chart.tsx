@@ -95,7 +95,7 @@ export function WaterfallChart({ data, title = "Balance movement", description, 
                   const height = row.valid ? Math.max(2, Math.abs(y(row.start) - y(row.end))) : 2;
                   const next = rows[index + 1];
                   return <g key={index}>
-                    {row.valid && next?.valid && next.kind !== "total" ? <line x1={x(index) + barWidth} x2={x(index + 1)} y1={y(row.end)} y2={y(row.end)} stroke="var(--muted-foreground)" strokeOpacity={0.5} strokeDasharray="3 3" aria-hidden /> : null}
+                    {row.valid && next?.valid ? <line x1={x(index) + barWidth} x2={x(index + 1)} y1={y(row.end)} y2={y(row.end)} stroke="var(--muted-foreground)" strokeOpacity={0.5} strokeDasharray="3 3" aria-hidden /> : null}
                     <g data-bar={index} tabIndex={index === tabStop ? 0 : -1} role={onBarClick ? "button" : "img"} aria-label={describe(row)} aria-describedby={active === index ? `${id}-detail` : undefined}
                       onFocus={() => { setCursor(index); setActive(index); }} onBlur={() => setActive(null)} onMouseEnter={() => setActive(index)} onMouseLeave={() => setActive(null)} onKeyDown={(event) => navigate(event, index)} onClick={() => { setActive(index); if (row.valid) onBarClick?.(data[index]!, index); }}
                       className="cursor-pointer rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring">

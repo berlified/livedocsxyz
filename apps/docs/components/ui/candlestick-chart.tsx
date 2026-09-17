@@ -100,11 +100,21 @@ export function CandlestickChart({ data, title = "Price action", description, co
                         <line x1={x(index)} x2={x(index)} y1={y(row.high)} y2={y(row.low)} stroke={color} strokeWidth={1.5} />
                         <rect x={x(index) - candleWidth / 2} y={bodyTop - (bodyHeight === 1.5 ? 0.75 : 0)} width={candleWidth} height={bodyHeight} rx={2} fill={up ? "var(--card)" : color} stroke={color} strokeWidth={1.5} />
                       </> : <text x={x(index)} y={124} textAnchor="middle" className="fill-muted-foreground text-xs" aria-hidden>—</text>}
-                      {hasVolume && validVolume(row.volume) ? <rect x={x(index) - candleWidth / 2} y={286 - row.volume / maxVolume * 36} width={candleWidth} height={Math.max(1, row.volume / maxVolume * 36)} rx={2} fill={row.valid ? color : "var(--muted-foreground)"} fillOpacity={0.3} /> : null}
+                      {hasVolume && validVolume(row.volume) ? <rect x={x(index) - candleWidth / 2} y={286 - row.volume / maxVolume * 36} width={candleWidth} height={row.volume / maxVolume * 36} rx={2} fill={row.valid ? color : "var(--muted-foreground)"} fillOpacity={0.3} /> : null}
                     </g>
                     {index % Math.max(1, Math.ceil(rows.length / 10)) === 0 || index === rows.length - 1 ? <text x={x(index)} y={chartHeight - 10} textAnchor="middle" className="fill-muted-foreground text-[10px]" aria-hidden>{row.label.length > 10 ? `${row.label.slice(0, 9)}…` : row.label}</text> : null}
                   </g>;
                 })}
+                {selected?.valid && active !== null ? <g pointerEvents="none" aria-hidden>
+                  <line x1={x(active)} x2={x(active)} y1={18} y2={hasVolume ? 286 : 216} stroke="var(--muted-foreground)" strokeDasharray="4 4" strokeOpacity={0.65} />
+                  <line x1={64} x2={chartWidth - 12} y1={y(selected.close)} y2={y(selected.close)} stroke="var(--muted-foreground)" strokeDasharray="4 4" strokeOpacity={0.65} />
+                  <circle cx={x(active)} cy={y(selected.close)} r={3} fill="var(--card)" stroke="var(--foreground)" />
+                  <g transform={`translate(${Math.max(66, Math.min(chartWidth - 194, x(active) + (x(active) > chartWidth / 2 ? -194 : 14)))}, ${y(selected.close) < 120 ? 126 : 28})`}>
+                    <rect width={180} height={82} rx={8} fill="var(--popover)" stroke="var(--border)" />
+                    <text x={12} y={18} className="fill-popover-foreground text-[11px] font-medium">{selected.label.length > 24 ? `${selected.label.slice(0, 23)}…` : selected.label}</text>
+                    {[`Open ${formatValue(selected.open)} · Close ${formatValue(selected.close)}`, `High ${formatValue(selected.high)}`, `Low ${formatValue(selected.low)}`].map((line, index) => <text key={index} x={12} y={36 + index * 16} className="fill-popover-foreground font-mono text-[10px]">{line}</text>)}
+                  </g>
+                </g> : null}
               </svg>
             </div>
             <p id={`${id}-detail`} role="status" className="mt-3 min-h-9 rounded-lg border border-border bg-accent/40 px-3 py-2 text-xs">{selected ? describe(selected) : "Hover or focus a candle to inspect OHLC and volume."}</p>

@@ -6,6 +6,16 @@ import { GaugeChart } from "@/components/ui/gauge-chart";
 import { HeatmapChart } from "@/components/ui/heatmap-chart";
 import { ScatterChart } from "@/components/ui/scatter-chart";
 
+export {
+  WaterfallChartPreview,
+  WaterfallChartExamples,
+  CandlestickChartPreview,
+  CandlestickChartExamples,
+  ChartReactionsPreview,
+  ChartReactionsExamples,
+  FunnelConversionExamples,
+} from "@/components/financial-chart-previews";
+
 function PreviewPair({ children }: { children: React.ReactNode }) {
   return (
     <div className="grid gap-3 p-4 sm:grid-cols-2 [&>*]:min-w-0 [&>*]:w-full">
@@ -90,6 +100,7 @@ export function FunnelChartPreview() {
       className="w-full"
       title="Acquisition funnel"
       description="Visitors to paid conversion"
+      config={funnelConfig}
       stages={funnelStages}
     />
   );
