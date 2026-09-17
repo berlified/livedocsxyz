@@ -89,7 +89,7 @@ export function FunnelChart({
                     const emphasized = active === index || selected === index;
                     return (
                       <path key={`${stage.key}-${index}`} d={`M ${120 - top / 2} ${y} H ${120 + top / 2} C ${120 + top / 2} ${y + 30} ${120 + bottom / 2} ${y + 42} ${120 + bottom / 2} ${y + 72} H ${120 - bottom / 2} C ${120 - bottom / 2} ${y + 42} ${120 - top / 2} ${y + 30} ${120 - top / 2} ${y} Z`}
-                        fill={fill} fillOpacity={emphasized ? 0.9 : 0.65 - index / stages.length * 0.3}
+                        fill={fill} fillOpacity={emphasized ? 1 : 0.85 - index / stages.length * 0.2}
                         stroke="var(--card)" strokeWidth={1.5} strokeLinejoin="round"
                         className={cn("cursor-pointer", animate && "transition-[fill-opacity] duration-300")}
                         onClick={() => { setSelected(selected === index ? null : index); if (valid(stage.value)) onStageClick?.(stage); }}

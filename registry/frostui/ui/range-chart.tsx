@@ -42,7 +42,7 @@ function RangeChartRoot({
   reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   return (
-    <Card className={cn("p-5", className)}>
+    <Card className={cn("p-5 sm:p-6", className)}>
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       <ChartContainer
         isLoading={isLoading}
@@ -82,7 +82,7 @@ function RangeBody({
           tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
         />
         <Tooltip
-          cursor={{ stroke: "var(--border)", strokeDasharray: "3 3" }}
+          cursor={false}
           content={<ChartTooltipContent />}
         />
         <Area

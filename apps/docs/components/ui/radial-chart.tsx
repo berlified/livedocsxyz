@@ -75,7 +75,7 @@ function ChartRadial({
   );
 
   return (
-    <ChartContainer isLoading={isLoading} loadingVariant="radial" reaction={reaction} config={config} data={data} className={cn("h-72 w-full", className)}>
+    <ChartContainer isLoading={isLoading} loadingVariant="radial" reaction={reaction} config={config} data={data} className={cn("h-80 w-full", className)}>
       <RadialBody
         data={data}
         nameKey={nameKey}

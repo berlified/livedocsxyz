@@ -54,7 +54,7 @@ function MetricChartRoot({
   const [active, setActive] = React.useState(series[0]?.key);
 
   return (
-    <Card className={cn("p-5", className)}>
+    <Card className={cn("p-5 sm:p-6", className)}>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm text-muted-foreground">{title}</p>
@@ -168,7 +168,7 @@ function MetricBody({
           tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
         />
         <Tooltip
-          cursor={{ stroke: "var(--border)", strokeDasharray: "3 3" }}
+          cursor={false}
           content={<ChartTooltipContent />}
         />
         {series.map((item) => {

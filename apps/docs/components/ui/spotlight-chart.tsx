@@ -61,7 +61,7 @@ function SpotlightChartRoot({
     }, 0);
 
   return (
-    <Card className={cn("p-5", className)}>
+    <Card className={cn("p-5 sm:p-6", className)}>
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       {value ? (
         <div className="mt-2 flex items-end gap-2">
@@ -123,7 +123,7 @@ function SpotlightBody({
           tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
         />
         <Tooltip
-          cursor={{ stroke: "var(--border)", strokeDasharray: "3 3" }}
+          cursor={false}
           content={<ChartTooltipContent />}
         />
         <Area

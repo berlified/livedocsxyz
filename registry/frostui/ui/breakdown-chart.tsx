@@ -39,7 +39,7 @@ function BreakdownChartRoot({
   const [selected, setSelected] = React.useState<string>();
 
   return (
-    <Card className={cn("p-4", className)}>
+    <Card className={cn("p-5 sm:p-6", className)}>
       <ChartContainer
         isLoading={isLoading}
         loadingVariant="meter"
@@ -50,7 +50,7 @@ function BreakdownChartRoot({
         variant="plain"
       >
       <p className="text-sm text-muted-foreground">{title}</p>
-      <div className="mt-3 flex h-3 overflow-hidden rounded-full bg-muted">
+      <div className="mt-4 flex h-3 overflow-hidden rounded-full bg-muted">
         {items.map((item) => (
           <button
             key={item.key}

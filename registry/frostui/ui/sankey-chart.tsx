@@ -69,7 +69,7 @@ function SankeyBody({
         margin={{ top: 8, right: 120, left: 8, bottom: 8 }}
       >
         <defs>
-          <GradientFill id={fillId} color="var(--chart-1)" />
+          <GradientFill id={fillId} color="var(--chart-1)" startOpacity={0.85} endOpacity={0.4} />
         </defs>
       </RechartsSankey>
     </ResponsiveContainer>

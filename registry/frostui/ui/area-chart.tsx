@@ -180,6 +180,7 @@ function AreaBody({
               dataKey={dataKey}
               stroke={colorVar(dataKey)}
               fill={fill}
+              fillOpacity={variant === "default" ? 0.5 : 1}
               strokeWidth={strokeWidth}
               strokeDasharray={strokeVariant === "dashed" ? "6 4" : undefined}
               connectNulls={connectNulls}

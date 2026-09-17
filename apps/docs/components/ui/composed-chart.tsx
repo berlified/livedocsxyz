@@ -174,6 +174,7 @@ function ComposedBody({
             isAnimationActive={false}
             opacity={selected && selected !== item.props.dataKey ? 0.25 : 1}
             onClick={() => item.props.isClickable && setSelected(item.props.dataKey)}
+            cursor={item.props.isClickable ? "pointer" : undefined}
           />
         ))}
         {areas.map((item) => (

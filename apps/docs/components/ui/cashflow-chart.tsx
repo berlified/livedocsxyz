@@ -51,7 +51,7 @@ function CashflowChartRoot({
   reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   return (
-    <Card className={cn("p-5", className)}>
+    <Card className={cn("p-5 sm:p-6", className)}>
       <ChartContainer isLoading={isLoading} loadingVariant="cashflow" reaction={reaction} config={config} data={data} className="w-full justify-start" variant="plain">
         {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
         <div className="mt-3 flex flex-wrap gap-6">
@@ -89,8 +89,8 @@ function CashflowBars({ data }: { data: Record<string, unknown>[] }) {
     <ResponsiveContainer width="100%" height="100%">
       <RechartsBarChart data={data} stackOffset="sign" margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
         <defs>
-          <GradientFill id={pixelPatternId(id, "inflow")} color={colorVar("inflow")} />
-          <GradientFill id={pixelPatternId(id, "outflow")} color={colorVar("outflow")} />
+          <GradientFill id={pixelPatternId(id, "inflow")} color={colorVar("inflow")} startOpacity={0.85} endOpacity={0.4} />
+          <GradientFill id={pixelPatternId(id, "outflow")} color={colorVar("outflow")} startOpacity={0.4} endOpacity={0.85} />
         </defs>
         <CartesianGrid vertical={false} stroke="var(--border)" strokeDasharray="4 4" />
         <XAxis
@@ -102,7 +102,7 @@ function CashflowBars({ data }: { data: Record<string, unknown>[] }) {
         <YAxis hide />
         <ReferenceLine y={0} stroke="var(--border)" />
         <Tooltip
-          cursor={{ fill: "var(--muted)", fillOpacity: 0.35 }}
+          cursor={false}
           content={<ChartTooltipContent />}
         />
         <Bar dataKey="inflow" stackId="flow" radius={0} isAnimationActive={false}>

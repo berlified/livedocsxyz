@@ -164,7 +164,7 @@ function BarBody({
             const color = colorVar(key);
             return (
               <React.Fragment key={key}>
-                <GradientFill id={`${id}-${key}-fill`} color={color} />
+                <GradientFill id={`${id}-${key}-fill`} color={color} startOpacity={0.85} endOpacity={0.4} />
                 <HatchPattern id={`${id}-${key}-hatch`} color={color} />
                 <linearGradient id={`${id}-${key}-duo`} x1="0" x2="0" y1="0" y2="1">
                   <stop offset="0%" stopColor={color} stopOpacity={1} />

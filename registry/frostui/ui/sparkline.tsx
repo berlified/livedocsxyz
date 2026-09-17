@@ -195,7 +195,7 @@ function Sparkline({
             <>
               <defs>
                 <linearGradient id={`${uid}-area`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="currentColor" stopOpacity={0.14} />
+                  <stop offset="0%" stopColor="currentColor" stopOpacity={0.24} />
                   <stop offset="100%" stopColor="currentColor" stopOpacity={0} />
                 </linearGradient>
               </defs>

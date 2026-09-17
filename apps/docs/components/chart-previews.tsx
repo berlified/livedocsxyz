@@ -399,7 +399,7 @@ export function SparklineExamples() {
         </div>
       </ComponentPreview>
       <ComponentPreview label="Card" className="p-4">
-        <Card className="w-full max-w-sm p-4">
+        <Card className="w-full max-w-sm p-5 sm:p-6">
           <p className="text-sm text-muted-foreground">Volume</p>
           <p className="mt-1 font-mono text-2xl font-semibold tracking-tight">$48,210</p>
           <Sparkline

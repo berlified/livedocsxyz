@@ -195,7 +195,7 @@ function RadarBody({
           const {
             dataKey,
             variant = "filled",
-            fillOpacity = 0.2,
+            fillOpacity = 0.3,
             isGlowing,
             isClickable,
           } = item.props;

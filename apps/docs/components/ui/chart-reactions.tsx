@@ -72,11 +72,61 @@ export function useChartReaction({ isLoading = false, reaction }: { isLoading?: 
   const asset = emotion ? { ...settings.assets?.[emotion], ...reaction.assets?.[emotion] } : undefined;
   return { emotion, asset, animationsEnabled: !reducedMotion && (settings.animationsEnabled ?? true) };
 }
+type SkeletonBox = { x: number; y: number; w: number; h: number };
+function sameBoxes(a: SkeletonBox[], b: SkeletonBox[]) {
+  return a.length === b.length && a.every((box, index) => { const other = b[index]; return other && Math.abs(box.x - other.x) < 0.5 && Math.abs(box.y - other.y) < 0.5 && Math.abs(box.w - other.w) < 0.5 && Math.abs(box.h - other.h) < 0.5; });
+}
+function useLoadingTextPlaceholders(ref: React.RefObject<HTMLDivElement | null>, loading: boolean) {
+  const [boxes, setBoxes] = React.useState<SkeletonBox[]>([]);
+  React.useEffect(() => {
+    if (!loading) {
+      setBoxes([]);
+      return;
+    }
+    const root = ref.current;
+    if (!root) return;
+    let frame = 0;
+    const measure = () => {
+      const base = root.getBoundingClientRect();
+      if (!base.width || !base.height) return;
+      const next: SkeletonBox[] = [];
+      const push = (rect: DOMRect) => {
+        if (rect.width < 6 || rect.height < 6 || rect.width > base.width + 1) return;
+        next.push({ x: rect.left - base.left, y: rect.top - base.top, w: rect.width, h: rect.height });
+      };
+      root.querySelectorAll<HTMLElement>("p, span, div, h1, h2, h3, h4, h5, h6, button, a, label, small, strong, em, td, th, li").forEach((el) => {
+        if (el.firstElementChild || !el.textContent?.trim()) return;
+        push(el.getBoundingClientRect());
+      });
+      root.querySelectorAll<SVGTextElement>("svg text").forEach((text) => {
+        if (text.textContent?.trim()) push(text.getBoundingClientRect());
+      });
+      setBoxes((current) => (sameBoxes(current, next) ? current : next));
+    };
+    const schedule = () => {
+      window.cancelAnimationFrame(frame);
+      frame = window.requestAnimationFrame(measure);
+    };
+    schedule();
+    const observer = new ResizeObserver(schedule);
+    observer.observe(root);
+    const timers = [window.setTimeout(schedule, 250), window.setTimeout(schedule, 900)];
+    document.fonts?.ready.then(schedule).catch(() => {});
+    return () => {
+      window.cancelAnimationFrame(frame);
+      observer.disconnect();
+      timers.forEach((timer) => window.clearTimeout(timer));
+    };
+  }, [loading, ref]);
+  return boxes;
+}
 export function ChartSkeleton({ children, isLoading = false, className }: { children: React.ReactNode; isLoading?: boolean; className?: string }) {
   const settings = useChartReactions();
   const reducedMotion = useChartReducedMotion();
   const loading = isLoading || Boolean(settings.isLoading);
+  const animate = loading && !reducedMotion && settings.animationsEnabled !== false;
   const ref = React.useRef<HTMLDivElement>(null);
+  const boxes = useLoadingTextPlaceholders(ref, loading);
   React.useEffect(() => {
     if (!loading || reducedMotion || settings.animationsEnabled === false) return;
     const animation = ref.current?.animate?.(
@@ -86,11 +136,24 @@ export function ChartSkeleton({ children, isLoading = false, className }: { chil
     return () => animation?.cancel();
   }, [loading, reducedMotion, settings.animationsEnabled]);
   return <div data-chart-skeleton={loading ? "true" : undefined} aria-busy={loading} className={["relative flex h-full min-h-0 w-full flex-1 flex-col", className].filter(Boolean).join(" ")}>
-    <div ref={ref} inert={loading || undefined} aria-hidden={loading || undefined} className="flex h-full min-h-0 w-full flex-1 flex-col" style={loading ? {
+    <div ref={ref} inert={loading || undefined} aria-hidden={loading || undefined} data-chart-loading-text={loading ? "true" : undefined} className="flex h-full min-h-0 w-full flex-1 flex-col" style={loading ? {
       filter: "grayscale(1)", opacity: 0.65, pointerEvents: "none",
       maskImage: "linear-gradient(90deg, rgb(0 0 0 / 28%) 0%, rgb(0 0 0 / 28%) 35%, black 50%, rgb(0 0 0 / 28%) 65%, rgb(0 0 0 / 28%) 100%)",
       maskSize: "250% 100%", maskPosition: "50% 0%",
     } : undefined}>{children}</div>
+    {loading ? <style dangerouslySetInnerHTML={{ __html: `[data-chart-loading-text="true"] :is(p,span,div,h1,h2,h3,h4,h5,h6,button,a,label,small,strong,em,td,th,li):not(:has(*)){color:transparent!important}[data-chart-loading-text="true"] svg text{fill:transparent!important}` }} /> : null}
+    {loading && boxes.length ? (
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[2]">
+        {boxes.map((box, index) => (
+          <span
+            key={`${index}:${Math.round(box.x)}:${Math.round(box.y)}:${Math.round(box.w)}`}
+            data-chart-loading-bar=""
+            className={["absolute rounded-full bg-muted-foreground", animate ? "animate-pulse" : null].filter(Boolean).join(" ")}
+            style={{ left: box.x, top: box.y + box.h * 0.18, width: box.w, height: Math.max(8, Math.min(box.h * 0.64, 28)), opacity: 0.28 }}
+          />
+        ))}
+      </div>
+    ) : null}
     {loading ? <span role="status" className="sr-only">Loading chart</span> : null}
   </div>;
 }

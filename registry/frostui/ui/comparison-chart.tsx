@@ -50,8 +50,8 @@ function ComparisonChartRoot({
   reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   return (
-    <Card className={cn("p-5", className)}>
-      <div className="flex items-start justify-between gap-3">
+    <Card className={cn("p-5 sm:p-6", className)}>
+      <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm text-muted-foreground">{title}</p>
           <div className="mt-2 flex items-center gap-2">
@@ -122,7 +122,7 @@ function ComparisonBody({
           tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
         />
         <Tooltip
-          cursor={{ stroke: "var(--border)", strokeDasharray: "3 3" }}
+          cursor={false}
           content={<ChartTooltipContent />}
         />
         <Area
@@ -130,6 +130,7 @@ function ComparisonBody({
           dataKey={compareKey}
           stroke={colorVar(compareKey)}
           fill={`url(#${id}-${compareKey})`}
+          fillOpacity={1}
           strokeWidth={1.5}
         />
         <Area
@@ -137,6 +138,7 @@ function ComparisonBody({
           dataKey={primaryKey}
           stroke={colorVar(primaryKey)}
           fill={`url(#${id}-${primaryKey})`}
+          fillOpacity={1}
           strokeWidth={2}
         />
       </RechartsAreaChart>

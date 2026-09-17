@@ -144,7 +144,7 @@ function ChartPie({
       reaction={reaction}
       config={config}
       data={data}
-      className={cn("h-72 w-full", className)}
+      className={cn("h-80 w-full", className)}
       defaultSelectedDataKey={defaultSelectedSector}
       onSelectionChange={onSelectionChange}
     >

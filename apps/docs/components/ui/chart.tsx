@@ -111,11 +111,10 @@ export function ChartContainer({
           "relative flex aspect-auto w-full flex-col justify-end text-xs",
           "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-axis-tick_text]:font-mono",
           "[&_.recharts-cartesian-grid-horizontal_line]:stroke-border [&_.recharts-cartesian-grid-vertical_line]:stroke-border",
-          "[&_.recharts-rectangle.recharts-tooltip-cursor]:fill-foreground/15 [&_.recharts-curve.recharts-tooltip-cursor]:stroke-foreground",
           "[&_.recharts-dot]:stroke-background [&_.recharts-curve]:[stroke-linejoin:round] [&_.recharts-curve]:[stroke-linecap:round]", 
           "[&_.recharts-tooltip-wrapper]:z-10",
           variant === "panel" &&
-            "rounded-lg border border-border bg-card p-3", 
+            "rounded-lg border border-border bg-card p-4 sm:p-5",
           variant === "plain" && "rounded-none border-0 bg-transparent shadow-none",
           className
         )}
@@ -226,7 +225,7 @@ export function ChartTooltipContent({
   if (!rows.length) return null;
 
   return (
-    <div className="pointer-events-none relative min-w-36 overflow-hidden rounded-lg border border-border bg-popover/95 px-3 py-2 text-xs shadow-lg backdrop-blur">
+    <div className="pointer-events-none relative min-w-36 overflow-hidden rounded-lg border border-border/60 bg-popover/95 px-3 py-2 text-xs shadow-lg backdrop-blur">
       {label ? (
         <p className="mb-1.5 text-[11px] font-medium text-muted-foreground">{label}</p>
       ) : null}
@@ -261,13 +260,9 @@ export function ChartTooltipContent({
 export function ChartTooltip(props: React.ComponentProps<typeof RechartsPrimitive.Tooltip>) {
   return (
     <RechartsPrimitive.Tooltip
-      cursor={{
-        stroke: "var(--foreground)",
-        strokeDasharray: "4 4",
-        strokeWidth: 2,
-      }}
       content={<ChartTooltipContent />}
       {...props}
+      cursor={false}
     />
   );
 }
@@ -284,7 +279,7 @@ export function ChartLegendContent({
   if (!payload?.length) return null;
 
   return (
-    <div className="flex justify-center pt-2">
+    <div className="flex justify-center pt-3">
       <div
         role="group"
         aria-label="Chart series"
@@ -304,7 +299,7 @@ export function ChartLegendContent({
               aria-pressed={isClickable ? active : undefined}
               onClick={() => isClickable && setSelected(key)}
               className={cn(
-                "h-7 min-w-0 shrink gap-1.5 rounded-full border border-transparent px-2.5 font-sans text-xs font-medium normal-case tracking-normal text-muted-foreground disabled:opacity-100",
+                "h-8 min-w-0 shrink gap-2 rounded-full border border-transparent px-3 font-sans text-xs font-medium normal-case tracking-normal text-muted-foreground disabled:opacity-100",
                 active && "border-border bg-background text-foreground shadow-sm",
                 isClickable && "cursor-pointer hover:bg-accent hover:text-foreground"
               )}
@@ -390,14 +385,18 @@ export function HatchPattern({
 export function GradientFill({
   id,
   color,
+  startOpacity = 0.5,
+  endOpacity = 0.1,
 }: {
   id: string;
   color: string;
+  startOpacity?: number;
+  endOpacity?: number;
 }) {
   return (
     <linearGradient id={id} x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stopColor={color} stopOpacity={0.4} />
-      <stop offset="100%" stopColor={color} stopOpacity={0.04} />
+      <stop offset="0%" stopColor={color} stopOpacity={startOpacity} />
+      <stop offset="100%" stopColor={color} stopOpacity={endOpacity} />
     </linearGradient>
   );
 }
@@ -574,7 +573,7 @@ export const metricConfig = {
   },
   today: {
     label: "Today",
-    colors: { dark: ["var(--muted-foreground)"], light: ["var(--muted-foreground)"] },
+    colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] },
   },
 } satisfies ChartConfig;
 

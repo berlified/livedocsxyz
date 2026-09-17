@@ -13,10 +13,7 @@ import {
   ChartContainer,
   ChartLegend,
   ChartTooltip,
-  GradientFill,
   colorVar,
-  pixelPatternId,
-  pixelPatternUrl,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
@@ -36,7 +33,7 @@ function RadialSeries(_props: RadialSeriesProps) {
   return null;
 }
 function Tooltip(props: React.ComponentProps<typeof ChartTooltip>) {
-  return <ChartTooltip {...props} />;
+  return <ChartTooltip {...props} cursor={false} />;
 }
 Tooltip.displayName = "Tooltip";
 function Legend(props: React.ComponentProps<typeof ChartLegend>) {
@@ -78,7 +75,7 @@ function ChartRadial({
   );
 
   return (
-    <ChartContainer isLoading={isLoading} loadingVariant="radial" reaction={reaction} config={config} data={data} className={cn("h-72 w-full", className)}>
+    <ChartContainer isLoading={isLoading} loadingVariant="radial" reaction={reaction} config={config} data={data} className={cn("h-80 w-full", className)}>
       <RadialBody
         data={data}
         nameKey={nameKey}
@@ -112,7 +109,7 @@ function RadialBody({
   outerRadius: number;
   max?: number;
 }) {
-  const { id, config, selected, setSelected } = useChart();
+  const { config, selected, setSelected } = useChart();
   const reducedMotion = useChartReducedMotion();
   const { animationsEnabled = true } = useChartReactions();
   const dataKey = series?.props.dataKey ?? "value";
@@ -120,7 +117,7 @@ function RadialBody({
     const key = String(item[nameKey]);
     return {
       ...item,
-      fill: pixelPatternUrl(id, key),
+      fill: colorVar(key),
     };
   });
   const computedMax =
@@ -139,18 +136,6 @@ function RadialBody({
         startAngle={variant === "semi" ? 180 : 90}
         endAngle={variant === "semi" ? 0 : -270}
       >
-        <defs>
-          {data.map((item) => {
-            const key = String(item[nameKey]);
-            return (
-              <GradientFill
-                key={key}
-                id={pixelPatternId(id, key)}
-                color={colorVar(key)}
-              />
-            );
-          })}
-        </defs>
         <PolarAngleAxis type="number" domain={[0, computedMax]} tick={false} />
         {extras}
         <RadialBar

@@ -60,7 +60,7 @@ function TrendCardRoot({
         : "border-border text-muted-foreground";
 
   return (
-    <Card className={cn("relative overflow-hidden p-4", className)}>
+    <Card className={cn("relative overflow-hidden p-5 sm:p-6", className)}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-1.5">
           <p className="text-sm text-muted-foreground">{title}</p>
@@ -77,7 +77,7 @@ function TrendCardRoot({
         ) : null}
       </div>
 
-      <div className="mt-3 flex items-end gap-2">
+      <div className="mt-3 flex flex-wrap items-end gap-2">
         <p className="tabular-nums text-3xl font-semibold tracking-tight">{value}</p>
         {delta ? (
           <Badge variant="outline" className={cn("mb-1", deltaClass)}>
@@ -95,13 +95,13 @@ function TrendCardRoot({
         reaction={reaction}
         config={config}
         data={data}
-        className="mt-3 h-24 w-full"
+        className="mt-4 h-24 w-full"
         variant="plain"
       >
         <ResponsiveContainer width="100%" height="100%">
           <RechartsLineChart data={data} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
             <Tooltip
-              cursor={{ stroke: "var(--foreground)", strokeDasharray: "4 4", strokeWidth: 2 }}
+              cursor={false}
               content={<ChartTooltipContent />}
             />
             <Line
@@ -110,7 +110,7 @@ function TrendCardRoot({
               stroke={colorVar(compareKey)}
               strokeWidth={2}
               dot={false}
-              opacity={0.45}
+              opacity={0.65}
               isAnimationActive={false}
             />
             <Line

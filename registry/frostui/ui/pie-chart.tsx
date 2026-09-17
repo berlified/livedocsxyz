@@ -7,10 +7,7 @@ import {
   ChartContainer,
   ChartLegend,
   ChartTooltip,
-  GradientFill,
   colorVar,
-  pixelPatternId,
-  pixelPatternUrl,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
@@ -51,7 +48,7 @@ export function ChartInteractiveSector({
       role={onActivate ? "button" : "img"}
       aria-label={label}
       aria-pressed={onActivate ? selected : undefined}
-      className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      className="outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       opacity={muted && !active ? 0.3 : 1}
       stroke={focused ? "var(--ring)" : geometry.stroke}
       strokeWidth={focused ? 3 : geometry.strokeWidth}
@@ -68,8 +65,9 @@ export function ChartInteractiveSector({
         setHovered(false);
         geometry.onMouseLeave?.(event);
       }}
-      onFocus={() => {
-        setFocused(true);
+      onPointerDown={() => setFocused(false)}
+      onFocus={(event) => {
+        setFocused(event.currentTarget.matches(":focus-visible"));
         onFocus?.();
       }}
       onBlur={() => {
@@ -92,7 +90,7 @@ export function ChartInteractiveSector({
 }
 
 function Tooltip(props: React.ComponentProps<typeof ChartTooltip>) {
-  return <ChartTooltip {...props} />;
+  return <ChartTooltip {...props} cursor={false} />;
 }
 Tooltip.displayName = "Tooltip";
 function Legend(props: React.ComponentProps<typeof ChartLegend>) {
@@ -146,7 +144,7 @@ function ChartPie({
       reaction={reaction}
       config={config}
       data={data}
-      className={cn("h-72 w-full", className)}
+      className={cn("h-80 w-full", className)}
       defaultSelectedDataKey={defaultSelectedSector}
       onSelectionChange={onSelectionChange}
     >
@@ -196,25 +194,13 @@ function PieBody({
   showLabels?: boolean;
   children?: React.ReactNode;
 }) {
-  const { id, config, selected, setSelected } = useChart();
+  const { config, selected, setSelected } = useChart();
   const reducedMotion = useChartReducedMotion();
   const { animationsEnabled = true } = useChartReactions();
 
   return (
     <ResponsiveContainer width="100%" height="100%">
       <RechartsPieChart>
-        <defs>
-          {data.map((item) => {
-            const key = String(item[nameKey]);
-            return (
-              <GradientFill
-                key={key}
-                id={pixelPatternId(id, key)}
-                color={colorVar(key)}
-              />
-            );
-          })}
-        </defs>
         {children}
         <Pie
           data={data}
@@ -253,7 +239,7 @@ function PieBody({
             return (
               <Cell
                 key={key}
-                fill={pixelPatternUrl(id, key)}
+                fill={colorVar(key)}
               />
             );
           })}

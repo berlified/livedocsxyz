@@ -220,7 +220,7 @@ function ScatterBody({
           <ReferenceLine y={meanY} stroke="var(--border)" strokeDasharray="6 4" />
         ) : null}
         <RechartsTooltip
-          cursor={{ strokeDasharray: "3 3", stroke: "var(--border)" }}
+          cursor={false}
           content={<ScatterTooltipContent xLabel={xLabel} yLabel={yLabel} />}
           isAnimationActive={false}
         />
@@ -267,7 +267,7 @@ function ScatterTooltipContent({
   const key = String(row.series ?? "series");
   const series = config[key];
   return (
-    <div className="relative min-w-40 overflow-hidden rounded-md border border-border bg-card px-3 py-2 font-mono shadow-sm">
+    <div className="relative min-w-40 overflow-hidden rounded-md border border-border/60 bg-popover px-3 py-2 font-mono shadow-sm">
       <p className="mb-1.5 font-medium uppercase tracking-wide text-foreground">
         {String(row.label ?? series?.label ?? key)}
       </p>
