@@ -46,6 +46,7 @@ function RangeChartRoot({
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       <ChartContainer
         isLoading={isLoading}
+        loadingVariant="range"
         reaction={reaction}
         config={config}
         data={data}

@@ -102,7 +102,7 @@ export function ComponentDocLayout({
 
       <section id="source" className="scroll-mt-24 space-y-3">
         <h2 className="text-xl font-semibold tracking-tight">Source</h2>
-        <CodeBlock language="tsx" title={`${component.name}.tsx`} code={source} />
+        <CodeBlock language="tsx" title={`${component.name}.tsx`} code={source} collapsible />
       </section>
     </div>
   );

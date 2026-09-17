@@ -31,7 +31,7 @@ function UsageMeterRoot({
   const left = Math.max(0, max - value);
 
   if (isLoading) {
-    return <Card aria-busy="true" className={cn("min-h-40 p-5", className)}><ChartReaction isLoading reaction={reaction} /></Card>;
+    return <Card aria-busy="true" className={cn("min-h-40 p-5", className)}><ChartReaction isLoading loadingVariant="meter" reaction={reaction} /></Card>;
   }
 
   return (

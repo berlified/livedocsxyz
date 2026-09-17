@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Check, Copy } from "lucide-react";
+import { Check, ChevronDown, Copy } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -95,15 +95,21 @@ export function CodeBlock({
   language = "tsx",
   title,
   className,
+  collapsible = false,
+  collapsedHeight = 420,
 }: {
   code: string;
   language?: string;
   title?: string;
   className?: string;
+  collapsible?: boolean;
+  collapsedHeight?: number;
 }) {
   const [copyStatus, setCopyStatus] = React.useState<"idle" | "copied" | "error">("idle");
+  const [expanded, setExpanded] = React.useState(false);
   const resetTimeout = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const highlighted = React.useMemo(() => highlightCode(code, language), [code, language]);
+  const needsCollapse = collapsible && code.split("\n").length > 24;
 
   React.useEffect(() => {
     setCopyStatus("idle");
@@ -135,19 +141,36 @@ export function CodeBlock({
         <span className="text-xs text-muted-foreground">
           {title ?? language}
         </span>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="size-7"
-          aria-label={copyStatus === "copied" ? "Copied code" : "Copy code"}
-          onClick={copy}
-        >
-          {copyStatus === "copied" ? (
-            <Check className="size-3.5" />
-          ) : (
-            <Copy className="size-3.5" />
-          )}
-        </Button>
+        <div className="flex items-center gap-1">
+          {needsCollapse ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 gap-1.5 rounded-full px-2.5 text-xs"
+              aria-expanded={expanded}
+              onClick={() => setExpanded((current) => !current)}
+            >
+              <ChevronDown
+                className={cn("size-3.5 transition-transform", expanded && "rotate-180")}
+                aria-hidden
+              />
+              {expanded ? "Collapse" : "Expand"}
+            </Button>
+          ) : null}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-7"
+            aria-label={copyStatus === "copied" ? "Copied code" : "Copy code"}
+            onClick={copy}
+          >
+            {copyStatus === "copied" ? (
+              <Check className="size-3.5" />
+            ) : (
+              <Copy className="size-3.5" />
+            )}
+          </Button>
+        </div>
       </div>
       <span role="status" className="sr-only">
         {copyStatus === "copied" ? "Code copied to clipboard." : copyStatus === "error" ? "Could not copy code. Select the code to copy it manually." : ""}
@@ -155,10 +178,27 @@ export function CodeBlock({
       <pre
         tabIndex={0}
         aria-label={title ? `${title} code` : `${language} code`}
-        className="overflow-x-auto whitespace-pre p-4 font-mono text-[13px] leading-6 text-foreground outline-offset-[-2px] [tab-size:2] focus-visible:outline-2 focus-visible:outline-ring sm:p-5"
+        className={cn(
+          "overflow-auto whitespace-pre p-4 font-mono text-[13px] leading-6 text-foreground outline-offset-[-2px] [tab-size:2] focus-visible:outline-2 focus-visible:outline-ring sm:p-5",
+          needsCollapse && !expanded && "[&_code]:pointer-events-none [&_code]:select-none"
+        )}
+        style={needsCollapse && !expanded ? { maxHeight: collapsedHeight, overflowY: "hidden" } : { maxHeight: expanded ? 720 : undefined }}
       >
         <code className={`language-${language} font-mono`}>{highlighted}</code>
       </pre>
+      {needsCollapse ? (
+        <div className="border-t border-border px-3 py-2 text-center sm:hidden">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 rounded-full px-2.5 text-xs"
+            aria-expanded={expanded}
+            onClick={() => setExpanded((current) => !current)}
+          >
+            {expanded ? "Collapse" : "Expand"}
+          </Button>
+        </div>
+      ) : null}
     </div>
   );
 }

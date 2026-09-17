@@ -30,6 +30,7 @@ function LaneChartRoot({
     <Card className={cn("p-5", className)}>
       <ChartContainer
         isLoading={isLoading}
+        loadingVariant="lane"
         reaction={reaction}
         config={config}
         data={rows as unknown as Record<string, unknown>[]}

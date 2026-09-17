@@ -149,7 +149,7 @@ function Sparkline({
   const caption = markerLabel ?? (marker ? format(marker.value) : "");
 
   if (isLoading) {
-    return <div {...props} aria-busy="true" className={cn("rounded-lg border border-border bg-card", sizeClass[size], className)}><ChartReaction isLoading reaction={reaction} /></div>;
+    return <div {...props} aria-busy="true" className={cn("rounded-lg border border-border bg-card", sizeClass[size], className)}><ChartReaction isLoading loadingVariant="spark" reaction={reaction} /></div>;
   }
 
   return (

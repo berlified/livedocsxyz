@@ -104,6 +104,7 @@ function MetricChartRoot({
       <div className="mt-4 h-72">
         <ChartContainer
           isLoading={isLoading}
+          loadingVariant="line"
           reaction={reaction}
           config={config}
           data={data}
