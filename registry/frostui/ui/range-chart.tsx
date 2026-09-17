@@ -31,6 +31,7 @@ function RangeChartRoot({
   xDataKey = "month",
   className,
   isLoading,
+  reaction,
 }: {
   title?: string;
   data: Record<string, unknown>[];
@@ -38,19 +39,20 @@ function RangeChartRoot({
   xDataKey?: string;
   className?: string;
   isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   return (
     <Card className={cn("p-5", className)}>
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       <ChartContainer
+        isLoading={isLoading}
+        reaction={reaction}
         config={config}
         data={data}
         className={cn("w-full", title ? "mt-3 h-64" : "h-64")}
         variant="plain"
       >
-        {isLoading ? (
-          <div className="h-full animate-pulse bg-muted/40" />
-        ) : (
+        {isLoading ? null : (
           <RangeBody data={data} xDataKey={xDataKey} />
         )}
       </ChartContainer>

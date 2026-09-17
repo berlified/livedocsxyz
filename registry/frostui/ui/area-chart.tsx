@@ -21,6 +21,7 @@ import {
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 type AreaVariant = "default" | "gradient" | "hatched";
@@ -81,6 +82,7 @@ function ChartArea({
   className,
   children,
   isLoading,
+  reaction,
   defaultSelectedDataKey,
   onSelectionChange,
   xDataKey = "month",
@@ -90,6 +92,7 @@ function ChartArea({
   className?: string;
   children: React.ReactNode;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
   xDataKey?: string;
@@ -104,6 +107,8 @@ function ChartArea({
 
   return (
     <ChartContainer
+      isLoading={isLoading}
+      reaction={reaction}
       config={config}
       data={data}
       className={cn("h-72 w-full", className)}
@@ -136,11 +141,7 @@ function AreaBody({
 }) {
   const { id, selected, setSelected } = useChart();
 
-  if (isLoading) {
-    return (
-      <div className="h-full w-full animate-pulse bg-muted/40" />
-    );
-  }
+  if (isLoading) return null;
 
   return (
     <ResponsiveContainer width="100%" height="100%">

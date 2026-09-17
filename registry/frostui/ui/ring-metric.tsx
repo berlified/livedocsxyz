@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { Cell, Pie, PieChart as RechartsPieChart, ResponsiveContainer } from "recharts";
+import { Cell, Pie, PieChart as RechartsPieChart, ResponsiveContainer, type PieSectorShapeProps } from "recharts";
 
 import {
   ChartContainer,
@@ -16,6 +16,8 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
+import { ChartInteractiveSector } from "@/components/ui/pie-chart";
+import { useChartReducedMotion, useChartReactions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 export type RingSlice = { key: string; label: string; value: number };
@@ -26,12 +28,16 @@ function RingMetricRoot({
   data,
   config,
   className,
+  isLoading,
+  reaction,
 }: {
   title?: string;
   centerLabel?: string;
   data: RingSlice[];
   config: ChartConfig;
   className?: string;
+  isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
@@ -39,6 +45,8 @@ function RingMetricRoot({
     <Card className={cn("p-5", className)}>
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       <ChartContainer
+        isLoading={isLoading}
+        reaction={reaction}
         config={config}
         data={data as unknown as Record<string, unknown>[]}
         className="mt-2 h-64 w-full justify-center"
@@ -60,6 +68,10 @@ function RingBody({
   centerLabel?: string;
 }) {
   const { id, selected, setSelected } = useChart();
+  const [focused, setFocused] = React.useState<string>();
+  const [hovered, setHovered] = React.useState<string>();
+  const reducedMotion = useChartReducedMotion();
+  const { animationsEnabled = true } = useChartReactions();
 
   return (
     <div className="grid h-full items-center gap-4 sm:grid-cols-[1fr_8rem]">
@@ -85,14 +97,29 @@ function RingBody({
               paddingAngle={2}
               cornerRadius={0}
               stroke="var(--background)"
+              rootTabIndex={-1}
+              isAnimationActive={animationsEnabled && !reducedMotion}
+              animationBegin={0}
+              animationDuration={600}
+              shape={(props: PieSectorShapeProps) => {
+                const item = data[props.index];
+                if (!item) return <g />;
+                return (
+                  <ChartInteractiveSector
+                    geometry={props}
+                    label={`${item.label}: ${item.value.toLocaleString("en-US")}`}
+                    selected={selected === item.key}
+                    muted={Boolean(selected && selected !== item.key)}
+                    emphasized={focused === item.key || hovered === item.key}
+                    onActivate={() => setSelected(item.key)}
+                  />
+                );
+              }}
             >
               {data.map((item) => (
                 <Cell
                   key={item.key}
                   fill={pixelPatternUrl(id, item.key)}
-                  opacity={selected && selected !== item.key ? 0.25 : 1}
-                  cursor="pointer"
-                  onClick={() => setSelected(item.key)}
                 />
               ))}
             </Pie>
@@ -118,10 +145,16 @@ function RingBody({
               <button
                 type="button"
                 onClick={() => setSelected(item.key)}
+                aria-pressed={selected === item.key}
+                onMouseEnter={() => setHovered(item.key)}
+                onMouseLeave={() => setHovered(undefined)}
+                onFocus={() => setFocused(item.key)}
+                onBlur={() => setFocused(undefined)}
                 className={cn(
-                  "flex w-full items-center justify-between gap-2 text-left transition-opacity",
-                  muted && "opacity-40"
+                  "flex w-full items-center justify-between gap-2 rounded-md text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                  muted && focused !== item.key && hovered !== item.key && "opacity-40"
                 )}
+                style={{ transition: animationsEnabled && !reducedMotion ? "opacity 220ms ease" : "none" }}
               >
                 <span className="flex items-center gap-2 text-muted-foreground">
                   <PixelSwatch color={colorVar(item.key)} />

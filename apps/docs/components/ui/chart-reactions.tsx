@@ -15,6 +15,9 @@ export type ChartReactionOptions = {
 };
 export type ChartReactionResolver = (options: ChartReactionOptions) => ChartEmotion | undefined;
 export type ChartReactionsSettings = {
+  isLoading?: boolean;
+  reaction?: ChartReactionOptions;
+  replayKey?: number;
   assets?: Partial<Record<ChartEmotion, ChartReactionAsset>>;
   enabled?: boolean;
   animationsEnabled?: boolean;
@@ -85,6 +88,8 @@ export function useChartReducedMotion() {
 export function useChartReaction({ isLoading = false, reaction }: { isLoading?: boolean; reaction?: ChartReactionOptions } = {}) {
   const settings = useChartReactions();
   const reducedMotion = useChartReducedMotion();
+  reaction = { ...settings.reaction, ...reaction };
+  isLoading = isLoading || Boolean(settings.isLoading);
   const enabled = reaction?.enabled ?? settings.enabled ?? true;
   const resolver = reaction?.resolver ?? settings.resolver ?? resolveChartEmotion;
   const emotion = isLoading ? "loading" : enabled ? reaction?.emotion ?? resolver(reaction ?? {}) : undefined;

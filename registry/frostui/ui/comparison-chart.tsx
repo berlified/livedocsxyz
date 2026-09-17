@@ -34,6 +34,7 @@ function ComparisonChartRoot({
   xDataKey = "month",
   className,
   isLoading,
+  reaction,
 }: {
   title: string;
   value: string;
@@ -46,6 +47,7 @@ function ComparisonChartRoot({
   xDataKey?: string;
   className?: string;
   isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   return (
     <Card className={cn("p-5", className)}>
@@ -80,10 +82,8 @@ function ComparisonChartRoot({
         </div>
       </div>
 
-      <ChartContainer config={config} data={data} className="mt-4 h-44 w-full" variant="plain">
-        {isLoading ? (
-          <div className="h-full animate-pulse bg-muted/40" />
-        ) : (
+      <ChartContainer isLoading={isLoading} reaction={reaction} config={config} data={data} className="mt-4 h-44 w-full" variant="plain">
+        {isLoading ? null : (
           <ComparisonBody
             data={data}
             xDataKey={xDataKey}

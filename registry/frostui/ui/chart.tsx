@@ -4,6 +4,8 @@ import * as React from "react";
 import * as RechartsPrimitive from "recharts";
 
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { ChartReaction, ChartReactionScope, useChartReaction, useChartReactions, useChartReducedMotion, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 
 export type ChartConfig = Record<
   string,
@@ -51,6 +53,8 @@ export function ChartContainer({
   defaultSelectedDataKey,
   onSelectionChange,
   variant = "panel",
+  isLoading = false,
+  reaction,
 }: {
   id?: string;
   config: ChartConfig;
@@ -60,7 +64,23 @@ export function ChartContainer({
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
   variant?: "panel" | "plain";
+  isLoading?: boolean;
+  reaction?: ChartReactionOptions;
 }) {
+  const settings = useChartReactions();
+  const reducedMotion = useChartReducedMotion();
+  isLoading = isLoading || Boolean(settings.isLoading);
+  const { emotion, animationsEnabled } = useChartReaction({ isLoading, reaction });
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (!isLoading && animationsEnabled && !reducedMotion) {
+      const animation = contentRef.current?.animate?.(
+        [{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "translateY(0)" }],
+        { duration: 450, easing: "cubic-bezier(0.22,1,0.36,1)" }
+      );
+      return () => animation?.cancel();
+    }
+  }, [isLoading, animationsEnabled, reducedMotion, settings.replayKey]);
   const generatedId = React.useId().replace(/:/g, "");
   const chartId = id ?? generatedId;
   const [selected, setSelectedState] = React.useState<string | undefined>(
@@ -84,6 +104,7 @@ export function ChartContainer({
     >
       <div
         data-chart={chartId}
+        aria-busy={isLoading}
         className={cn(
           "relative flex aspect-auto w-full flex-col justify-end text-xs",
           "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-axis-tick_text]:font-mono",
@@ -98,8 +119,15 @@ export function ChartContainer({
         )}
       >
         <ChartStyle id={chartId} config={config} />
-        <div className="relative z-[1] flex h-full min-h-0 w-full flex-1 flex-col justify-end">
-          {children}
+        <div ref={contentRef} key={settings.replayKey} className="relative z-[1] flex h-full min-h-0 w-full flex-1 flex-col justify-end">
+          {isLoading ? (
+            <ChartReaction isLoading reaction={reaction} />
+          ) : (
+            <>
+              <ChartReactionScope active={Boolean(emotion)}>{children}</ChartReactionScope>
+              {emotion ? <ChartReaction reaction={reaction} className="mt-2 shrink-0 self-end" /> : null}
+            </>
+          )}
         </div>
       </div>
     </ChartContext.Provider>
@@ -200,9 +228,9 @@ export function ChartTooltipContent({
   if (!rows.length) return null;
 
   return (
-    <div className="relative min-w-40 overflow-hidden rounded-none border-2 border-border bg-background px-3 py-2 font-mono text-[11px] shadow-[3px_3px_0_0_var(--border)]">
+    <div className="pointer-events-none relative min-w-36 overflow-hidden rounded-lg border border-border bg-popover/95 px-3 py-2 text-xs shadow-lg backdrop-blur">
       {label ? (
-        <p className="mb-1.5 font-medium uppercase tracking-wide text-foreground">{label}</p>
+        <p className="mb-1.5 text-[11px] font-medium text-muted-foreground">{label}</p>
       ) : null}
       <div className="space-y-1">
         {rows.map(({ item, key, index }) => {
@@ -215,13 +243,13 @@ export function ChartTooltipContent({
             >
               <span className="flex items-center gap-2 text-muted-foreground">
                 {Icon ? (
-                  <Icon className="size-2.5" />
+                  <Icon className="size-3" />
                 ) : (
                   <PixelSwatch color={colorVar(key)} />
                 )}
                 {series?.label ?? key}
               </span>
-              <span className="font-mono text-foreground">
+              <span className="font-medium tabular-nums text-foreground">
                 {formatChartNumber(item.value)}
               </span>
             </div>
@@ -258,33 +286,41 @@ export function ChartLegendContent({
   if (!payload?.length) return null;
 
   return (
-    <div className="flex flex-wrap items-center justify-center gap-1.5 pt-2">
-      {uniquePayload(payload, config).map(({ item, key, index }) => {
-        const series = config[key];
-        const Icon = series?.icon;
-        const active = !selected || selected === key;
-        return (
-          <button
-            key={`${key}-${index}`}
-            type="button"
-            disabled={!isClickable}
-            onClick={() => isClickable && setSelected(key)}
-            className={cn(
-              "inline-flex items-center gap-1.5 rounded-none border-2 border-border bg-background px-2 py-0.5 font-mono text-[10px] uppercase tracking-wide text-muted-foreground",
-              isClickable &&
-                "cursor-pointer hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              !active && "opacity-40"
-            )}
-          >
-            {Icon ? (
-              <Icon className="size-3" />
-            ) : (
-              <PixelSwatch color={colorVar(key)} />
-            )}
-            {series?.label ?? key}
-          </button>
-        );
-      })}
+    <div className="flex justify-center pt-2">
+      <div
+        role="group"
+        aria-label="Chart series"
+        className="inline-flex max-w-full flex-wrap items-center justify-center gap-1 rounded-full border border-border bg-muted/40 p-1"
+      >
+        {uniquePayload(payload, config).map(({ key, index }) => {
+          const series = config[key];
+          const Icon = series?.icon;
+          const active = selected === key;
+          return (
+            <Button
+              key={`${key}-${index}`}
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={!isClickable}
+              aria-pressed={isClickable ? active : undefined}
+              onClick={() => isClickable && setSelected(key)}
+              className={cn(
+                "h-7 min-w-0 shrink gap-1.5 rounded-full border border-transparent px-2.5 font-sans text-xs font-medium normal-case tracking-normal text-muted-foreground disabled:opacity-100",
+                active && "border-border bg-background text-foreground shadow-sm",
+                isClickable && "cursor-pointer hover:bg-accent hover:text-foreground"
+              )}
+            >
+              {Icon ? (
+                <Icon className="size-3 shrink-0" aria-hidden="true" />
+              ) : (
+                <PixelSwatch color={colorVar(key)} />
+              )}
+              <span className="truncate">{series?.label ?? key}</span>
+            </Button>
+          );
+        })}
+      </div>
     </div>
   );
 }

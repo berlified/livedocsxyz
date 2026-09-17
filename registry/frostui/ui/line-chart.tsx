@@ -19,6 +19,7 @@ import {
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 type StrokeVariant = "solid" | "dashed";
@@ -75,6 +76,7 @@ function ChartLine({
   className,
   children,
   isLoading,
+  reaction,
   defaultSelectedDataKey,
   onSelectionChange,
   xDataKey = "month",
@@ -84,6 +86,7 @@ function ChartLine({
   className?: string;
   children: React.ReactNode;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
   xDataKey?: string;
@@ -98,6 +101,8 @@ function ChartLine({
 
   return (
     <ChartContainer
+      isLoading={isLoading}
+      reaction={reaction}
       config={config}
       data={data}
       className={cn("h-72 w-full", className)}
@@ -130,11 +135,7 @@ function LineBody({
 }) {
   const { selected, setSelected } = useChart();
 
-  if (isLoading) {
-    return (
-      <div className="h-full w-full animate-pulse bg-muted/40" />
-    );
-  }
+  if (isLoading) return null;
 
   return (
     <ResponsiveContainer width="100%" height="100%">

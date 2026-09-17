@@ -11,6 +11,7 @@ import {
 } from "recharts";
 
 import { ChartContainer, GradientFill, pixelPatternId, type ChartConfig, useChart } from "@/components/ui/chart";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 export type SankeyNode = { name: string };
@@ -22,22 +23,24 @@ function ChartSankey({
   config,
   className,
   isLoading,
+  reaction,
 }: {
   nodes: SankeyNode[];
   links: SankeyLink[];
   config: ChartConfig;
   className?: string;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
 }) {
   return (
     <ChartContainer
+      isLoading={isLoading}
+      reaction={reaction}
       config={config}
       data={nodes as unknown as Record<string, unknown>[]}
       className={cn("h-80 w-full", className)}
     >
-      {isLoading ? (
-        <div className="h-full w-full animate-pulse bg-muted/40" />
-      ) : (
+      {isLoading ? null : (
         <SankeyBody nodes={nodes} links={links} />
       )}
     </ChartContainer>

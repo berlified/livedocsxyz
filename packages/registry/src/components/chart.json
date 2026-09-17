@@ -4,7 +4,7 @@
   "category": "charts",
   "description": "Modern, smooth Geist-inspired chart primitives: config, container, tooltip, legend, grid, and theme tokens.",
   "dependencies": ["recharts"],
-  "registryDependencies": ["https://livedocs.xyz/r/utils.json", "https://livedocs.xyz/r/chart-reactions.json"],
+  "registryDependencies": ["https://livedocs.xyz/r/utils.json", "https://livedocs.xyz/r/chart-reactions.json", "https://livedocs.xyz/r/button.json"],
   "files": ["apps/docs/components/ui/chart.tsx"],
   "examples": ["config", "tooltip", "legend"],
   "variants": ["default"],

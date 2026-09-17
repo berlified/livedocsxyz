@@ -5,7 +5,7 @@ import * as RechartsPrimitive from "recharts";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ChartReaction, ChartReactionScope, useChartReaction, type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartReaction, ChartReactionScope, useChartReaction, useChartReactions, useChartReducedMotion, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 
 export type ChartConfig = Record<
   string,
@@ -67,7 +67,20 @@ export function ChartContainer({
   isLoading?: boolean;
   reaction?: ChartReactionOptions;
 }) {
-  const { emotion } = useChartReaction({ isLoading, reaction });
+  const settings = useChartReactions();
+  const reducedMotion = useChartReducedMotion();
+  isLoading = isLoading || Boolean(settings.isLoading);
+  const { emotion, animationsEnabled } = useChartReaction({ isLoading, reaction });
+  const contentRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    if (!isLoading && animationsEnabled && !reducedMotion) {
+      const animation = contentRef.current?.animate?.(
+        [{ opacity: 0, transform: "translateY(6px)" }, { opacity: 1, transform: "translateY(0)" }],
+        { duration: 450, easing: "cubic-bezier(0.22,1,0.36,1)" }
+      );
+      return () => animation?.cancel();
+    }
+  }, [isLoading, animationsEnabled, reducedMotion, settings.replayKey]);
   const generatedId = React.useId().replace(/:/g, "");
   const chartId = id ?? generatedId;
   const [selected, setSelectedState] = React.useState<string | undefined>(
@@ -91,6 +104,7 @@ export function ChartContainer({
     >
       <div
         data-chart={chartId}
+        aria-busy={isLoading}
         className={cn(
           "relative flex aspect-auto w-full flex-col justify-end text-xs",
           "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-axis-tick_text]:font-mono",
@@ -105,7 +119,7 @@ export function ChartContainer({
         )}
       >
         <ChartStyle id={chartId} config={config} />
-        <div className="relative z-[1] flex h-full min-h-0 w-full flex-1 flex-col justify-end">
+        <div ref={contentRef} key={settings.replayKey} className="relative z-[1] flex h-full min-h-0 w-full flex-1 flex-col justify-end">
           {isLoading ? (
             <ChartReaction isLoading reaction={reaction} />
           ) : (

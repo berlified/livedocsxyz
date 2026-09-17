@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { Card } from "@/components/ui/card";
-import { ChartReaction, type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartReaction, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 function UsageMeterRoot({
@@ -25,6 +25,8 @@ function UsageMeterRoot({
   isLoading?: boolean;
   reaction?: ChartReactionOptions;
 }) {
+  const settings = useChartReactions();
+  isLoading = isLoading || Boolean(settings.isLoading);
   const used = max <= 0 ? 0 : Math.max(0, Math.min(1, value / max)) * 100;
   const left = Math.max(0, max - value);
 

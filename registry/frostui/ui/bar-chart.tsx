@@ -21,6 +21,7 @@ import {
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 type BarVariant =
@@ -79,6 +80,7 @@ function ChartBar({
   className,
   children,
   isLoading,
+  reaction,
   defaultSelectedDataKey,
   onSelectionChange,
   xDataKey = "month",
@@ -90,6 +92,7 @@ function ChartBar({
   className?: string;
   children: React.ReactNode;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
   xDataKey?: string;
@@ -106,6 +109,8 @@ function ChartBar({
 
   return (
     <ChartContainer
+      isLoading={isLoading}
+      reaction={reaction}
       config={config}
       data={data}
       className={cn("h-72 w-full", className)}
@@ -144,11 +149,7 @@ function BarBody({
 }) {
   const { id, selected, setSelected } = useChart();
 
-  if (isLoading) {
-    return (
-      <div className="h-full w-full animate-pulse bg-muted/40" />
-    );
-  }
+  if (isLoading) return null;
 
   const stacked = stackType === "stacked" || stackType === "percent";
   const vertical = layout === "vertical";

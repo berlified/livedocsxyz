@@ -52,6 +52,12 @@
       "description": "Horizontal or vertical divider between sections."
     },
     {
+      "name": "chart-reactions",
+      "type": "registry:ui",
+      "title": "Chart Reactions",
+      "description": "Configurable meme loading and explicit metric emotions with reduced-motion-safe fallbacks."
+    },
+    {
       "name": "chart",
       "type": "registry:ui",
       "title": "Chart",
@@ -187,7 +193,7 @@
       "name": "funnel-chart",
       "type": "registry:ui",
       "title": "Funnel Chart",
-      "description": "Centered stage funnel with step conversion rates and optional interactive stages."
+      "description": "Connected curved funnel with conversion pills, keyboard-selectable stages, smooth hover emphasis, and reduced-motion-aware draw-in."
     },
     {
       "name": "gauge-chart",
@@ -200,6 +206,18 @@
       "type": "registry:ui",
       "title": "Scatter Chart",
       "description": "XY point plot with series groups, optional bubbles, mean quadrants, and labeled axes."
+    },
+    {
+      "name": "waterfall-chart",
+      "type": "registry:ui",
+      "title": "Waterfall Chart",
+      "description": "Connected balance bridge with signed changes, absolute totals, keyboard exploration, and an accessible data table."
+    },
+    {
+      "name": "candlestick-chart",
+      "type": "registry:ui",
+      "title": "Candlestick Chart",
+      "description": "OHLC candles with hollow up bodies, filled down bodies, crosshair tooltips on hover or focus, optional volume, and an accessible data table."
     }
   ]
 }

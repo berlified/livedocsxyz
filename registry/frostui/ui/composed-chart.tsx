@@ -21,6 +21,7 @@ import {
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 type SeriesProps = {
@@ -69,6 +70,7 @@ function ChartComposed({
   className,
   children,
   isLoading,
+  reaction,
   xDataKey = "month",
 }: {
   data: Record<string, unknown>[];
@@ -76,6 +78,7 @@ function ChartComposed({
   className?: string;
   children: React.ReactNode;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
   xDataKey?: string;
 }) {
   const childArray = React.Children.toArray(children);
@@ -99,10 +102,8 @@ function ChartComposed({
   );
 
   return (
-    <ChartContainer config={config} data={data} className={cn("h-72 w-full", className)}>
-      {isLoading ? (
-        <div className="h-full w-full animate-pulse bg-muted/40" />
-      ) : (
+    <ChartContainer isLoading={isLoading} reaction={reaction} config={config} data={data} className={cn("h-72 w-full", className)}>
+      {isLoading ? null : (
         <ComposedBody
           data={data}
           xDataKey={xDataKey}

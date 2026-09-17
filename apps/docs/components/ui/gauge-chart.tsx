@@ -32,7 +32,7 @@ const SWEEP = Math.PI * 1.5;
 
 function pointAt(value: number, min: number, max: number, radius: number) {
   const angle = START + ((value - min) / (max - min)) * SWEEP;
-  return { x: CX + radius * Math.cos(angle), y: CY + radius * Math.sin(angle) };
+  return { x: Number((CX + radius * Math.cos(angle)).toFixed(4)), y: Number((CY + radius * Math.sin(angle)).toFixed(4)) };
 }
 
 function arcPath(from: number, to: number, min: number, max: number, radius: number) {
@@ -72,7 +72,7 @@ export function GaugeChart({
   const edges = [safeMin, ...stops, safeMax];
   const segments = edges.slice(0, -1).map((from, i, arr) => ({
     from,
-    to: arr[i + 1]!,
+    to: edges[i + 1]!,
     color:
       arr.length === 1
         ? colorVar("value")
