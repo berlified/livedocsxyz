@@ -6,7 +6,7 @@ import { badgeVariants } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
-import { useChartReducedMotion, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartSkeleton, useChartReducedMotion, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 export type FunnelStage = { key: string; label: string; value: number; meta?: string };
@@ -26,9 +26,9 @@ export type FunnelChartProps = {
 
 const formatNumber = (value: number) => new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 }).format(value).replace("K", "k");
 const valid = (value: number) => Number.isFinite(value) && value >= 0;
-const conversion = (value: number, baseline: number) => {
+const conversion = (value: number, baseline: number, digits = 1) => {
   const ratio = value / baseline * 100;
-  return valid(value) && valid(baseline) && baseline > 0 && Number.isFinite(ratio) ? `${Number(ratio.toFixed(1))}%` : "—";
+  return valid(value) && valid(baseline) && baseline > 0 && Number.isFinite(ratio) ? `${Number(ratio.toFixed(digits))}%` : "—";
 };
 
 export function FunnelChart({
@@ -60,22 +60,17 @@ export function FunnelChart({
   const active = hovered ?? focused ?? selected;
   const activeStage = stages.find((stage) => stage.key === active);
   const step = 1000 / Math.max(1, stages.length);
-  const heights = [...stages.map((stage) => stage.value), last * 0.65].map((value) => valid(value) && max > 0 ? 14 + Math.sqrt(value / max) * 72 : 0);
-  const slopes = heights.map((height, index) => {
-    const before = height - (heights[index - 1] ?? height);
-    const after = (heights[index + 1] ?? height) - height;
-    return before * after > 0 ? 2 * before * after / (before + after) : 0;
-  });
+  const proportions = [...stages.map((stage) => stage.value), last].map((value) => valid(value) && max > 0 ? value / max : 0);
   const flow = (halo: number) => {
-    const top = (index: number) => 112 - heights[index]! - halo;
-    const bottom = (index: number) => 112 + heights[index]! + halo;
+    const top = (index: number) => 112 - proportions[index]! * (86 + halo);
+    const bottom = (index: number) => 112 + proportions[index]! * (86 + halo);
     let path = `M 0 ${top(0)}`;
     for (let index = 0; index < stages.length; index++) {
-      path += ` C ${(index + 1 / 3) * step} ${top(index) - slopes[index]! / 3} ${(index + 2 / 3) * step} ${top(index + 1) + slopes[index + 1]! / 3} ${(index + 1) * step} ${top(index + 1)}`;
+      path += ` C ${(index + 1 / 3) * step} ${top(index)} ${(index + 2 / 3) * step} ${top(index + 1)} ${(index + 1) * step} ${top(index + 1)}`;
     }
     path += ` L 1000 ${bottom(stages.length)}`;
     for (let index = stages.length - 1; index >= 0; index--) {
-      path += ` C ${(index + 2 / 3) * step} ${bottom(index + 1) - slopes[index + 1]! / 3} ${(index + 1 / 3) * step} ${bottom(index) + slopes[index]! / 3} ${index * step} ${bottom(index)}`;
+      path += ` C ${(index + 2 / 3) * step} ${bottom(index + 1)} ${(index + 1 / 3) * step} ${bottom(index)} ${index * step} ${bottom(index)}`;
     }
     return `${path} Z`;
   };
@@ -105,6 +100,7 @@ export function FunnelChart({
 
   return (
     <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-labelledby={`${id}-title`} aria-busy={loading}>
+      <ChartSkeleton isLoading={isLoading}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 id={`${id}-title`} className="text-sm font-medium tracking-tight">{title}</h3>
@@ -115,7 +111,7 @@ export function FunnelChart({
       <ChartContainer config={config} data={stages} isLoading={isLoading} loadingVariant="funnel" reaction={reaction} variant="plain" className="mt-5">
         {!available ? <p role="status" className="flex min-h-48 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</p> : (
           <>
-            <p id={`${id}-help`} className="sr-only">Use Left and Right arrow keys to explore stages. Press Enter or Space to select, or Escape to clear selection. Percentages compare each stage with the previous stage.</p>
+            <p id={`${id}-help`} className="sr-only">Use Left and Right arrow keys to explore stages. Press Enter or Space to select, or Escape to clear selection. Stage percentages compare each stage with the first stage, rounded to the nearest whole percent.</p>
             <div className="overflow-x-auto p-1">
               <div ref={drawing} className="relative" style={{ minWidth: Math.max(360, stages.length * 104) }}>
                 <svg viewBox="0 0 1000 224" preserveAspectRatio="none" className="pointer-events-none absolute top-11 h-56 w-full overflow-visible" aria-hidden="true">
@@ -141,7 +137,7 @@ export function FunnelChart({
                   {stages.map((stage, index) => (
                     <li key={`${stage.key}-${index}`} className="min-w-0" data-funnel-stage={index}>
                       <Button type="button" variant="ghost" data-stage-index={index} aria-pressed={selected === stage.key}
-                        aria-label={`${stage.label}: ${valid(stage.value) ? formatValue(stage.value) : "Unavailable"}${showConversion ? `, ${conversion(stage.value, index > 0 ? stages[index - 1]!.value : first)} ${index > 0 ? "of previous stage" : "baseline"}` : ""}`}
+                        aria-label={`${stage.label}: ${valid(stage.value) ? formatValue(stage.value) : "Unavailable"}${showConversion ? `, ${conversion(stage.value, first, 0)} of first stage` : ""}`}
                         aria-describedby={`${id}-help`}
                         className={cn("grid h-[312px] w-full grid-rows-[44px_224px_44px] gap-0 rounded-lg p-0 text-center hover:bg-accent/10 hover:text-foreground", !animate && "transition-none", (active === stage.key || selected === stage.key) && "bg-accent/10")}
                         onFocus={() => setFocused(stage.key)} onBlur={() => setFocused(null)}
@@ -149,7 +145,7 @@ export function FunnelChart({
                         onKeyDown={(event) => navigate(event, index)}
                         onClick={() => { setSelected((current) => current === stage.key ? null : stage.key); if (valid(stage.value)) onStageClick?.(stage); }}>
                         <span className="truncate px-2 font-mono text-xl font-semibold tracking-tight">{valid(stage.value) ? formatValue(stage.value) : "—"}</span>
-                        <span className="flex items-center justify-center">{showConversion ? <span className={cn(badgeVariants({ variant: "outline" }), "border-primary/30 bg-primary px-2.5 py-1 font-mono text-[11px] font-semibold text-primary-foreground shadow-sm")}>{conversion(stage.value, index > 0 ? stages[index - 1]!.value : first)}</span> : null}</span>
+                        <span className="flex items-center justify-center">{showConversion ? <span className={cn(badgeVariants({ variant: "outline" }), "border-primary/30 bg-primary px-2.5 py-1 font-mono text-[11px] font-semibold text-primary-foreground shadow-sm")}>{conversion(stage.value, first, 0)}</span> : null}</span>
                         <span className={cn("truncate px-2 text-xs text-muted-foreground", active === stage.key && "text-foreground")}>{stage.label}</span>
                       </Button>
                     </li>
@@ -162,6 +158,7 @@ export function FunnelChart({
           </>
         )}
       </ChartContainer>
+      </ChartSkeleton>
     </Card>
   );
 }

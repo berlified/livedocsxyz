@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartSkeleton, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 function MetricChartRoot({
@@ -55,6 +55,7 @@ function MetricChartRoot({
 
   return (
     <Card className={cn("p-5 sm:p-6", className)}>
+      <ChartSkeleton isLoading={isLoading}>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm text-muted-foreground">{title}</p>
@@ -120,6 +121,7 @@ function MetricChartRoot({
           />
         </ChartContainer>
       </div>
+      </ChartSkeleton>
     </Card>
   );
 }

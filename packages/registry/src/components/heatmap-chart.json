@@ -20,7 +20,7 @@
     { "name": "columns", "type": "string[]", "description": "Optional explicit column order" },
     { "name": "rows", "type": "string[]", "description": "Optional explicit row order; calendar defaults to Sun–Sat" },
     { "name": "layout", "type": "\"calendar\" | \"matrix\"", "description": "Auto-detects calendar for ISO week-start columns and weekday rows; use 52 weekly columns for a contribution year" },
-    { "name": "isLoading", "type": "boolean", "description": "Shared loading reaction" },
+    { "name": "isLoading", "type": "boolean", "description": "Shared chart loading skeleton covering the title, description, and chart labels" },
     { "name": "reaction", "type": "ChartReactionOptions", "description": "Per-chart reaction overrides" },
     { "name": "title", "type": "string", "description": "Card heading" },
     { "name": "description", "type": "string", "description": "Secondary caption" },

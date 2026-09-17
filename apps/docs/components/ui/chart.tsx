@@ -116,7 +116,7 @@ export function ChartContainer({
           "[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-axis-tick_text]:font-mono",
           "[&_.recharts-cartesian-grid-horizontal_line]:stroke-border [&_.recharts-cartesian-grid-vertical_line]:stroke-border",
           "[&_.recharts-dot]:stroke-background [&_.recharts-curve]:[stroke-linejoin:round] [&_.recharts-curve]:[stroke-linecap:round]", 
-          "[&_.recharts-tooltip-wrapper]:z-10",
+          "[&_.recharts-surface]:relative [&_.recharts-surface]:z-0 [&_.recharts-tooltip-wrapper]:z-10",
           variant === "panel" &&
             "rounded-lg border border-border bg-card p-4 sm:p-5",
           variant === "plain" && "rounded-none border-0 bg-transparent shadow-none",
@@ -300,7 +300,22 @@ export function ChartTooltipCursor({
       <g aria-hidden="true" className="pointer-events-none" data-chart-cursor="">
         <line x1={coordinate.x} x2={coordinate.x} y1={plot.y} y2={bottom} stroke="var(--chart-cursor)" strokeWidth={1} strokeDasharray="none" />
         {text ? (
-          <g>
+          <g
+            ref={(node) => {
+              if (!node) return;
+              const pill = node.getBoundingClientRect();
+              const ticks = node.ownerSVGElement?.querySelectorAll<SVGGElement>(".recharts-xAxis-tick-labels > g");
+              const hidden: Array<{ tick: SVGGElement; visibility: string }> = [];
+              ticks?.forEach((tick) => {
+                const bounds = tick.getBoundingClientRect();
+                if (bounds.right > pill.left - 4 && bounds.left < pill.right + 4 && bounds.bottom > pill.top && bounds.top < pill.bottom) {
+                  hidden.push({ tick, visibility: tick.style.visibility });
+                  tick.style.visibility = "hidden";
+                }
+              });
+              return () => hidden.forEach(({ tick, visibility }) => { tick.style.visibility = visibility; });
+            }}
+          >
             <rect x={x - width / 2} y={bottom + 4} width={width} height={24} rx={12} fill="var(--chart-cursor)" />
             <text x={x} y={bottom + 16} textAnchor="middle" dominantBaseline="central" fill="var(--chart-cursor-foreground)" className="font-mono text-xs font-semibold">{text}</text>
           </g>

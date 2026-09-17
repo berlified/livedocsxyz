@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { ChartSkeleton } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 function ComparisonChartRoot({
@@ -51,6 +52,7 @@ function ComparisonChartRoot({
 }) {
   return (
     <Card className={cn("p-5 sm:p-6", className)}>
+      <ChartSkeleton isLoading={isLoading}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm text-muted-foreground">{title}</p>
@@ -90,6 +92,7 @@ function ComparisonChartRoot({
           compareKey={compareKey}
         />
       </ChartContainer>
+      </ChartSkeleton>
     </Card>
   );
 }

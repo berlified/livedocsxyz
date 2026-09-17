@@ -5,7 +5,7 @@ import * as React from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ChartContainer, colorVar, type ChartConfig } from "@/components/ui/chart";
-import { useChartReactions, useChartReducedMotion, type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartSkeleton, useChartReactions, useChartReducedMotion, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 export type HeatmapCell = { x: string; y: string; value: number | null };
@@ -126,6 +126,7 @@ export function HeatmapChart({
 
   return (
     <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-labelledby={`${id}-title`} aria-busy={loading}>
+      <ChartSkeleton isLoading={isLoading}>
       <h3 id={`${id}-title`} className="text-sm font-medium tracking-tight">{title}</h3>
       {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
       <ChartContainer isLoading={isLoading} loadingVariant="heatmap" reaction={reaction} config={{ ...defaultConfig, ...config }} data={cells} variant="plain" className="mt-5">
@@ -196,6 +197,7 @@ export function HeatmapChart({
           </>
         )}
       </ChartContainer>
+      </ChartSkeleton>
     </Card>
   );
 }

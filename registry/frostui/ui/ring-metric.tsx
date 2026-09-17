@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
 import { ChartInteractiveSector } from "@/components/ui/pie-chart";
-import { useChartReducedMotion, useChartReactions } from "@/components/ui/chart-reactions";
+import { ChartSkeleton, useChartReducedMotion, useChartReactions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 export type RingSlice = { key: string; label: string; value: number };
@@ -40,6 +40,7 @@ function RingMetricRoot({
 
   return (
     <Card className={cn("@container/ring min-w-0 p-5", className)}>
+      <ChartSkeleton isLoading={isLoading}>
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       <ChartContainer
         isLoading={isLoading}
@@ -52,6 +53,7 @@ function RingMetricRoot({
       >
         <RingBody data={data} total={total} centerLabel={centerLabel} />
       </ChartContainer>
+      </ChartSkeleton>
     </Card>
   );
 }

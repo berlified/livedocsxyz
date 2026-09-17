@@ -170,12 +170,20 @@ export function ChartSkeleton({ children, isLoading = false, className }: { chil
       [{ backgroundPosition: "100% 50%" }, { backgroundPosition: "0% 50%" }],
       { duration: 2200, iterations: Infinity, easing: "linear" }
     );
-    return () => animation?.cancel();
+    const sweep = ref.current?.animate?.(
+      [{ maskPosition: "100% 0%" }, { maskPosition: "0% 0%" }],
+      { duration: 2200, iterations: Infinity, easing: "linear" }
+    );
+    return () => { animation?.cancel(); sweep?.cancel(); };
   }, [animate]);
   return <ChartSkeletonContext.Provider value={loading}>
     <ChartReactionsProvider isLoading={loading}>
       <div data-chart-skeleton={owner ? "true" : undefined} aria-busy={loading} className={["relative flex h-full min-h-0 w-full flex-1 flex-col", className].filter(Boolean).join(" ")}>
-        <div ref={ref} inert={owner || undefined} aria-hidden={owner || undefined} data-chart-loading-text={owner ? "true" : undefined} className="flex h-full min-h-0 w-full flex-1 flex-col" style={owner ? { filter: "grayscale(1)", opacity: 0.35, pointerEvents: "none" } : undefined}>{children}</div>
+        <div ref={ref} inert={owner || undefined} aria-hidden={owner || undefined} data-chart-loading-text={owner ? "true" : undefined} className="flex h-full min-h-0 w-full flex-1 flex-col" style={owner ? {
+          filter: "grayscale(1)", opacity: 0.5, pointerEvents: "none",
+          maskImage: "linear-gradient(90deg, rgb(0 0 0 / 30%) 0%, rgb(0 0 0 / 30%) 35%, black 50%, rgb(0 0 0 / 30%) 65%, rgb(0 0 0 / 30%) 100%)",
+          maskSize: "250% 100%", maskPosition: "50% 0%",
+        } : undefined}>{children}</div>
         {owner ? <style>{`[data-chart-loading-text="true"],[data-chart-loading-text="true"] *{-webkit-text-fill-color:transparent!important;text-shadow:none!important}[data-chart-loading-text="true"] :is(text,tspan,textPath){fill:transparent!important;stroke:transparent!important}`}</style> : null}
         {owner && boxes.length ? (
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[2] overflow-hidden">
