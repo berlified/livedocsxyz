@@ -54,7 +54,7 @@ function readRecents(): SearchHit[] {
     if (!raw) return [];
     const parsed = JSON.parse(raw) as SearchHit[];
     return parsed
-      .filter((item) => item?.href && item?.title && item.href !== "/docs/agents")
+      .filter((item) => item?.href && item?.title)
       .slice(0, 5);
   } catch {
     return [];
