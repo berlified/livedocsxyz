@@ -87,7 +87,7 @@ export function HeatmapChart({
     <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-labelledby={`${id}-title`}>
       <h3 id={`${id}-title`} className="text-sm font-medium tracking-tight">{title}</h3>
       {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
-      <ChartContainer isLoading={isLoading} reaction={reaction} config={{ ...defaultConfig, ...config }} data={cells} variant="plain" className="mt-5">
+      <ChartContainer isLoading={isLoading} loadingVariant="heatmap" reaction={reaction} config={{ ...defaultConfig, ...config }} data={cells} variant="plain" className="mt-5">
         {!finite.length ? <p className="flex min-h-44 items-center justify-center text-sm text-muted-foreground" role="status">{emptyLabel}</p> : (
           <>
             <p id={`${id}-help`} className="sr-only">Use arrow keys to explore cells, Home and End to move within a row. Press Escape to dismiss details.</p>

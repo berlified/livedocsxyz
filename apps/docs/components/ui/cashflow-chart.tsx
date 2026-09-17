@@ -52,7 +52,7 @@ function CashflowChartRoot({
 }) {
   return (
     <Card className={cn("p-5", className)}>
-      <ChartContainer isLoading={isLoading} reaction={reaction} config={config} data={data} className="w-full justify-start" variant="plain">
+      <ChartContainer isLoading={isLoading} loadingVariant="cashflow" reaction={reaction} config={config} data={data} className="w-full justify-start" variant="plain">
         {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
         <div className="mt-3 flex flex-wrap gap-6">
         <div>

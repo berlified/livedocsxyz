@@ -91,6 +91,7 @@ function TrendCardRoot({
 
       <ChartContainer
         isLoading={isLoading}
+        loadingVariant="bar"
         reaction={reaction}
         config={config}
         data={data}

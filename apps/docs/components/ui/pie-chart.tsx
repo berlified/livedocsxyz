@@ -142,6 +142,7 @@ function ChartPie({
   return (
     <ChartContainer
       isLoading={isLoading}
+      loadingVariant="donut"
       reaction={reaction}
       config={config}
       data={data}

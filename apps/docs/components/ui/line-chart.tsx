@@ -102,6 +102,7 @@ function ChartLine({
   return (
     <ChartContainer
       isLoading={isLoading}
+      loadingVariant="line"
       reaction={reaction}
       config={config}
       data={data}

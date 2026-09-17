@@ -80,7 +80,7 @@ function SpotlightChartRoot({
           ) : null}
         </div>
       ) : null}
-      <ChartContainer isLoading={isLoading} reaction={reaction} config={config} data={data} className="mt-4 h-52 w-full" variant="plain">
+      <ChartContainer isLoading={isLoading} loadingVariant="area" reaction={reaction} config={config} data={data} className="mt-4 h-52 w-full" variant="plain">
         <SpotlightBody
           data={data}
           xDataKey={xDataKey}

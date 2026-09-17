@@ -49,6 +49,7 @@ function CountryChartRoot({
     <Card className={cn("p-5", className)}>
       <ChartContainer
         isLoading={isLoading}
+        loadingVariant="h-bar"
         reaction={reaction}
         config={config}
         data={rows as unknown as Record<string, unknown>[]}

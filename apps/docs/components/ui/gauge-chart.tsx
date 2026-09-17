@@ -89,6 +89,7 @@ export function GaugeChart({
       </div>
       <ChartContainer
         isLoading={isLoading}
+        loadingVariant="gauge"
         reaction={reaction}
         config={defaultConfig}
         data={[{ value: clamped }]}

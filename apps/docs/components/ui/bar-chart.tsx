@@ -110,6 +110,7 @@ function ChartBar({
   return (
     <ChartContainer
       isLoading={isLoading}
+      loadingVariant="bar"
       reaction={reaction}
       config={config}
       data={data}

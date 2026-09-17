@@ -76,7 +76,7 @@ export function WaterfallChart({ data, title = "Balance movement", description, 
     <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-label={title} aria-busy={isLoading}>
       <h3 className="text-sm font-medium tracking-tight">{title}</h3>
       {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
-      <ChartContainer config={{ ...defaultConfig, ...config }} data={rows} variant="plain" className="mt-5 min-h-64" isLoading={isLoading} reaction={reaction}>
+      <ChartContainer config={{ ...defaultConfig, ...config }} data={rows} variant="plain" className="mt-5 min-h-64" isLoading={isLoading} loadingVariant="waterfall" reaction={reaction}>
         {!validRows.length ? <p role="status" className="flex min-h-64 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</p> : (
           <>
             <div className="mb-3 flex flex-wrap gap-4 text-[11px] text-muted-foreground">

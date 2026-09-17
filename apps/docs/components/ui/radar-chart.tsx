@@ -137,6 +137,7 @@ function ChartRadar({
   return (
     <ChartContainer
       isLoading={isLoading}
+      loadingVariant="radar"
       reaction={reaction}
       config={config}
       data={data}

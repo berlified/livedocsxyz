@@ -73,7 +73,7 @@ export function CandlestickChart({ data, title = "Price action", description, co
     <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-label={title} aria-busy={isLoading}>
       <h3 className="text-sm font-medium tracking-tight">{title}</h3>
       {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
-      <ChartContainer config={{ ...defaultConfig, ...config }} data={rows} variant="plain" isLoading={isLoading} reaction={reaction} className="mt-5 min-h-64">
+      <ChartContainer config={{ ...defaultConfig, ...config }} data={rows} variant="plain" isLoading={isLoading} loadingVariant="candlestick" reaction={reaction} className="mt-5 min-h-64">
         {!validRows.length ? <p role="status" className="flex min-h-64 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</p> : (
           <>
             <div className="mb-3 flex flex-wrap gap-4 text-[11px] text-muted-foreground"><span>Hollow: close ≥ open</span><span>Filled: close &lt; open</span>{hasVolume ? <span>Volume below</span> : null}</div>

@@ -54,6 +54,7 @@ export function ChartContainer({
   onSelectionChange,
   variant = "panel",
   isLoading = false,
+  loadingVariant,
   reaction,
 }: {
   id?: string;
@@ -65,6 +66,7 @@ export function ChartContainer({
   onSelectionChange?: (key?: string) => void;
   variant?: "panel" | "plain";
   isLoading?: boolean;
+  loadingVariant?: ChartReactionOptions["loadingVariant"];
   reaction?: ChartReactionOptions;
 }) {
   const settings = useChartReactions();
@@ -121,7 +123,7 @@ export function ChartContainer({
         <ChartStyle id={chartId} config={config} />
         <div ref={contentRef} key={settings.replayKey} className="relative z-[1] flex h-full min-h-0 w-full flex-1 flex-col justify-end">
           {isLoading ? (
-            <ChartReaction isLoading reaction={reaction} />
+            <ChartReaction isLoading loadingVariant={loadingVariant} reaction={reaction} />
           ) : (
             <>
               <ChartReactionScope active={Boolean(emotion)}>{children}</ChartReactionScope>

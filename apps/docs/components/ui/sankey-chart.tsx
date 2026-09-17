@@ -35,6 +35,7 @@ function ChartSankey({
   return (
     <ChartContainer
       isLoading={isLoading}
+      loadingVariant="sankey"
       reaction={reaction}
       config={config}
       data={nodes as unknown as Record<string, unknown>[]}

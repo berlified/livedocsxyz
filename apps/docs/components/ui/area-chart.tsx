@@ -108,6 +108,7 @@ function ChartArea({
   return (
     <ChartContainer
       isLoading={isLoading}
+      loadingVariant="area"
       reaction={reaction}
       config={config}
       data={data}

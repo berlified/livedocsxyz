@@ -75,7 +75,7 @@ export function FunnelChart({
         </div>
         {available && showConversion ? <div className="text-right"><p className="font-mono text-xl font-semibold tracking-tight">{conversion(last, first)}</p><p className="text-[10px] text-muted-foreground">Overall conversion</p></div> : null}
       </div>
-      <ChartContainer config={config} data={stages} isLoading={isLoading} reaction={reaction} variant="plain" className="mt-5 min-h-48">
+      <ChartContainer config={config} data={stages} isLoading={isLoading} loadingVariant="funnel" reaction={reaction} variant="plain" className="mt-5 min-h-48">
         {!available ? <p role="status" className="flex min-h-48 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</p> : (
           <>
             <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.2fr)] gap-3 sm:gap-6">

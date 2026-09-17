@@ -123,6 +123,7 @@ export function ScatterChart(props: ScatterChartProps) {
       {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
       <ChartContainer
         isLoading={isLoading}
+        loadingVariant={bubbleKey ? "bubble" : "scatter"}
         reaction={reaction}
         config={{ ...defaultConfig, ...config }}
         data={clean as unknown as Record<string, unknown>[]}
