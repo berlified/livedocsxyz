@@ -20,6 +20,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
+import { ChartSkeleton } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 export type ScatterPoint = {
@@ -119,6 +120,7 @@ export function ScatterChart(props: ScatterChartProps) {
 
   return (
     <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-label={title}>
+      <ChartSkeleton isLoading={isLoading}>
       {title ? <p className="text-sm font-medium tracking-tight">{title}</p> : null}
       {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
       <ChartContainer
@@ -149,6 +151,7 @@ export function ScatterChart(props: ScatterChartProps) {
           />
         )}
       </ChartContainer>
+      </ChartSkeleton>
     </Card>
   );
 }

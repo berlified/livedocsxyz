@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { Card } from "@/components/ui/card";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
-import { useChartReducedMotion, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartSkeleton, useChartReducedMotion, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 export type CandlestickDatum = { label: string; open: number; high: number; low: number; close: number; volume?: number };
@@ -70,7 +70,8 @@ export function CandlestickChart({ data, title = "Price action", description, co
   }
 
   return (
-    <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-label={title} aria-busy={isLoading}>
+    <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-label={title} aria-busy={isLoading || settings.isLoading}>
+      <ChartSkeleton isLoading={isLoading}>
       <h3 className="text-sm font-medium tracking-tight">{title}</h3>
       {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
       <ChartContainer config={{ ...defaultConfig, ...config }} data={rows} variant="plain" isLoading={isLoading} loadingVariant="candlestick" reaction={reaction} className="mt-5 min-h-64">
@@ -122,6 +123,7 @@ export function CandlestickChart({ data, title = "Price action", description, co
           </>
         )}
       </ChartContainer>
+      </ChartSkeleton>
     </Card>
   );
 }

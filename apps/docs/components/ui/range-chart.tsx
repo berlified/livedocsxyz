@@ -22,6 +22,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
+import { ChartSkeleton } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 function RangeChartRoot({
@@ -43,6 +44,7 @@ function RangeChartRoot({
 }) {
   return (
     <Card className={cn("p-5 sm:p-6", className)}>
+      <ChartSkeleton isLoading={isLoading}>
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       <ChartContainer
         isLoading={isLoading}
@@ -55,6 +57,7 @@ function RangeChartRoot({
       >
         <RangeBody data={data} xDataKey={xDataKey} />
       </ChartContainer>
+      </ChartSkeleton>
     </Card>
   );
 }

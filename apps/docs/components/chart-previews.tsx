@@ -232,12 +232,16 @@ export function BarChartExamples() {
 
 export function ComposedChartPreview() {
   return (
-    <ComposedChart data={salesByCategory} config={salesByCategoryConfig} className="w-full" height={340}>
+    <ComposedChart data={composedDaily} config={composedDailyConfig} xDataKey="day" className="w-full" height={340}>
       <ComposedChart.Grid />
-      <ComposedChart.Tooltip />
+      <ComposedChart.XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} ticks={["Jan 1", "Jan 5", "Jan 10", "Jan 15", "Jan 20", "Jan 25", "Jan 30"]} interval="preserveStartEnd" minTickGap={28} />
+      <ComposedChart.Tooltip
+        labelFormatter={(label) => new Date(Date.UTC(2026, 0, Number(String(label).split(" ")[1]))).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" })}
+      />
       <ComposedChart.Legend isClickable />
-      <ComposedChart.Bar dataKey="sales" maxBarSize={10} />
-      <ComposedChart.Line dataKey="sales" />
+      <ComposedChart.Area dataKey="average" />
+      <ComposedChart.Bar dataKey="daily" maxBarSize={10} />
+      <ComposedChart.Line dataKey="trend" />
     </ComposedChart>
   );
 }
@@ -270,6 +274,9 @@ export function PieChartPreview() {
       dataKey="sales"
       nameKey="category"
       legendTitle="Sales by Category"
+      innerRadius={0}
+      paddingAngle={0}
+      cornerRadius={0}
       className="w-full"
     >
       <PieChart.Tooltip />

@@ -18,7 +18,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartSkeleton, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 function TrendCardRoot({
@@ -61,6 +61,7 @@ function TrendCardRoot({
 
   return (
     <Card className={cn("relative overflow-hidden p-5 sm:p-6", className)}>
+      <ChartSkeleton isLoading={isLoading}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-1.5">
           <p className="text-sm text-muted-foreground">{title}</p>
@@ -129,6 +130,7 @@ function TrendCardRoot({
         <span>{String(data[0]?.[xDataKey] ?? "")}</span>
         <span>Now</span>
       </p>
+      </ChartSkeleton>
     </Card>
   );
 }

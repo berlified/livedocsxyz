@@ -218,6 +218,8 @@ export function ChartTooltipContent({
   label?: string | number;
   labelFormatter?: (label: React.ReactNode, payload: ChartTooltipPayload[]) => React.ReactNode;
   roundness?: "sm" | "md" | "lg" | "full";
+  variant?: "reference" | "default";
+  className?: string;
 }) {
   const { config, selected } = useChart();
   if (!active || !payload?.length) return null;
@@ -235,9 +237,13 @@ export function ChartTooltipContent({
   const header = labelFormatter ? labelFormatter(label, payload) : label;
 
   return (
-    <div className={cn(
-      "pointer-events-none relative min-w-48 overflow-hidden border-0 bg-[var(--chart-tooltip-background,var(--popover))] px-3.5 py-3 text-xs text-[var(--chart-tooltip-foreground,var(--popover-foreground))] shadow-lg",
-      { sm: "rounded-sm", md: "rounded-md", lg: "rounded-lg", full: "rounded-2xl" }[roundness]
+    <div role="tooltip" data-variant={variant} className={cn(
+      "pointer-events-none relative min-w-48 overflow-hidden border-0 px-3.5 py-3 text-xs shadow-lg",
+      variant === "reference"
+        ? "bg-[var(--chart-tooltip-background)] text-[var(--chart-tooltip-foreground)]"
+        : "bg-popover text-popover-foreground",
+      { sm: "rounded-sm", md: "rounded-md", lg: "rounded-lg", full: "rounded-2xl" }[roundness],
+      className
     )}>
       {header !== undefined && header !== null && header !== "" ? (
         <p className="mb-2 text-[11px] font-bold">{header}</p>
@@ -251,7 +257,7 @@ export function ChartTooltipContent({
               key={`${key}-${index}`}
               className="flex items-center justify-between gap-6"
             >
-              <span className="flex items-center gap-2 text-[var(--chart-tooltip-muted,var(--muted-foreground))]">
+              <span className={cn("flex items-center gap-2", variant === "reference" ? "text-[var(--chart-tooltip-muted)]" : "text-muted-foreground")}>
                 {Icon ? (
                   <Icon className="size-3" />
                 ) : (
@@ -272,36 +278,56 @@ export function ChartTooltipContent({
   );
 }
 
-export function ChartTooltip(props: React.ComponentProps<typeof RechartsPrimitive.Tooltip>) {
+export function ChartTooltipCursor({
+  axisLabelFormatter,
+}: {
+  axisLabelFormatter?: (label: string | number) => string;
+}) {
+  const label = RechartsPrimitive.useActiveTooltipLabel();
+  const coordinate = RechartsPrimitive.useActiveTooltipCoordinate();
+  const plot = RechartsPrimitive.usePlotArea();
+  const layout = RechartsPrimitive.useChartLayout();
+  const active = RechartsPrimitive.useIsTooltipActive();
+  if (!active || !plot || !coordinate || layout !== "horizontal") return null;
+
+  const text = label === undefined ? "" : axisLabelFormatter?.(label) ?? String(label);
+  const width = Math.min(plot.width, Math.max(40, text.length * 7 + 20));
+  const x = Math.max(plot.x + width / 2, Math.min(coordinate.x, plot.x + plot.width - width / 2));
+  const bottom = plot.y + plot.height;
+
+  return (
+    <RechartsPrimitive.ZIndexLayer zIndex={3000}>
+      <g aria-hidden="true" className="pointer-events-none" data-chart-cursor="">
+        <line x1={coordinate.x} x2={coordinate.x} y1={plot.y} y2={bottom} stroke="var(--chart-cursor)" strokeWidth={1} strokeDasharray="none" />
+        {text ? (
+          <g>
+            <rect x={x - width / 2} y={bottom + 4} width={width} height={24} rx={12} fill="var(--chart-cursor)" />
+            <text x={x} y={bottom + 16} textAnchor="middle" dominantBaseline="central" fill="var(--chart-cursor-foreground)" className="font-mono text-xs font-semibold">{text}</text>
+          </g>
+        ) : null}
+      </g>
+    </RechartsPrimitive.ZIndexLayer>
+  );
+}
+
+type ChartTooltipProps = React.ComponentProps<typeof RechartsPrimitive.Tooltip> & {
+  contentProps?: Pick<React.ComponentProps<typeof ChartTooltipContent>, "variant" | "roundness" | "className" | "labelFormatter">;
+  axisLabelFormatter?: (label: string | number) => string;
+};
+
+export function ChartTooltip({ contentProps, axisLabelFormatter, labelFormatter, cursor, ...props }: ChartTooltipProps) {
   return (
     <RechartsPrimitive.Tooltip
-      content={<ChartTooltipContent />}
+      content={<ChartTooltipContent labelFormatter={labelFormatter as React.ComponentProps<typeof ChartTooltipContent>["labelFormatter"]} {...contentProps} />}
+      cursor={cursor ?? <ChartTooltipCursor axisLabelFormatter={axisLabelFormatter} />}
       {...props}
-      cursor={false}
     />
   );
 }
 ChartTooltip.displayName = "Tooltip";
 
-export function ChartTooltipLabelFormatter({
-  labelFormatter,
-  ...props
-}: Omit<React.ComponentProps<typeof RechartsPrimitive.Tooltip>, "content">) {
-  return (
-    <RechartsPrimitive.Tooltip
-      content={
-        <ChartTooltipContent
-          labelFormatter={
-            labelFormatter as
-              | ((label: React.ReactNode, payload: ChartTooltipPayload[]) => React.ReactNode)
-              | undefined
-          }
-        />
-      }
-      {...props}
-      cursor={false}
-    />
-  );
+export function ChartTooltipLabelFormatter(props: Omit<ChartTooltipProps, "content">) {
+  return <ChartTooltip {...props} />;
 }
 ChartTooltipLabelFormatter.displayName = "Tooltip";
 

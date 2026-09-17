@@ -11,7 +11,7 @@ export type ChartReactionOptions = {
   metric?: ChartReactionMetric;
   assets?: Partial<Record<ChartEmotion, ChartReactionAsset>>;
   resolver?: ChartReactionResolver;
-  loadingVariant?: "line" | "area" | "spark" | "range" | "bar" | "stacked-bar" | "h-bar" | "ring" | "donut" | "radial" | "radar" | "heatmap" | "funnel" | "sankey" | "scatter" | "bubble" | "candlestick" | "waterfall" | "gauge" | "gauge-needle" | "cashflow" | "lane" | "meter";
+  loadingVariant?: "line" | "area" | "spark" | "range" | "bar" | "stacked-bar" | "h-bar" | "ring" | "donut" | "radial" | "radar" | "heatmap" | "funnel" | "sankey" | "scatter" | "bubble" | "candlestick" | "waterfall" | "cashflow" | "lane" | "meter";
 };
 export type ChartReactionResolver = (options: ChartReactionOptions) => ChartEmotion | undefined;
 export type ChartReactionsSettings = {
@@ -73,6 +73,7 @@ export function useChartReaction({ isLoading = false, reaction }: { isLoading?: 
   return { emotion, asset, animationsEnabled: !reducedMotion && (settings.animationsEnabled ?? true) };
 }
 type SkeletonBox = { x: number; y: number; w: number; h: number };
+const ChartSkeletonContext = React.createContext(false);
 function sameBoxes(a: SkeletonBox[], b: SkeletonBox[]) {
   return a.length === b.length && a.every((box, index) => { const other = b[index]; return other && Math.abs(box.x - other.x) < 0.5 && Math.abs(box.y - other.y) < 0.5 && Math.abs(box.w - other.w) < 0.5 && Math.abs(box.h - other.h) < 0.5; });
 }
@@ -86,36 +87,69 @@ function useLoadingTextPlaceholders(ref: React.RefObject<HTMLDivElement | null>,
     const root = ref.current;
     if (!root) return;
     let frame = 0;
+    let active = true;
+    const observed = new Set<Element>();
     const measure = () => {
+      frame = 0;
+      if (!active) return;
       const base = root.getBoundingClientRect();
-      if (!base.width || !base.height) return;
       const next: SkeletonBox[] = [];
-      const push = (rect: DOMRect) => {
-        if (rect.width < 6 || rect.height < 6 || rect.width > base.width + 1) return;
-        next.push({ x: rect.left - base.left, y: rect.top - base.top, w: rect.width, h: rect.height });
-      };
-      root.querySelectorAll<HTMLElement>("p, span, div, h1, h2, h3, h4, h5, h6, button, a, label, small, strong, em, td, th, li").forEach((el) => {
-        if (el.firstElementChild || !el.textContent?.trim()) return;
-        push(el.getBoundingClientRect());
+      const targets = new Set<Element>([root]);
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      const range = document.createRange();
+      while (walker.nextNode()) {
+        const node = walker.currentNode;
+        const parent = node.parentElement;
+        const text = node.textContent ?? "";
+        if (!parent || !text.trim() || parent.closest("style, script, noscript, defs, title, desc, .sr-only")) continue;
+        targets.add(parent);
+        const style = window.getComputedStyle(parent);
+        if (style.visibility === "hidden" || style.display === "none") continue;
+        range.setStart(node, text.length - text.trimStart().length);
+        range.setEnd(node, text.trimEnd().length);
+        for (const rect of Array.from(range.getClientRects())) {
+          const x = Math.max(rect.left, base.left);
+          const y = Math.max(rect.top, base.top);
+          const w = Math.min(rect.right, base.right) - x;
+          const h = Math.min(rect.bottom, base.bottom) - y;
+          if (w <= 0 || h <= 0) continue;
+          const box = { x: x - base.left, y: y - base.top, w, h };
+          if (!next.some((other) => sameBoxes([other], [box]))) next.push(box);
+        }
+      }
+      observed.forEach((target) => {
+        if (!targets.has(target)) {
+          resizeObserver.unobserve(target);
+          observed.delete(target);
+        }
       });
-      root.querySelectorAll<SVGTextElement>("svg text").forEach((text) => {
-        if (text.textContent?.trim()) push(text.getBoundingClientRect());
+      targets.forEach((target) => {
+        if (!observed.has(target)) {
+          resizeObserver.observe(target);
+          observed.add(target);
+        }
       });
       setBoxes((current) => (sameBoxes(current, next) ? current : next));
     };
     const schedule = () => {
-      window.cancelAnimationFrame(frame);
-      frame = window.requestAnimationFrame(measure);
+      if (active && !frame) frame = window.requestAnimationFrame(measure);
     };
-    schedule();
-    const observer = new ResizeObserver(schedule);
-    observer.observe(root);
-    const timers = [window.setTimeout(schedule, 250), window.setTimeout(schedule, 900)];
+    const resizeObserver = new ResizeObserver(schedule);
+    const mutationObserver = new MutationObserver(schedule);
+    mutationObserver.observe(root, { subtree: true, childList: true, characterData: true, attributes: true });
+    window.addEventListener("resize", schedule);
+    root.addEventListener("scroll", schedule, true);
+    document.fonts?.addEventListener("loadingdone", schedule);
     document.fonts?.ready.then(schedule).catch(() => {});
+    schedule();
     return () => {
+      active = false;
       window.cancelAnimationFrame(frame);
-      observer.disconnect();
-      timers.forEach((timer) => window.clearTimeout(timer));
+      resizeObserver.disconnect();
+      mutationObserver.disconnect();
+      window.removeEventListener("resize", schedule);
+      root.removeEventListener("scroll", schedule, true);
+      document.fonts?.removeEventListener("loadingdone", schedule);
     };
   }, [loading, ref]);
   return boxes;
@@ -123,39 +157,47 @@ function useLoadingTextPlaceholders(ref: React.RefObject<HTMLDivElement | null>,
 export function ChartSkeleton({ children, isLoading = false, className }: { children: React.ReactNode; isLoading?: boolean; className?: string }) {
   const settings = useChartReactions();
   const reducedMotion = useChartReducedMotion();
-  const loading = isLoading || Boolean(settings.isLoading);
-  const animate = loading && !reducedMotion && settings.animationsEnabled !== false;
+  const parentLoading = React.useContext(ChartSkeletonContext);
+  const loading = parentLoading || isLoading || Boolean(settings.isLoading);
+  const owner = loading && !parentLoading;
+  const animate = owner && !reducedMotion && settings.animationsEnabled !== false;
   const ref = React.useRef<HTMLDivElement>(null);
-  const boxes = useLoadingTextPlaceholders(ref, loading);
+  const labelRef = React.useRef<HTMLSpanElement>(null);
+  const boxes = useLoadingTextPlaceholders(ref, owner);
   React.useEffect(() => {
-    if (!loading || reducedMotion || settings.animationsEnabled === false) return;
-    const animation = ref.current?.animate?.(
-      [{ maskPosition: "100% 0%" }, { maskPosition: "0% 0%" }],
+    if (!animate) return;
+    const animation = labelRef.current?.animate?.(
+      [{ backgroundPosition: "100% 50%" }, { backgroundPosition: "0% 50%" }],
       { duration: 2200, iterations: Infinity, easing: "linear" }
     );
     return () => animation?.cancel();
-  }, [loading, reducedMotion, settings.animationsEnabled]);
-  return <div data-chart-skeleton={loading ? "true" : undefined} aria-busy={loading} className={["relative flex h-full min-h-0 w-full flex-1 flex-col", className].filter(Boolean).join(" ")}>
-    <div ref={ref} inert={loading || undefined} aria-hidden={loading || undefined} data-chart-loading-text={loading ? "true" : undefined} className="flex h-full min-h-0 w-full flex-1 flex-col" style={loading ? {
-      filter: "grayscale(1)", opacity: 0.65, pointerEvents: "none",
-      maskImage: "linear-gradient(90deg, rgb(0 0 0 / 28%) 0%, rgb(0 0 0 / 28%) 35%, black 50%, rgb(0 0 0 / 28%) 65%, rgb(0 0 0 / 28%) 100%)",
-      maskSize: "250% 100%", maskPosition: "50% 0%",
-    } : undefined}>{children}</div>
-    {loading ? <style dangerouslySetInnerHTML={{ __html: `[data-chart-loading-text="true"] :is(p,span,div,h1,h2,h3,h4,h5,h6,button,a,label,small,strong,em,td,th,li):not(:has(*)){color:transparent!important}[data-chart-loading-text="true"] svg text{fill:transparent!important}` }} /> : null}
-    {loading && boxes.length ? (
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[2]">
-        {boxes.map((box, index) => (
-          <span
-            key={`${index}:${Math.round(box.x)}:${Math.round(box.y)}:${Math.round(box.w)}`}
-            data-chart-loading-bar=""
-            className={["absolute rounded-full bg-muted-foreground", animate ? "animate-pulse" : null].filter(Boolean).join(" ")}
-            style={{ left: box.x, top: box.y + box.h * 0.18, width: box.w, height: Math.max(8, Math.min(box.h * 0.64, 28)), opacity: 0.28 }}
-          />
-        ))}
+  }, [animate]);
+  return <ChartSkeletonContext.Provider value={loading}>
+    <ChartReactionsProvider isLoading={loading}>
+      <div data-chart-skeleton={owner ? "true" : undefined} aria-busy={loading} className={["relative flex h-full min-h-0 w-full flex-1 flex-col", className].filter(Boolean).join(" ")}>
+        <div ref={ref} inert={owner || undefined} aria-hidden={owner || undefined} data-chart-loading-text={owner ? "true" : undefined} className="flex h-full min-h-0 w-full flex-1 flex-col" style={owner ? { filter: "grayscale(1)", opacity: 0.35, pointerEvents: "none" } : undefined}>{children}</div>
+        {owner ? <style>{`[data-chart-loading-text="true"],[data-chart-loading-text="true"] *{-webkit-text-fill-color:transparent!important;text-shadow:none!important}[data-chart-loading-text="true"] :is(text,tspan,textPath){fill:transparent!important;stroke:transparent!important}`}</style> : null}
+        {owner && boxes.length ? (
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[2] overflow-hidden">
+            {boxes.map((box, index) => (
+              <span
+                key={index}
+                data-chart-loading-bar=""
+                className="absolute rounded-full bg-muted-foreground"
+                style={{ left: box.x, top: box.y + box.h * 0.18, width: box.w, height: Math.min(box.h * 0.64, 28), opacity: 0.28 }}
+              />
+            ))}
+          </div>
+        ) : null}
+        {owner ? <div className="pointer-events-none absolute inset-0 z-[3] flex items-center justify-center">
+          <span ref={labelRef} role="status" aria-label="Loading chart" data-chart-loading-label="" className="bg-clip-text text-sm font-medium tracking-wide text-transparent" style={{
+            backgroundImage: "linear-gradient(110deg, var(--muted-foreground) 35%, var(--foreground) 50%, var(--muted-foreground) 65%)",
+            backgroundSize: "250% 100%", backgroundPosition: "50% 50%", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+          }}>Loading</span>
+        </div> : null}
       </div>
-    ) : null}
-    {loading ? <span role="status" className="sr-only">Loading chart</span> : null}
-  </div>;
+    </ChartReactionsProvider>
+  </ChartSkeletonContext.Provider>;
 }
 function ReactionMedia({ asset, emotion, animationsEnabled }: { asset?: ChartReactionAsset; emotion: ChartEmotion; animationsEnabled: boolean }) {
   const [failed, setFailed] = React.useState<string[]>([]);

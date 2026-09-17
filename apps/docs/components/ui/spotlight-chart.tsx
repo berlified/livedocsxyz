@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { ChartSkeleton } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 function SpotlightChartRoot({
@@ -62,6 +63,7 @@ function SpotlightChartRoot({
 
   return (
     <Card className={cn("p-5 sm:p-6", className)}>
+      <ChartSkeleton isLoading={isLoading}>
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       {value ? (
         <div className="mt-2 flex items-end gap-2">
@@ -88,6 +90,7 @@ function SpotlightChartRoot({
           markerLabel={markerLabel}
         />
       </ChartContainer>
+      </ChartSkeleton>
     </Card>
   );
 }

@@ -269,32 +269,19 @@ function PieBody({
   if (!legendTitle) return chart;
 
   return (
-    <div className="grid h-full min-h-0 w-full items-center gap-6 sm:grid-cols-[minmax(0,1fr)_minmax(180px,0.8fr)]">
-      <div className="h-64 min-w-0 sm:h-full">{chart}</div>
-      <div role="group" aria-labelledby={legendId} className="min-w-0 space-y-3">
-        <h3 id={legendId} className="px-3 text-sm font-semibold text-foreground">{legendTitle}</h3>
-        <div className="space-y-1">
+    <div className="flex h-full min-h-0 w-full flex-col items-center gap-6 sm:flex-row">
+      <div className="h-64 w-full min-w-0 sm:h-full sm:flex-1">{chart}</div>
+      <div role="group" aria-labelledby={legendId} className="w-full min-w-0 space-y-5 sm:w-2/5">
+        <h3 id={legendId} className="text-sm font-semibold text-foreground">{legendTitle}</h3>
+        <div className="flex flex-col gap-4">
           {data.map((item) => {
             const key = String(item[nameKey]);
             const value = item[dataKey];
             const series = config[key];
             return (
-              <Button
+              <div
                 key={key}
-                type="button"
-                variant="ghost"
-                size="sm"
-                aria-pressed={selected === key}
-                onClick={() => setSelected(key)}
-                onMouseEnter={() => setHoveredKey(key)}
-                onMouseLeave={() => setHoveredKey(undefined)}
-                onFocus={() => setFocusedKey(key)}
-                onBlur={() => setFocusedKey(undefined)}
-                className={cn(
-                  "h-9 w-full justify-start gap-3 px-3 text-muted-foreground",
-                  activeKey === key && "bg-accent text-foreground",
-                  activeKey && activeKey !== key && "opacity-50"
-                )}
+                className="flex w-full items-center gap-3 text-muted-foreground"
               >
                 <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: colorVar(key) }} />
                 <span className="truncate">{series?.label ?? key}</span>
@@ -303,7 +290,7 @@ function PieBody({
                     ? series?.valueFormatter?.(value) ?? value.toLocaleString("en-US")
                     : ""}
                 </span>
-              </Button>
+              </div>
             );
           })}
         </div>
