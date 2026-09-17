@@ -23,7 +23,6 @@ import laneChart from "./components/lane-chart.json";
 import usageMeter from "./components/usage-meter.json";
 import heatmapChart from "./components/heatmap-chart.json";
 import funnelChart from "./components/funnel-chart.json";
-import gaugeChart from "./components/gauge-chart.json";
 import scatterChart from "./components/scatter-chart.json";
 import waterfallChart from "./components/waterfall-chart.json";
 import candlestickChart from "./components/candlestick-chart.json";
@@ -60,7 +59,6 @@ export const components: RegistryComponent[] = [
   usageMeter,
   heatmapChart,
   funnelChart,
-  gaugeChart,
   scatterChart,
   waterfallChart,
   candlestickChart,

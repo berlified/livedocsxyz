@@ -554,24 +554,6 @@
       ]
     },
     {
-      "name": "gauge-chart",
-      "type": "registry:ui",
-      "title": "Gauge Chart",
-      "description": "Semicircular needle gauge with threshold bands and a numeric readout.",
-      "registryDependencies": [
-        "https://livedocs.xyz/r/chart.json",
-        "https://livedocs.xyz/r/card.json",
-        "https://livedocs.xyz/r/utils.json"
-      ],
-      "files": [
-        {
-          "path": "apps/docs/components/ui/gauge-chart.tsx",
-          "type": "registry:ui",
-          "target": "components/ui/gauge-chart.tsx"
-        }
-      ]
-    },
-    {
       "name": "scatter-chart",
       "type": "registry:ui",
       "title": "Scatter Chart",

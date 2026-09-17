@@ -58,10 +58,11 @@ function InteractiveRadarShape({
       role={onActivate ? "button" : "img"}
       aria-label={label}
       aria-pressed={onActivate ? selected : undefined}
-      className="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+      className="outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      onFocus={() => setFocused(true)}
+      onPointerDown={() => setFocused(false)}
+      onFocus={(event) => setFocused(event.currentTarget.matches(":focus-visible"))}
       onBlur={() => setFocused(false)}
       onClick={onActivate}
       onKeyDown={(event) => {
@@ -97,11 +98,11 @@ function RadarSeries(_props: RadarSeriesProps) {
   return null;
 }
 function Tooltip(props: React.ComponentProps<typeof ChartTooltip>) {
-  return <ChartTooltip {...props} />;
+  return <ChartTooltip {...props} cursor={false} />;
 }
 Tooltip.displayName = "Tooltip";
-function Legend(props: React.ComponentProps<typeof ChartLegend>) {
-  return <ChartLegend {...props} />;
+function Legend({ wrapperStyle, ...props }: React.ComponentProps<typeof ChartLegend>) {
+  return <ChartLegend {...props} wrapperStyle={{ paddingTop: 12, ...wrapperStyle }} />;
 }
 Legend.displayName = "Legend";
 
@@ -172,7 +173,13 @@ function RadarBody({
 
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <RechartsRadarChart data={data} cx="50%" cy="50%" outerRadius="72%">
+      <RechartsRadarChart
+        data={data}
+        cx="50%"
+        cy="50%"
+        outerRadius="66%"
+        margin={{ top: 16, right: 24, bottom: 20, left: 24 }}
+      >
         <PolarGrid
           gridType={gridType}
           stroke="var(--border)"

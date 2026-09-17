@@ -196,12 +196,6 @@
       "description": "Connected curved funnel with conversion pills, keyboard-selectable stages, smooth hover emphasis, and reduced-motion-aware draw-in."
     },
     {
-      "name": "gauge-chart",
-      "type": "registry:ui",
-      "title": "Gauge Chart",
-      "description": "Semicircular needle gauge with threshold bands and a numeric readout."
-    },
-    {
       "name": "scatter-chart",
       "type": "registry:ui",
       "title": "Scatter Chart",

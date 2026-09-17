@@ -42,7 +42,6 @@ import {
 import {
   HeatmapChartPreview,
   FunnelChartPreview,
-  GaugeChartPreview,
   ScatterChartPreview,
   WaterfallChartPreview,
   WaterfallChartExamples,
@@ -394,20 +393,6 @@ export function Example() {
     />
   )
 }`,
-  "gauge-chart": `import { GaugeChart } from "@/components/ui/gauge-chart"
-
-export function Example() {
-  return (
-    <GaugeChart
-      label="Capacity"
-      value={72}
-      min={0}
-      max={100}
-      unit="%"
-      thresholds={[60, 85]}
-    />
-  )
-}`,
   "scatter-chart": `import { scatterCohorts, scatterConfig } from "@/components/chart-previews-extended"
 import { ScatterChart } from "@/components/ui/scatter-chart"
 
@@ -452,7 +437,6 @@ const previewByName: Record<string, ReactNode> = {
   "usage-meter": <UsageMeterPreview />,
   "heatmap-chart": <HeatmapChartPreview />,
   "funnel-chart": <FunnelChartPreview />,
-  "gauge-chart": <GaugeChartPreview />,
   "scatter-chart": <ScatterChartPreview />,
 };
 
@@ -497,7 +481,6 @@ const sourcePaths: Record<string, string> = {
   "usage-meter": "apps/docs/components/ui/usage-meter.tsx",
   "heatmap-chart": "apps/docs/components/ui/heatmap-chart.tsx",
   "funnel-chart": "apps/docs/components/ui/funnel-chart.tsx",
-  "gauge-chart": "apps/docs/components/ui/gauge-chart.tsx",
   "scatter-chart": "apps/docs/components/ui/scatter-chart.tsx",
   "waterfall-chart": "apps/docs/components/ui/waterfall-chart.tsx",
   "candlestick-chart": "apps/docs/components/ui/candlestick-chart.tsx",

@@ -2,7 +2,6 @@
 
 import { ComponentPreview } from "@/components/component-preview";
 import { FunnelChart } from "@/components/ui/funnel-chart";
-import { GaugeChart } from "@/components/ui/gauge-chart";
 import { HeatmapChart } from "@/components/ui/heatmap-chart";
 import { ScatterChart } from "@/components/ui/scatter-chart";
 
@@ -15,14 +14,6 @@ export {
   ChartReactionsExamples,
   FunnelConversionExamples,
 } from "@/components/financial-chart-previews";
-
-function PreviewPair({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="grid gap-3 p-4 sm:grid-cols-2 [&>*]:min-w-0 [&>*]:w-full">
-      {children}
-    </div>
-  );
-}
 
 export const funnelStages = [
   { key: "visitors", label: "Visitors", value: 12480 },
@@ -73,11 +64,6 @@ export const heatmapConfig = {
   value: { label: "Orders", colors: { dark: ["var(--chart-2)"], light: ["var(--chart-2)"] } },
 };
 
-export const gaugeMetrics = [
-  { label: "Capacity", value: 72, min: 0, max: 100, unit: "%" },
-  { label: "SLA", value: 96, min: 0, max: 100, unit: "%" },
-];
-
 export const scatterCohorts = [
   { x: 4, y: 22, series: "organic", label: "Cohort A" },
   { x: 8, y: 41, series: "organic", label: "Cohort B" },
@@ -103,31 +89,6 @@ export function FunnelChartPreview() {
       config={funnelConfig}
       stages={funnelStages}
     />
-  );
-}
-
-export function GaugeChartPreview() {
-  return (
-    <PreviewPair>
-      <GaugeChart
-        label="Capacity"
-        value={72}
-        min={0}
-        max={100}
-        unit="%"
-        thresholds={[60, 85]}
-        formatValue={(v) => `${v.toFixed(0)}%`}
-      />
-      <GaugeChart
-        label="SLA uptime"
-        value={96}
-        min={0}
-        max={100}
-        unit="%"
-        thresholds={[99, 99.9]}
-        formatValue={(v) => `${v.toFixed(1)}%`}
-      />
-    </PreviewPair>
   );
 }
 
@@ -185,24 +146,6 @@ export function FunnelChartExamples() {
       <h2 className="text-xl font-semibold">Empty</h2>
       <ComponentPreview label="No data" className="p-4">
         <FunnelChart stages={[]} config={funnelConfig} emptyLabel="No funnel stages yet" />
-      </ComponentPreview>
-    </section>
-  );
-}
-
-export function GaugeChartExamples() {
-  return (
-    <section className="space-y-6">
-      <h2 className="text-xl font-semibold">Thresholds</h2>
-      <ComponentPreview label="Multi-band" className="p-4">
-        <GaugeChart label="Capacity" value={72} unit="%" thresholds={[40, 70, 90]} />
-      </ComponentPreview>
-      <h2 className="text-xl font-semibold">Zero / out-of-range</h2>
-      <ComponentPreview label="Clamped values" className="p-4">
-        <PreviewPair>
-          <GaugeChart label="Zero" value={0} unit="%" />
-          <GaugeChart label="Clamped" value={180} max={100} unit="%" />
-        </PreviewPair>
       </ComponentPreview>
     </section>
   );

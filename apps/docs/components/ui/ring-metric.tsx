@@ -7,11 +7,8 @@ import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  GradientFill,
   PixelSwatch,
   colorVar,
-  pixelPatternId,
-  pixelPatternUrl,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
@@ -42,7 +39,7 @@ function RingMetricRoot({
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    <Card className={cn("p-5", className)}>
+    <Card className={cn("@container/ring min-w-0 p-5", className)}>
       {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
       <ChartContainer
         isLoading={isLoading}
@@ -50,7 +47,7 @@ function RingMetricRoot({
         reaction={reaction}
         config={config}
         data={data as unknown as Record<string, unknown>[]}
-        className="mt-2 h-64 w-full justify-center"
+        className="mt-2 min-h-64 w-full min-w-0 justify-center [&_.recharts-surface:focus:not(:focus-visible)]:outline-none"
         variant="plain"
       >
         <RingBody data={data} total={total} centerLabel={centerLabel} />
@@ -68,27 +65,19 @@ function RingBody({
   total: number;
   centerLabel?: string;
 }) {
-  const { id, selected, setSelected } = useChart();
+  const { selected, setSelected } = useChart();
   const [focused, setFocused] = React.useState<string>();
   const [hovered, setHovered] = React.useState<string>();
   const reducedMotion = useChartReducedMotion();
   const { animationsEnabled = true } = useChartReactions();
 
   return (
-    <div className="grid h-full items-center gap-4 sm:grid-cols-[1fr_8rem]">
-      <div className="relative h-full min-h-48">
+    <div className="grid min-w-0 items-center gap-6 @min-[26rem]/ring:grid-cols-[minmax(0,1fr)_minmax(10rem,1fr)]">
+      <div className="relative h-56 w-full min-w-0 max-w-56 justify-self-center">
         <ResponsiveContainer width="100%" height="100%">
           <RechartsPieChart>
-            <defs>
-              {data.map((item) => (
-                <GradientFill
-                  key={item.key}
-                  id={pixelPatternId(id, item.key)}
-                  color={colorVar(item.key)}
-                />
-              ))}
-            </defs>
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <defs />
+            <ChartTooltip content={<ChartTooltipContent />} cursor={false} />
             <Pie
               data={data}
               dataKey="value"
@@ -120,7 +109,7 @@ function RingBody({
               {data.map((item) => (
                 <Cell
                   key={item.key}
-                  fill={pixelPatternUrl(id, item.key)}
+                  fill={colorVar(item.key)}
                 />
               ))}
             </Pie>
