@@ -4,6 +4,11 @@ import { ComponentPreview } from "@/components/component-preview";
 import { FunnelChart } from "@/components/ui/funnel-chart";
 import { HeatmapChart } from "@/components/ui/heatmap-chart";
 import { ScatterChart } from "@/components/ui/scatter-chart";
+import { LivePriceChart } from "@/components/ui/live-price-chart";
+import { OrderBook } from "@/components/ui/order-book";
+import { DepthChart } from "@/components/ui/depth-chart";
+import { TradesFeed } from "@/components/ui/trades-feed";
+import { MarketMovers } from "@/components/ui/market-movers";
 
 export {
   WaterfallChartPreview,
@@ -206,6 +211,40 @@ export function ScatterChartExamples() {
       <h2 className="text-xl font-semibold">Empty</h2>
       <ComponentPreview label="No points" className="p-4">
         <ScatterChart data={[]} config={scatterConfig} emptyLabel="No cohort data yet" />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function LivePriceChartPreview() {
+  return <LivePriceChart symbol="BTC/USDT" basePrice={97500} className="w-full" />;
+}
+
+export function OrderBookPreview() {
+  return <OrderBook symbol="BTC/USDT" basePrice={97500} className="w-full" />;
+}
+
+export function DepthChartPreview() {
+  return <DepthChart symbol="BTC/USDT" basePrice={97500} className="w-full" />;
+}
+
+export function TradesFeedPreview() {
+  return <TradesFeed symbol="BTC/USDT" basePrice={97500} className="w-full" />;
+}
+
+export function MarketMoversPreview() {
+  return <MarketMovers className="w-full" />;
+}
+
+export function LivePriceChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Variants</h2>
+      <ComponentPreview label="No volume or MA" className="p-4">
+        <LivePriceChart symbol="ETH/USDT" basePrice={3840} showMA={false} showVolume={false} className="w-full" />
+      </ComponentPreview>
+      <ComponentPreview label="Loading" className="p-4">
+        <LivePriceChart symbol="SOL/USDT" basePrice={214} isLoading className="w-full" />
       </ComponentPreview>
     </section>
   );

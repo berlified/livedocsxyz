@@ -27,6 +27,11 @@ import scatterChart from "./components/scatter-chart.json";
 import waterfallChart from "./components/waterfall-chart.json";
 import candlestickChart from "./components/candlestick-chart.json";
 import activityChart from "./components/activity-chart.json";
+import livePriceChart from "./components/live-price-chart.json";
+import orderBook from "./components/order-book.json";
+import depthChart from "./components/depth-chart.json";
+import tradesFeed from "./components/trades-feed.json";
+import marketMovers from "./components/market-movers.json";
 
 export type {
   ComponentAIGuidance,
@@ -64,6 +69,11 @@ export const components: RegistryComponent[] = [
   waterfallChart,
   candlestickChart,
   activityChart,
+  livePriceChart,
+  orderBook,
+  depthChart,
+  tradesFeed,
+  marketMovers,
 ] as RegistryComponent[];
 
 export const registry: RegistryIndex = {

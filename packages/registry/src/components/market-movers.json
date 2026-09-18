@@ -1,0 +1,69 @@
+{
+  "name": "market-movers",
+  "title": "Market Movers",
+  "category": "charts",
+  "description": "Gainers/losers screener with sparklines, change pills, and live ticks.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json",
+    "https://livedocs.xyz/r/chart-reactions.json"
+  ],
+  "files": [
+    "apps/docs/components/ui/crypto-feed.ts",
+    "apps/docs/components/ui/market-movers.tsx"
+  ],
+  "examples": [
+    "live"
+  ],
+  "variants": [
+    "default"
+  ],
+  "keywords": [
+    "screener",
+    "gainers",
+    "losers",
+    "crypto",
+    "movers",
+    "watchlist"
+  ],
+  "props": [
+    {
+      "name": "title",
+      "type": "string",
+      "description": "Card heading"
+    },
+    {
+      "name": "tickMs",
+      "type": "number",
+      "description": "Milliseconds between price ticks"
+    },
+    {
+      "name": "isLoading",
+      "type": "boolean",
+      "description": "Show shared loading feedback"
+    },
+    {
+      "name": "reaction",
+      "type": "ChartReactionOptions",
+      "description": "Optional explicit emotion or metric comparison"
+    }
+  ],
+  "ai": {
+    "purpose": "Rank crypto movers with sparklines and live prices.",
+    "useWhen": [
+      "Discovery pages",
+      "Homepages"
+    ],
+    "preferOver": [
+      "A static top-list"
+    ],
+    "avoid": [
+      "Full portfolio tables"
+    ],
+    "compositions": [
+      "MarketMovers above a LivePriceChart"
+    ]
+  }
+}

@@ -218,6 +218,36 @@
       "type": "registry:ui",
       "title": "Activity Chart",
       "description": "Compact rounded-bar metric card with a Polar title, headline value, tooltip, and hover dimming."
+    },
+    {
+      "name": "live-price-chart",
+      "type": "registry:ui",
+      "title": "Live Price Chart",
+      "description": "Streaming crypto price with volume bars, MA overlay, timeframe pills, and 24h stats."
+    },
+    {
+      "name": "order-book",
+      "type": "registry:ui",
+      "title": "Order Book",
+      "description": "Live bid/ask ladder with depth bars, spread readout, and imbalance meter."
+    },
+    {
+      "name": "depth-chart",
+      "type": "registry:ui",
+      "title": "Depth Chart",
+      "description": "Cumulative bid/ask staircase with mid-price marker and hover inspection."
+    },
+    {
+      "name": "trades-feed",
+      "type": "registry:ui",
+      "title": "Trades Feed",
+      "description": "Live time-and-sales tape with side colors and new-print flash."
+    },
+    {
+      "name": "market-movers",
+      "type": "registry:ui",
+      "title": "Market Movers",
+      "description": "Gainers/losers screener with sparklines, change pills, and live ticks."
     }
   ]
 }

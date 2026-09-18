@@ -1,0 +1,90 @@
+{
+  "name": "order-book",
+  "title": "Order Book",
+  "category": "charts",
+  "description": "Live bid/ask ladder with depth bars, spread readout, and imbalance meter.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json",
+    "https://livedocs.xyz/r/chart-reactions.json"
+  ],
+  "files": [
+    "apps/docs/components/ui/crypto-feed.ts",
+    "apps/docs/components/ui/order-book.tsx"
+  ],
+  "examples": [
+    "live"
+  ],
+  "variants": [
+    "default"
+  ],
+  "keywords": [
+    "order",
+    "book",
+    "bids",
+    "asks",
+    "depth",
+    "trading",
+    "crypto"
+  ],
+  "props": [
+    {
+      "name": "symbol",
+      "type": "string",
+      "description": "Trading pair label"
+    },
+    {
+      "name": "basePrice",
+      "type": "number",
+      "description": "Mid price for the simulated book"
+    },
+    {
+      "name": "tickSize",
+      "type": "number",
+      "description": "Price step between levels"
+    },
+    {
+      "name": "rows",
+      "type": "number",
+      "description": "Levels per side"
+    },
+    {
+      "name": "seed",
+      "type": "number",
+      "description": "Book randomness seed"
+    },
+    {
+      "name": "tickMs",
+      "type": "number",
+      "description": "Milliseconds between book refreshes"
+    },
+    {
+      "name": "isLoading",
+      "type": "boolean",
+      "description": "Show shared loading feedback"
+    },
+    {
+      "name": "reaction",
+      "type": "ChartReactionOptions",
+      "description": "Optional explicit emotion or metric comparison"
+    }
+  ],
+  "ai": {
+    "purpose": "Show a live bid/ask ladder with depth and spread.",
+    "useWhen": [
+      "Trading terminals",
+      "Token pages"
+    ],
+    "preferOver": [
+      "A depth chart for liquidity shape"
+    ],
+    "avoid": [
+      "Static tables"
+    ],
+    "compositions": [
+      "OrderBook above a DepthChart"
+    ]
+  }
+}
