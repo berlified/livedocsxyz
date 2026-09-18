@@ -141,3 +141,36 @@ html {
     scroll-behavior: auto;
   }
 }
+
+@keyframes thumb-pop {
+  0% { transform: scaleY(0.35); }
+  55% { transform: scaleY(1.07); }
+  100% { transform: scaleY(1); }
+}
+
+@keyframes thumb-draw {
+  from { stroke-dashoffset: 260; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes thumb-spin {
+  from { transform: rotate(-10deg) scale(1.05); }
+  to { transform: rotate(0deg) scale(1); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .group:hover svg[data-anim="pop"] rect {
+    animation: thumb-pop 0.55s ease;
+    transform-box: fill-box;
+    transform-origin: 50% 100%;
+  }
+  .group:hover svg[data-anim="draw"] path:not([stroke-dasharray]) {
+    stroke-dasharray: 260;
+    animation: thumb-draw 0.8s ease;
+  }
+  .group:hover svg[data-anim="spin"] {
+    animation: thumb-spin 0.7s ease;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+}

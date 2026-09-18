@@ -375,11 +375,20 @@ const byName: Record<string, keyof typeof glyphs | string> = {
   "chart-reactions": "reaction",
 };
 
+const animFor: Record<string, "pop" | "draw" | "spin"> = {
+  area: "draw", line: "draw", bar: "pop", composed: "pop", pie: "spin", ring: "spin",
+  radar: "spin", radial: "spin", sankey: "pop", trend: "draw", comparison: "draw",
+  breakdown: "pop", range: "draw", country: "pop", cashflow: "pop", spotlight: "draw",
+  lane: "pop", usage: "pop", heatmap: "pop", funnel: "pop", scatter: "pop",
+  waterfall: "pop", candle: "pop", spark: "draw", live: "draw", book: "pop",
+  depth: "draw", movers: "draw",
+};
+
 export function ChartThumbnail({ name, className }: { name: string; className?: string }) {
   const key = byName[name] ?? "spark";
   return (
-    <svg viewBox="0 0 144 72" role="img" aria-hidden className={["h-20 w-full max-w-44", className].filter(Boolean).join(" ")}>
-      {glyphs[key] ?? glyphs.spark}
+    <svg viewBox="0 0 144 72" role="img" aria-hidden data-anim={animFor[key] ?? "draw"} className={["h-20 w-full max-w-44", className].filter(Boolean).join(" ")}>
+      {key === "pie" ? <g>{glyphs[key]}</g> : (glyphs[key] ?? glyphs.spark)}
     </svg>
   );
 }

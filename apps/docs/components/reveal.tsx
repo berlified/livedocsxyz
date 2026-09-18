@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-export function useInView<T extends HTMLElement>(threshold = 0.2) {
+export function useInView<T extends HTMLElement>(threshold = 0.2, rootMargin = "0px") {
   const ref = React.useRef<T>(null);
   const [visible, setVisible] = React.useState(false);
   React.useEffect(() => {
@@ -21,11 +21,11 @@ export function useInView<T extends HTMLElement>(threshold = 0.2) {
           observer.disconnect();
         }
       },
-      { threshold }
+      { threshold, rootMargin }
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [threshold]);
+  }, [threshold, rootMargin]);
   return { ref, visible };
 }
 

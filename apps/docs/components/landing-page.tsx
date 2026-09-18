@@ -22,7 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { type ChartConfig } from "@/components/ui/chart";
 import { OverviewDashboard } from "@/components/overview-dashboard";
-import { CountUp, Reveal } from "@/components/reveal";
+import { CountUp, Reveal, useInView } from "@/components/reveal";
 import { getShadcnAddCommand } from "@/lib/registry-url";
 import { cn } from "@/lib/utils";
 
@@ -121,11 +121,11 @@ function ComponentBrowser() {
         <p role="status" className="text-xs tabular-nums text-muted-foreground sm:ml-auto">{results.length} of {components.length}</p>
       </div>
       <div className="mt-5 grid gap-2.5 sm:grid-cols-2 lg:grid-cols-3">
-        {results.map((item) => (
+        {results.map((item, index) => (
+          <Reveal key={item.name} delay={(index % 9) * 60} className="h-full">
           <Link
-            key={item.name}
             href={`/docs/components/${item.name}`}
-            className="group overflow-hidden rounded-xl border border-border bg-card no-underline transition-colors hover:border-muted-foreground/40 hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="group block h-full overflow-hidden rounded-xl border border-border bg-card no-underline transition-colors hover:border-muted-foreground/40 hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
             <div className="flex h-28 items-center justify-center overflow-hidden border-b border-border bg-muted/25 px-6">
               <ChartThumbnail name={item.name} className="transition-transform duration-300 ease-out group-hover:scale-[1.06]" />
@@ -138,6 +138,7 @@ function ComponentBrowser() {
               <p className="mt-1.5 line-clamp-2 min-h-10 text-[13px] leading-5 text-muted-foreground">{item.description}</p>
             </div>
           </Link>
+          </Reveal>
         ))}
         {!results.length ? <p className="col-span-full rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">No components match “{query}”.</p> : null}
       </div>
@@ -195,6 +196,26 @@ function Faq() {
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function LazyDashboard() {
+  const { ref, visible } = useInView<HTMLDivElement>(0, "0px");
+  return (
+    <div ref={ref} className="min-h-[720px]">
+      {visible ? (
+        <OverviewDashboard />
+      ) : (
+        <div aria-hidden className="animate-pulse space-y-3">
+          <div className="h-64 rounded-2xl border border-border bg-card" />
+          <div className="grid gap-3 md:grid-cols-2">
+            <div className="h-48 rounded-2xl border border-border bg-card" />
+            <div className="h-48 rounded-2xl border border-border bg-card" />
+          </div>
+          <span role="status" className="sr-only">Loading dashboard</span>
+        </div>
+      )}
     </div>
   );
 }
@@ -301,9 +322,7 @@ export function LandingPage() {
           title="One registry. An entire overview page."
           copy="Revenue, MRR, subscriptions, monthly bars, and timelines — every widget below is a live livedocs component. Switch ranges, filter the feed, customize the layout."
         />
-        <Reveal delay={100}>
-          <OverviewDashboard />
-        </Reveal>
+        <LazyDashboard />
       </section>
 
       <section aria-labelledby="browser-title" className="space-y-8 border-t border-border py-16 sm:py-24">
@@ -424,7 +443,7 @@ export function LandingPage() {
             </nav>
           ))}
         </div>
-        <p aria-hidden className="select-none text-center text-[18vw] font-medium leading-[0.8] tracking-[-0.05em] text-foreground/[0.07]">livedocs</p>
+        <p aria-hidden className="select-none whitespace-nowrap text-center text-[12vw] font-medium leading-[0.85] tracking-[-0.05em] text-foreground/[0.07]">livedocs</p>
       </footer>
     </div>
   );
