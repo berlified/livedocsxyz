@@ -11,6 +11,7 @@ import {
 
 import {
   ChartContainer,
+  ChartHeading,
   ChartTooltip,
   colorVar,
   type ChartConfig,
@@ -59,13 +60,7 @@ function ActivityChartRoot({
         variant="plain"
         className="w-full justify-start"
       >
-        <div className="flex items-baseline justify-between gap-3">
-          <div className="min-w-0">
-            <p className="truncate text-[15px] font-medium tracking-tight">{title}</p>
-            {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
-          </div>
-          <p className="shrink-0 tabular-nums text-2xl font-medium tracking-tight">{value}</p>
-        </div>
+        <ChartHeading title={title} value={value} description={description} />
         <div className="mt-3 h-44 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <RechartsBarChart data={data} barCategoryGap="28%" margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>

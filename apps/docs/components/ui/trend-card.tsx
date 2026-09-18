@@ -99,7 +99,10 @@ function TrendCardRoot({
         ) : null}
       </div>
       {baseline ? (
-        <p className="mt-1 tabular-nums text-xs text-muted-foreground">{baseline}</p>
+        <p className="mt-2 flex items-center gap-2 tabular-nums text-[13px] text-muted-foreground">
+          <span className="size-2 shrink-0 rounded-full border-2 border-muted-foreground" aria-hidden />
+          {baseline}
+        </p>
       ) : null}
 
       <ChartContainer
