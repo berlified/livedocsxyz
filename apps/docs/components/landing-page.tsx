@@ -8,7 +8,11 @@ import {
   Check,
   ChevronDown,
   Copy,
+  Github,
+  Instagram,
   Minus,
+  Twitter,
+  Youtube,
 } from "lucide-react";
 
 import { visibleComponents as components } from "@/lib/catalog";
@@ -422,20 +426,81 @@ export function LandingPage() {
       </section>
 
       <footer className="overflow-hidden border-t border-border pt-14">
-        <div className="grid gap-10 pb-14 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-10 pb-14 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
+          <div className="space-y-4">
+            <p className="text-sm font-semibold tracking-tight">livedocs</p>
+            <p className="max-w-xs text-sm leading-6 text-muted-foreground">
+              A shadcn-ready chart registry. Install the source, own every pixel. MIT licensed.
+            </p>
+            <div className="flex items-center gap-2">
+              {[
+                { label: "X", href: "https://x.com/oX8erlin", Icon: Twitter },
+                { label: "Instagram", href: "https://www.instagram.com/ox8erlin/", Icon: Instagram },
+                { label: "GitHub", href: "https://github.com/berlified", Icon: Github },
+                { label: "YouTube", href: "https://www.youtube.com/@oX8erlin", Icon: Youtube },
+              ].map(({ label, href, Icon }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={label}
+                  className="flex size-9 items-center justify-center rounded-lg border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <Icon className="size-4" />
+                </a>
+              ))}
+            </div>
+            <a
+              href="https://github.com/berlified/livedocsxyz"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 text-sm text-muted-foreground no-underline transition-colors hover:text-foreground"
+            >
+              <Github className="size-4" /> berlified/livedocsxyz
+            </a>
+          </div>
           {[
-            { heading: "Product", links: ["Components", "Dashboard demo", "Theming", "Changelog", "Pricing"] },
-            { heading: "Resources", links: ["Docs", "Installation", "Props reference", "System status"] },
-            { heading: "Charts", links: ["Line chart", "Bar chart", "Pie chart", "Funnel chart", "Heatmap chart"] },
-            { heading: "Company", links: ["About", "GitHub", "Contact", "License"] },
+            {
+              heading: "Sitemap",
+              links: [
+                { label: "Components", href: "/docs/components" },
+                { label: "Installation", href: "/docs/installation" },
+                { label: "Theming", href: "/docs/theming" },
+                { label: "Design tokens", href: "/docs/tokens" },
+                { label: "Docs", href: "/docs" },
+              ],
+            },
+            {
+              heading: "Charts",
+              links: [
+                { label: "Area chart", href: "/docs/components/area-chart" },
+                { label: "Line chart", href: "/docs/components/line-chart" },
+                { label: "Bar chart", href: "/docs/components/bar-chart" },
+                { label: "Pie chart", href: "/docs/components/pie-chart" },
+                { label: "Funnel chart", href: "/docs/components/funnel-chart" },
+                { label: "Heatmap chart", href: "/docs/components/heatmap-chart" },
+              ],
+            },
+            {
+              heading: "More charts",
+              links: [
+                { label: "Live price chart", href: "/docs/components/live-price-chart" },
+                { label: "Candlestick chart", href: "/docs/components/candlestick-chart" },
+                { label: "Activity chart", href: "/docs/components/activity-chart" },
+                { label: "Market movers", href: "/docs/components/market-movers" },
+                { label: "Order book", href: "/docs/components/order-book" },
+                { label: "All components", href: "/docs/components" },
+              ],
+            },
           ].map((group) => (
             <nav key={group.heading} aria-label={group.heading}>
               <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{group.heading}</p>
               <ul className="mt-4 space-y-2.5">
-                {group.links.map((label) => (
-                  <li key={label}>
-                    <Link href="/docs/components" className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground">
-                      {label}
+                {group.links.map((link) => (
+                  <li key={link.label}>
+                    <Link href={link.href} className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground">
+                      {link.label}
                     </Link>
                   </li>
                 ))}
