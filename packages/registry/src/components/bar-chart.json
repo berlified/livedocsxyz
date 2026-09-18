@@ -21,7 +21,7 @@
     {
       "name": "value",
       "type": "string",
-      "description": "Headline metric rendered beside the title"
+      "description": "Headline metric rendered under the title"
     },
     {
       "name": "description",

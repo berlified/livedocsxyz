@@ -15,7 +15,7 @@
   "keywords": ["activity", "bars", "sessions", "metric", "compact", "recharts"],
   "props": [
     { "name": "title", "type": "string", "description": "Card heading" },
-    { "name": "value", "type": "string", "description": "Headline value shown beside the title" },
+    { "name": "value", "type": "string", "description": "Headline value shown under the title" },
     { "name": "description", "type": "string", "description": "Optional caption under the title" },
     { "name": "data", "type": "ActivityDatum[]", "description": "Bars as { label, value } pairs" },
     { "name": "config", "type": "ChartConfig", "description": "Series labels and colors" },

@@ -45,9 +45,6 @@ export function ComponentDocLayout({
           >
             {preview}
           </ComponentPreview>
-          <div id="source" className="scroll-mt-24">
-            <CodeBlock language="tsx" title={`${component.name}.tsx`} code={source} collapsible className="rounded-none border-x-0 border-b-0" />
-          </div>
         </div>
       </section>
 
@@ -105,7 +102,12 @@ export function ComponentDocLayout({
         </div>
       </section>
 
-
+      <section id="source" className="scroll-mt-24 space-y-3">
+        <h2 className="text-xl font-semibold tracking-tight">Source</h2>
+        <div className="overflow-hidden rounded-xl border border-border">
+          <CodeBlock language="tsx" title={`${component.name}.tsx`} code={source} collapsible className="rounded-none border-x-0 border-b-0" />
+        </div>
+      </section>
     </div>
   );
 }

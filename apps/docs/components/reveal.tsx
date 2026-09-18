@@ -4,27 +4,54 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-export function useInView<T extends HTMLElement>(threshold = 0.2, rootMargin = "0px") {
+export function useInView<T extends HTMLElement>(threshold = 0, rootMargin = "0px") {
   const ref = React.useRef<T>(null);
   const [visible, setVisible] = React.useState(false);
   React.useEffect(() => {
     const node = ref.current;
     if (!node) return;
-    if (typeof IntersectionObserver === "undefined") {
+    let done = false;
+    let observer: IntersectionObserver | null = null;
+    let timer = 0;
+    const show = () => {
+      if (done) return;
+      done = true;
       setVisible(true);
-      return;
+      cleanup();
+    };
+    const inView = () => {
+      const rect = node.getBoundingClientRect();
+      return rect.bottom > 0 && rect.top < window.innerHeight && rect.right > 0 && rect.left < window.innerWidth;
+    };
+    const onFallback = () => {
+      if (inView()) show();
+    };
+    const cleanup = () => {
+      observer?.disconnect();
+      observer = null;
+      window.removeEventListener("scroll", onFallback);
+      window.removeEventListener("resize", onFallback);
+      window.clearTimeout(timer);
+    };
+    if (inView()) {
+      show();
+      return cleanup;
     }
-    const observer = new IntersectionObserver(
+    if (typeof IntersectionObserver === "undefined") {
+      show();
+      return cleanup;
+    }
+    observer = new IntersectionObserver(
       (entries) => {
-        if (entries.some((entry) => entry.isIntersecting)) {
-          setVisible(true);
-          observer.disconnect();
-        }
+        if (entries.some((entry) => entry.isIntersecting)) show();
       },
       { threshold, rootMargin }
     );
     observer.observe(node);
-    return () => observer.disconnect();
+    window.addEventListener("scroll", onFallback, { passive: true });
+    window.addEventListener("resize", onFallback);
+    timer = window.setTimeout(onFallback, 800);
+    return cleanup;
   }, [threshold, rootMargin]);
   return { ref, visible };
 }
