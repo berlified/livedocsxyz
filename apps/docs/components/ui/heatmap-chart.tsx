@@ -163,8 +163,8 @@ export function HeatmapChart({
             <p id={`${id}-help`} className="sr-only">Use arrow keys to explore cells, Home and End to move within a row. Press Escape to dismiss details. Use the legend to highlight an intensity level.</p>
             <div ref={tooltipHost} className="relative">
             <div className="overflow-x-auto p-1" onScroll={() => setDismissed(true)}>
-              <div ref={gridRef} role="grid" aria-label={title} aria-describedby={`${id}-help`} aria-rowcount={yLabels.length + 1} aria-colcount={xLabels.length + 1} className={cn("grid", calendar ? "gap-1" : "gap-1.5")} style={{ minWidth: Math.max(240, xLabels.length * (calendar ? 15 : 30) + (calendar ? 36 : 72)) }}>
-                <div role="row" className={cn("grid items-end", calendar ? "gap-1" : "gap-1.5")} style={{ gridTemplateColumns: template }}>
+              <div ref={gridRef} role="grid" aria-label={title} aria-describedby={`${id}-help`} aria-rowcount={yLabels.length + 1} aria-colcount={xLabels.length + 1} className={cn("grid", calendar ? "gap-[3px]" : "gap-1.5")} style={{ minWidth: Math.max(240, xLabels.length * (calendar ? 15 : 30) + (calendar ? 36 : 72)) }}>
+                <div role="row" className={cn("grid items-end", calendar ? "gap-[3px]" : "gap-1.5")} style={{ gridTemplateColumns: template }}>
                   <span role="columnheader"><span className="sr-only">{calendar ? "Day" : "Row"}</span></span>
                   {xLabels.map((label, index) => {
                     const month = calendar && parseWeek(label) ? monthName(label) : label;
@@ -173,7 +173,7 @@ export function HeatmapChart({
                   })}
                 </div>
                 {yLabels.map((label, rowIndex) => (
-                  <div key={label} role="row" className={cn("grid items-center", calendar ? "gap-1" : "gap-1.5")} style={{ gridTemplateColumns: template }}>
+                  <div key={label} role="row" className={cn("grid items-center", calendar ? "gap-[3px]" : "gap-1.5")} style={{ gridTemplateColumns: template }}>
                     <span role="rowheader" className="truncate pr-1 text-xs text-muted-foreground" title={label}><span className={cn(calendar && !["Mon", "Wed", "Fri"].includes(label) && "sr-only")}>{label}</span></span>
                     {xLabels.map((x, columnIndex) => {
                       const index = rowIndex * xLabels.length + columnIndex;
@@ -188,7 +188,7 @@ export function HeatmapChart({
                             tabIndex={index === tabStop ? 0 : -1}
                             aria-label={describe(cell)}
                             aria-describedby={activeIndex === index ? `${id}-tooltip` : undefined}
-                            className={cn("relative block w-full p-0 hover:z-10 hover:ring-1 hover:ring-ring focus-visible:z-10", calendar ? "aspect-square h-auto rounded" : "h-8 rounded-md", animate ? "transition-[opacity,box-shadow] duration-200" : "transition-none", activeIndex === index && "z-10 ring-2 ring-ring ring-offset-2 ring-offset-card")}
+                            className={cn("relative block w-full p-0 hover:z-10 hover:ring-1 hover:ring-ring focus-visible:z-10", calendar ? "aspect-square h-auto rounded-[2px]" : "h-8 rounded-md", activeIndex === index && "z-10 ring-2 ring-ring ring-offset-2 ring-offset-card")}
                             style={{ backgroundColor: intensity === null ? "var(--chart-heat-0)" : fill(intensity), opacity: activeIndex !== null ? activeIndex === index ? 1 : 0.6 : activeLevel !== null && intensity !== activeLevel ? 0.6 : 1 }}
                             onMouseEnter={(event) => { setHovered(index); placeTooltip(event.currentTarget); }}
                             onMouseLeave={() => setHovered(null)}
@@ -225,7 +225,7 @@ export function HeatmapChart({
                     onFocus={() => setFocusedLevel(index)} onBlur={() => setFocusedLevel(null)}
                     onKeyDown={(event) => { if (event.key === "Escape") { setSelectedLevel(null); setHoveredLevel(null); setFocusedLevel(null); } }}
                     onClick={() => setSelectedLevel((current) => current === index ? null : index)}>
-                    <span aria-hidden className="block size-3.5 rounded-[3px]" style={{ backgroundColor: fill(index) }} />
+                    <span aria-hidden className="block size-3.5 rounded-[2px]" style={{ backgroundColor: fill(index) }} />
                   </Button>
                 ))}
                 <span className="ml-1.5">More</span>

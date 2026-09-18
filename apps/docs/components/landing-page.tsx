@@ -14,7 +14,9 @@ import {
 import { components } from "@frostui/registry";
 
 import { AreaChart } from "@/components/ui/area-chart";
+import { BarChart } from "@/components/ui/bar-chart";
 import { LineChart } from "@/components/ui/line-chart";
+import { Sparkline } from "@/components/ui/sparkline";
 import { ChartThumbnail } from "@/components/chart-thumbnail";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -33,6 +35,14 @@ const heroConfig = {
   current: { label: "Revenue", color: "var(--chart-1)" },
   previous: { label: "Previous", color: "var(--muted-foreground)" },
 } satisfies ChartConfig;
+
+const heroSessions = heroData.map((row, index) => ({ day: row.day, sessions: Math.round(900 + row.current * 9 + (index % 5) * 120) }));
+
+const heroSessionsConfig = {
+  sessions: { label: "Sessions", color: "var(--chart-2)" },
+} satisfies ChartConfig;
+
+const heroConversion = [1.8, 2.1, 2.0, 2.4, 2.6, 2.3, 2.9, 3.1, 2.8, 3.2, 3.5, 3.8];
 
 const themeDemoConfig = {
   current: { label: "Signups", color: "var(--chart-1)" },
@@ -268,19 +278,40 @@ export function LandingPage() {
               </Button>
             </div>
           </div>
-          <div className="mx-auto w-full max-w-3xl space-y-3 text-left">
+          <div className="mx-auto w-full max-w-4xl space-y-3 text-left">
             <CopyCommand command={getShadcnAddCommand("area-chart")} />
-            <div className="overflow-hidden rounded-2xl border border-border bg-card p-4">
-              <div className="flex items-baseline justify-between px-1">
-                <p className="text-sm text-muted-foreground">Revenue</p>
-                <p className="text-xl font-semibold tabular-nums tracking-tight">$128,430</p>
+            <div className="grid gap-3 lg:grid-cols-3 [&>*]:min-w-0">
+              <div className="overflow-hidden rounded-2xl border border-border bg-card p-4 lg:col-span-2">
+                <div className="flex items-baseline justify-between px-1">
+                  <p className="text-sm text-muted-foreground">Revenue</p>
+                  <p className="text-xl font-semibold tabular-nums tracking-tight">$128,430</p>
+                </div>
+                <AreaChart data={heroData} config={heroConfig} xDataKey="day" variant="plain" className="mt-1 h-48 w-full">
+                  <AreaChart.Grid />
+                  <AreaChart.Tooltip />
+                  <AreaChart.Area dataKey="current" variant="gradient" />
+                  <AreaChart.Area dataKey="previous" strokeVariant="dashed" />
+                </AreaChart>
               </div>
-              <AreaChart data={heroData} config={heroConfig} xDataKey="day" variant="plain" className="mt-1 h-48 w-full">
-                <AreaChart.Grid />
-                <AreaChart.Tooltip />
-                <AreaChart.Area dataKey="current" variant="gradient" />
-                <AreaChart.Area dataKey="previous" strokeVariant="dashed" />
-              </AreaChart>
+              <div className="grid gap-3">
+                <div className="overflow-hidden rounded-2xl border border-border bg-card p-4">
+                  <div className="flex items-baseline justify-between px-1">
+                    <p className="text-sm text-muted-foreground">Sessions</p>
+                    <p className="text-xl font-semibold tabular-nums tracking-tight">48.2k</p>
+                  </div>
+                  <BarChart data={heroSessions} config={heroSessionsConfig} xDataKey="day" variant="plain" className="mt-1 h-24 w-full">
+                    <BarChart.Tooltip />
+                    <BarChart.Bar dataKey="sessions" />
+                  </BarChart>
+                </div>
+                <div className="overflow-hidden rounded-2xl border border-border bg-card p-4">
+                  <div className="flex items-baseline justify-between px-1">
+                    <p className="text-sm text-muted-foreground">Conversion</p>
+                    <p className="text-xl font-semibold tabular-nums tracking-tight">3.8%</p>
+                  </div>
+                  <Sparkline data={heroConversion} size="md" tone="up" className="mt-1" />
+                </div>
+              </div>
             </div>
           </div>
         </div>
