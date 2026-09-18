@@ -61,7 +61,7 @@ function RangeChartRoot({
   return (
     <Card className={cn("p-5 sm:p-6", className)}>
       <ChartSkeleton isLoading={isLoading}>
-      {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
+      {title ? <p className="text-[15px] font-medium tracking-tight">{title}</p> : null}
       <ChartContainer
         isLoading={isLoading}
         loadingVariant="range"

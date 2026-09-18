@@ -22,6 +22,7 @@ import {
 import { AreaChart } from "@/components/ui/area-chart";
 import { BarChart } from "@/components/ui/bar-chart";
 import { UsageMeter } from "@/components/ui/usage-meter";
+import { ChartSkeleton } from "@/components/ui/chart-reactions";
 import { type ChartConfig } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
 
@@ -85,7 +86,7 @@ const sideNav = [
   { icon: Settings, label: "Settings" },
 ];
 
-function CardShell({ title, action, children, onRemove }: { title: string; action?: React.ReactNode; children: React.ReactNode; onRemove?: () => void }) {
+function CardShell({ title, action, children, onRemove, loading }: { title: string; action?: React.ReactNode; children: React.ReactNode; onRemove?: () => void; loading?: boolean }) {
   return (
     <div className="relative min-w-0 rounded-2xl border border-border bg-card p-5">
       {onRemove ? (
@@ -102,7 +103,7 @@ function CardShell({ title, action, children, onRemove }: { title: string; actio
         <h3 className="truncate text-[15px] font-medium tracking-tight">{title}</h3>
         {action}
       </div>
-      {children}
+      <ChartSkeleton isLoading={loading}>{children}</ChartSkeleton>
     </div>
   );
 }
@@ -114,6 +115,7 @@ export function OverviewDashboard() {
   const [customizing, setCustomizing] = React.useState(false);
   const [hidden, setHidden] = React.useState<string[]>([]);
   const [feed, setFeed] = React.useState<"System" | "All">("System");
+  const [loading, setLoading] = React.useState(false);
 
   const days = React.useMemo(() => allDays.slice(-range.days), [range]);
   const revenue = React.useMemo(() => days.reduce((sum, row) => sum + row.current, 0), [days]);
@@ -222,6 +224,17 @@ export function OverviewDashboard() {
               </div>
               <button
                 type="button"
+                aria-pressed={loading}
+                onClick={() => setLoading((value) => !value)}
+                className={cn(
+                  "flex h-9 items-center gap-2 rounded-full border px-3.5 text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  loading ? "border-chart-1/40 bg-chart-1/10" : "border-border bg-card hover:bg-accent"
+                )}
+              >
+                Loading
+              </button>
+              <button
+                type="button"
                 aria-pressed={customizing}
                 onClick={() => setCustomizing((value) => !value)}
                 className={cn(
@@ -237,6 +250,7 @@ export function OverviewDashboard() {
           <div className="space-y-3 px-4 pb-6 sm:px-6">
             {visible("revenue") ? (
               <CardShell
+                loading={loading}
                 title="Revenue"
                 onRemove={customizing ? remove("revenue") : undefined}
                 action={
@@ -249,7 +263,7 @@ export function OverviewDashboard() {
                 <p className="mt-2 flex items-center gap-2 text-[13px] text-muted-foreground">
                   <span className="size-2 rounded-full border-2 border-chart-1" aria-hidden /> {firstDay} – {lastDay}, 2026
                 </p>
-                <AreaChart data={days} config={revenueConfig} xDataKey="day" variant="plain" className="mt-2 h-64 w-full">
+                <AreaChart isLoading={loading} data={days} config={revenueConfig} xDataKey="day" variant="plain" className="mt-2 h-64 w-full">
                   <AreaChart.Grid />
                   <AreaChart.Tooltip />
                   <AreaChart.XAxis dataKey="day" tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={90} tick={{ fill: "var(--muted-foreground)", fontSize: 12 }} />
@@ -260,12 +274,12 @@ export function OverviewDashboard() {
 
             <div className="grid gap-3 md:grid-cols-2 [&>*]:min-w-0">
               {visible("mrr") ? (
-                <CardShell title="Monthly Recurring Revenue" onRemove={customizing ? remove("mrr") : undefined}>
+                <CardShell loading={loading} title="Monthly Recurring Revenue" onRemove={customizing ? remove("mrr") : undefined}>
                   <p className="mt-1 text-4xl font-medium tabular-nums tracking-tight">{money(mrr)}</p>
                   <p className="mt-2 flex items-center gap-2 text-[13px] text-muted-foreground">
                     <span className="size-2 rounded-full border-2 border-chart-2" aria-hidden /> {firstDay} – {lastDay}, 2026
                   </p>
-                  <AreaChart data={days} config={mrrConfig} xDataKey="day" variant="plain" className="mt-2 h-40 w-full">
+                  <AreaChart isLoading={loading} data={days} config={mrrConfig} xDataKey="day" variant="plain" className="mt-2 h-40 w-full">
                     <AreaChart.Grid />
                     <AreaChart.Tooltip />
                     <AreaChart.XAxis dataKey="day" tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={70} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} />
@@ -274,12 +288,12 @@ export function OverviewDashboard() {
                 </CardShell>
               ) : null}
               {visible("subs") ? (
-                <CardShell title="Active Subscriptions" onRemove={customizing ? remove("subs") : undefined}>
+                <CardShell loading={loading} title="Active Subscriptions" onRemove={customizing ? remove("subs") : undefined}>
                   <p className="mt-1 text-4xl font-medium tabular-nums tracking-tight">{subs.toLocaleString("en-US")}</p>
                   <p className="mt-2 flex items-center gap-2 text-[13px] text-muted-foreground">
                     <span className="size-2 rounded-full border-2 border-chart-4" aria-hidden /> {firstDay} – {lastDay}, 2026
                   </p>
-                  <AreaChart data={days.map((row, index) => ({ day: row.day, current: Math.round(subs * (0.55 + (index / days.length) * 0.45)) }))} config={subsConfig} xDataKey="day" variant="plain" className="mt-2 h-40 w-full">
+                  <AreaChart isLoading={loading} data={days.map((row, index) => ({ day: row.day, current: Math.round(subs * (0.55 + (index / days.length) * 0.45)) }))} config={subsConfig} xDataKey="day" variant="plain" className="mt-2 h-40 w-full">
                     <AreaChart.Grid />
                     <AreaChart.Tooltip />
                     <AreaChart.XAxis dataKey="day" tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={70} tick={{ fill: "var(--muted-foreground)", fontSize: 11 }} />
@@ -291,8 +305,8 @@ export function OverviewDashboard() {
 
             <div className="grid gap-3 xl:grid-cols-3 [&>*]:min-w-0">
               {visible("monthly") ? (
-                <CardShell title="Revenue" onRemove={customizing ? remove("monthly") : undefined} action={<span className="text-[13px] text-muted-foreground">Last 6 months</span>}>
-                  <BarChart data={months} config={barsConfig} xDataKey="month" variant="plain" className="mt-2 h-64 w-full">
+                <CardShell loading={loading} title="Revenue" onRemove={customizing ? remove("monthly") : undefined} action={<span className="text-[13px] text-muted-foreground">Last 6 months</span>}>
+                  <BarChart isLoading={loading} data={months} config={barsConfig} xDataKey="month" variant="plain" className="mt-2 h-64 w-full">
                     <BarChart.Grid />
                     <BarChart.Tooltip />
                     <BarChart.XAxis dataKey="month" tickLine={false} axisLine={false} interval={0} tick={{ fill: "var(--muted-foreground)", fontSize: 12 }} />
@@ -302,6 +316,7 @@ export function OverviewDashboard() {
               ) : null}
               {visible("timeline") ? (
                 <CardShell
+                  loading={loading}
                   title="Timeline"
                   onRemove={customizing ? remove("timeline") : undefined}
                   action={
@@ -334,9 +349,9 @@ export function OverviewDashboard() {
                 </CardShell>
               ) : null}
               {visible("balance") ? (
-                <CardShell title="Available balance" onRemove={customizing ? remove("balance") : undefined} action={<span className="text-lg font-medium tabular-nums tracking-tight">{money(12480)}</span>}>
+                <CardShell loading={loading} title="Available balance" onRemove={customizing ? remove("balance") : undefined} action={<span className="text-lg font-medium tabular-nums tracking-tight">{money(12480)}</span>}>
                   <p className="mt-1 text-xs leading-5 text-muted-foreground">Withdrawals open above $10. Next automatic payout Jul 1.</p>
-                  <UsageMeter title="Payout progress" value={7480} max={10000} className="mt-3 border-0 p-0 shadow-none" />
+                  <UsageMeter isLoading={loading} title="Payout progress" value={7480} max={10000} className="mt-3 border-0 p-0 shadow-none" />
                 </CardShell>
               ) : null}
             </div>

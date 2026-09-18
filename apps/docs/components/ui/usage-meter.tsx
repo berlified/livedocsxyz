@@ -42,8 +42,8 @@ function UsageMeterRoot({
     <Card className={cn("p-5", className)}>
       {!isLoading ? <ChartReaction reaction={reaction} /> : null}
       <ChartSkeleton isLoading={isLoading}>
-        <p className="text-sm text-muted-foreground">{title}</p>
-        <p className="mt-2 tabular-nums text-3xl font-semibold tracking-tight">
+        <p className="text-[15px] font-medium tracking-tight">{title}</p>
+        <p className="mt-1 tabular-nums text-4xl font-medium tracking-tight">
           {left.toLocaleString("en-US", {
             style: "currency",
             currency: "USD",

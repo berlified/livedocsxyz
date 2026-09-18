@@ -76,7 +76,7 @@ function TrendCardRoot({
       <ChartSkeleton isLoading={isLoading}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-1.5">
-          <p className="text-sm text-muted-foreground">{title}</p>
+          <p className="text-[15px] font-medium tracking-tight">{title}</p>
           <span className="text-muted-foreground" title={title}>
             <Info className="size-3.5" aria-hidden />
           </span>
@@ -91,7 +91,7 @@ function TrendCardRoot({
       </div>
 
       <div className="mt-3 flex flex-wrap items-end gap-2">
-        <p className="tabular-nums text-3xl font-semibold tracking-tight">{value}</p>
+        <p className="mt-1 tabular-nums text-4xl font-medium tracking-tight">{value}</p>
         {delta ? (
           <Badge variant="outline" className={cn("mb-1", deltaClass)}>
             {delta}

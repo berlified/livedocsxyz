@@ -61,7 +61,8 @@ function BreakdownChartRoot({
         className="w-full justify-start"
         variant="plain"
       >
-      <p className="text-sm text-muted-foreground">{title}</p>
+      <p className="text-[15px] font-medium tracking-tight">{title}</p>
+      <p className="mt-1 tabular-nums text-4xl font-medium tracking-tight">{formatAmount(items.reduce((sum, item) => sum + item.value, 0))}</p>
       <div className="mt-4 flex h-3 rounded-full bg-muted" onKeyDown={(event) => { if (event.key === "Escape") setSelected(undefined); }}>
         {items.map((item, index) => (
           <div key={item.key} className="h-full min-w-1" style={{ width: `${item.percent}%` }}>

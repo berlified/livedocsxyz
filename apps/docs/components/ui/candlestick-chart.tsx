@@ -23,7 +23,7 @@ export type CandlestickChartProps = {
   className?: string;
 };
 
-const defaultConfig = { up: { label: "Close ≥ open", color: "var(--chart-2)" }, down: { label: "Close < open", color: "var(--chart-3)" } } satisfies ChartConfig;
+const defaultConfig = { up: { label: "Up · close ≥ open", color: "var(--chart-2)" }, down: { label: "Down · close < open", color: "var(--destructive)" } } satisfies ChartConfig;
 const formatNumber = (value: number) => value.toLocaleString("en-US", { maximumFractionDigits: 2 });
 const validCandle = (row: CandlestickDatum) => [row.open, row.high, row.low, row.close].every(Number.isFinite) && row.low <= Math.min(row.open, row.close) && row.high >= Math.max(row.open, row.close);
 const validVolume = (value: number | undefined): value is number => value !== undefined && Number.isFinite(value) && value >= 0;
@@ -88,12 +88,13 @@ export function CandlestickChart({ data, title = "Price action", description, co
   return (
     <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-label={title} aria-busy={isLoading || settings.isLoading}>
       <ChartSkeleton isLoading={isLoading}>
-      <h3 className="text-sm font-medium tracking-tight">{title}</h3>
+      <h3 className="text-[15px] font-medium tracking-tight">{title}</h3>
       {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
+      {validRows.length ? <p className="mt-1 tabular-nums text-4xl font-medium tracking-tight">{formatValue(validRows[validRows.length - 1]!.close)}</p> : null}
       <ChartContainer config={{ ...defaultConfig, ...config }} data={rows} variant="plain" isLoading={isLoading} loadingVariant="candlestick" reaction={reaction} className="mt-5 min-h-64">
         {!validRows.length ? <p role="status" className="flex min-h-64 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</p> : (
           <>
-            <div className="mb-3 flex flex-wrap gap-4 text-[11px] text-muted-foreground"><span>Hollow: close ≥ open</span><span>Filled: close &lt; open</span>{hasVolume ? <span>Volume below</span> : null}</div>
+            <div className="mb-3 flex flex-wrap gap-4 text-[11px] text-muted-foreground"><span className="flex items-center gap-1.5"><span className="size-2 rounded-[2px] bg-chart-2" aria-hidden />Up</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-[2px] bg-destructive" aria-hidden />Down</span>{hasVolume ? <span>Volume below</span> : null}</div>
             <p id={`${id}-help`} className="sr-only">Use arrow keys, Home, and End to explore candles. Enter activates a candle; Escape dismisses details. Invalid OHLC records are shown as gaps.</p>
             <div ref={tooltipHost} className="relative">
             <div className="overflow-x-auto p-1" onScroll={() => setDismissed(true)}>
@@ -117,7 +118,7 @@ export function CandlestickChart({ data, title = "Price action", description, co
                       <rect x={x(index) - step / 2 + 2} y={18} width={step - 4} height={hasVolume ? 269 : 206} rx={4} fill="var(--accent)" fillOpacity={active === index ? 0.7 : 0} className={cn(animate && "transition-[fill-opacity] duration-150")} />
                       {row.valid ? <>
                         <line x1={x(index)} x2={x(index)} y1={y(row.high)} y2={y(row.low)} stroke={color} strokeWidth={1.5} />
-                        <rect x={x(index) - candleWidth / 2} y={bodyTop - (bodyHeight === 1.5 ? 0.75 : 0)} width={candleWidth} height={bodyHeight} rx={2} fill={up ? "var(--card)" : color} stroke={color} strokeWidth={1.5} />
+                        <rect x={x(index) - candleWidth / 2} y={bodyTop - (bodyHeight === 1.5 ? 0.75 : 0)} width={candleWidth} height={bodyHeight} rx={2} fill={color} stroke={color} strokeWidth={1} />
                       </> : <text x={x(index)} y={124} textAnchor="middle" className="fill-muted-foreground text-xs" aria-hidden>—</text>}
                       {hasVolume && validVolume(row.volume) ? <rect x={x(index) - candleWidth / 2} y={286 - row.volume / maxVolume * 36} width={candleWidth} height={row.volume / maxVolume * 36} rx={2} fill={row.valid ? color : "var(--muted-foreground)"} fillOpacity={0.3} /> : null}
                     </g>
