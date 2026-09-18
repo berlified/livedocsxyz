@@ -2,7 +2,9 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import type { Metadata } from "next";
 
-import { components, categories } from "@frostui/registry";
+import { categories } from "@frostui/registry";
+
+import { visibleComponents as components } from "@/lib/catalog";
 
 import { LivedocsLogo } from "@/components/livedocs-logo";
 import { Badge } from "@/components/ui/badge";
@@ -44,8 +46,8 @@ export default function ComponentsCatalogPage() {
           </div>
           <div className="flex flex-wrap gap-3">
             <Button asChild>
-              <Link href="/docs/components/chart">
-                Start with Chart
+              <Link href="/docs/components/area-chart">
+                Start with Area Chart
                 <ArrowUpRight className="size-4" />
               </Link>
             </Button>
@@ -72,7 +74,7 @@ export default function ComponentsCatalogPage() {
             <CodeBlock
               language="bash"
               className="[&_pre]:whitespace-pre-wrap [&_code]:break-all"
-              code={getShadcnAddCommand("chart")}
+              code={getShadcnAddCommand("area-chart")}
             />
           </CardContent>
         </Card>

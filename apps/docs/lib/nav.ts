@@ -1,5 +1,6 @@
-import { components, categories } from "@frostui/registry";
+import { categories } from "@frostui/registry";
 
+import { visibleComponents as components } from "@/lib/catalog";
 import { foundationExtras } from "@/lib/guides";
 
 export { foundationExtras };

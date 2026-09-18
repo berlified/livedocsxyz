@@ -4,7 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { ArrowRight, CornerDownLeft, Search } from "lucide-react";
 
-import { searchComponents } from "@frostui/registry";
+import { searchVisibleComponents as searchComponents } from "@/lib/catalog";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 

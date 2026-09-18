@@ -375,10 +375,10 @@ const byName: Record<string, keyof typeof glyphs | string> = {
   "chart-reactions": "reaction",
 };
 
-export function ChartThumbnail({ name }: { name: string }) {
+export function ChartThumbnail({ name, className }: { name: string; className?: string }) {
   const key = byName[name] ?? "spark";
   return (
-    <svg viewBox="0 0 144 72" role="img" aria-hidden className="h-20 w-full max-w-44">
+    <svg viewBox="0 0 144 72" role="img" aria-hidden className={["h-20 w-full max-w-44", className].filter(Boolean).join(" ")}>
       {glyphs[key] ?? glyphs.spark}
     </svg>
   );

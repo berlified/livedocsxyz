@@ -11,7 +11,7 @@ import {
   Minus,
 } from "lucide-react";
 
-import { components } from "@frostui/registry";
+import { visibleComponents as components } from "@/lib/catalog";
 
 import { AreaChart } from "@/components/ui/area-chart";
 import { BarChart } from "@/components/ui/bar-chart";
@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { type ChartConfig } from "@/components/ui/chart";
 import { OverviewDashboard } from "@/components/overview-dashboard";
+import { CountUp, Reveal } from "@/components/reveal";
 import { getShadcnAddCommand } from "@/lib/registry-url";
 import { cn } from "@/lib/utils";
 
@@ -73,11 +74,11 @@ function CopyCommand({ command }: { command: string }) {
 
 function SectionHeading({ eyebrow, title, copy }: { eyebrow: string; title: string; copy?: string }) {
   return (
-    <div className="mx-auto max-w-2xl space-y-3 text-center">
+    <Reveal className="mx-auto max-w-2xl space-y-3 text-center">
       <p className="text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">{eyebrow}</p>
       <h2 className="text-balance text-3xl font-medium tracking-tight sm:text-4xl">{title}</h2>
       {copy ? <p className="text-pretty text-sm leading-6 text-muted-foreground sm:text-base">{copy}</p> : null}
-    </div>
+    </Reveal>
   );
 }
 
@@ -126,8 +127,8 @@ function ComponentBrowser() {
             href={`/docs/components/${item.name}`}
             className="group overflow-hidden rounded-xl border border-border bg-card no-underline transition-colors hover:border-muted-foreground/40 hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <div className="flex h-28 items-center justify-center border-b border-border bg-muted/25 px-6">
-              <ChartThumbnail name={item.name} />
+            <div className="flex h-28 items-center justify-center overflow-hidden border-b border-border bg-muted/25 px-6">
+              <ChartThumbnail name={item.name} className="transition-transform duration-300 ease-out group-hover:scale-[1.06]" />
             </div>
             <div className="p-4">
               <div className="flex items-center justify-between gap-2">
@@ -231,7 +232,7 @@ export function LandingPage() {
       <section className="relative overflow-hidden border-x border-b border-border px-5 py-16 sm:px-10 sm:py-24">
         <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
         <div className="mx-auto grid max-w-5xl items-center gap-12 text-center [&>*]:min-w-0">
-          <div className="space-y-6">
+          <Reveal className="space-y-6">
             <Badge variant="outline" className="gap-2 rounded-full bg-background px-3 py-1 font-normal">
               <span className="size-1.5 rounded-full bg-chart-2" aria-hidden />
               {components.length} chart primitives · MIT licensed
@@ -251,8 +252,8 @@ export function LandingPage() {
                 <Link href="/docs/installation">Get started</Link>
               </Button>
             </div>
-          </div>
-          <div className="mx-auto w-full max-w-4xl space-y-3 text-left">
+          </Reveal>
+          <Reveal delay={140} className="mx-auto w-full max-w-4xl space-y-3 text-left">
             <CopyCommand command={getShadcnAddCommand("area-chart")} />
             <div className="grid items-stretch gap-3 lg:grid-cols-3 [&>*]:min-w-0">
               <div className="flex min-h-80 flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 lg:col-span-2">
@@ -290,7 +291,7 @@ export function LandingPage() {
                 </div>
               </div>
             </div>
-          </div>
+            </Reveal>
         </div>
       </section>
 
@@ -300,7 +301,9 @@ export function LandingPage() {
           title="One registry. An entire overview page."
           copy="Revenue, MRR, subscriptions, monthly bars, and timelines — every widget below is a live livedocs component. Switch ranges, filter the feed, customize the layout."
         />
-        <OverviewDashboard />
+        <Reveal delay={100}>
+          <OverviewDashboard />
+        </Reveal>
       </section>
 
       <section aria-labelledby="browser-title" className="space-y-8 border-t border-border py-16 sm:py-24">
@@ -309,12 +312,14 @@ export function LandingPage() {
           title="Every chart you'll ever need."
           copy="Search the registry, pick a primitive, and install it with one command. Each ships with variants, props docs, and live examples."
         />
-        <ComponentBrowser />
+        <Reveal delay={100}>
+          <ComponentBrowser />
+        </Reveal>
       </section>
 
       <section aria-labelledby="compare-title" className="space-y-8 border-t border-border py-16 sm:py-24">
         <SectionHeading eyebrow="livedocs vs DIY" title="Stop rebuilding charts." copy="Hand-rolled charts cost weeks and still miss the details. livedocs ships them finished." />
-        <div className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-border">
+        <Reveal delay={100} className="mx-auto max-w-3xl overflow-hidden rounded-2xl border border-border">
           <table className="w-full text-left text-sm">
             <thead>
               <tr className="border-b border-border bg-card text-muted-foreground">
@@ -333,33 +338,40 @@ export function LandingPage() {
               ))}
             </tbody>
           </table>
-        </div>
+        </Reveal>
       </section>
 
       <section aria-labelledby="theme-title" className="space-y-8 border-t border-border py-16 sm:py-24">
         <SectionHeading eyebrow="Theming" title="Make the charts look like you." copy="Semantic tokens, considered defaults, and light and dark themes. Flip the switch — the same chart, two products." />
-        <ThemeDemo />
+        <Reveal delay={100}>
+          <ThemeDemo />
+        </Reveal>
       </section>
 
       <section aria-label="By the numbers" className="grid grid-cols-2 border-y border-border md:grid-cols-4">
-        {[
-          [`${components.length}`, "Chart primitives"],
-          ["26", "Documented examples"],
-          ["100%", "Open source, MIT"],
-          ["0", "Runtime services"],
-        ].map(([value, label]) => (
-          <div key={label} className="space-y-1 border-l border-border px-6 py-8 first:border-l-0">
-            <p className="text-3xl font-medium tabular-nums tracking-tight">{value}</p>
-            <p className="text-sm text-muted-foreground">{label}</p>
-          </div>
-        ))}
+        <div className="space-y-1 border-l border-border px-6 py-8 first:border-l-0">
+          <p className="text-3xl font-medium tabular-nums tracking-tight"><CountUp to={components.length} /></p>
+          <p className="text-sm text-muted-foreground">Chart primitives</p>
+        </div>
+        <div className="space-y-1 border-l border-border px-6 py-8 first:border-l-0">
+          <p className="text-3xl font-medium tabular-nums tracking-tight"><CountUp to={components.length} /></p>
+          <p className="text-sm text-muted-foreground">Live previews</p>
+        </div>
+        <div className="space-y-1 border-l border-border px-6 py-8 first:border-l-0">
+          <p className="text-3xl font-medium tabular-nums tracking-tight">100%</p>
+          <p className="text-sm text-muted-foreground">Open source, MIT</p>
+        </div>
+        <div className="space-y-1 border-l border-border px-6 py-8 first:border-l-0">
+          <p className="text-3xl font-medium tabular-nums tracking-tight">0</p>
+          <p className="text-sm text-muted-foreground">Runtime services</p>
+        </div>
       </section>
 
       <section aria-labelledby="install-title" className="space-y-6 border-t border-border py-16 text-center sm:py-24">
         <SectionHeading eyebrow="Free forever" title="Make a commitment-free start." copy="One command installs any chart with full source. No account, no paywall, no telemetry." />
-        <div className="mx-auto max-w-xl">
+        <Reveal delay={100} className="mx-auto max-w-xl">
           <CopyCommand command={getShadcnAddCommand("dashboard")} />
-        </div>
+        </Reveal>
         <div className="flex flex-wrap justify-center gap-3">
           <Button asChild><Link href="/docs/installation">Read the installation guide <ArrowRight className="size-4" /></Link></Button>
           <Button variant="outline" asChild><Link href="/docs/components">Browse components</Link></Button>
@@ -368,12 +380,14 @@ export function LandingPage() {
 
       <section aria-labelledby="faq-title" className="space-y-8 border-t border-border py-16 sm:py-24">
         <SectionHeading eyebrow="FAQs" title="Frequently asked questions." copy="Quick answers before you install. See the docs for everything else." />
-        <Faq />
+        <Reveal delay={100}>
+          <Faq />
+        </Reveal>
       </section>
 
       <section aria-labelledby="support-title" className="space-y-8 border-t border-border py-16 sm:py-24">
         <SectionHeading eyebrow="Support" title="Real help from the people who build it." copy="Answers within a day from the maintainers — no bots, no ticket black holes." />
-        <div className="grid gap-3 md:grid-cols-3">
+        <Reveal delay={100} className="grid gap-3 md:grid-cols-3">
           {[
             { title: "GitHub", copy: "Report bugs, request charts, and read every line of source.", cta: "Open GitHub", href: "/docs" },
             { title: "Email", copy: "Prefer a direct line? Write in and get an answer from a maintainer.", cta: "Contact", href: "/docs" },
@@ -385,7 +399,7 @@ export function LandingPage() {
               <Button variant="outline" size="sm" asChild><Link href={item.href}>{item.cta} <ArrowUpRight className="size-3.5" /></Link></Button>
             </div>
           ))}
-        </div>
+        </Reveal>
       </section>
 
       <footer className="overflow-hidden border-t border-border pt-14">
