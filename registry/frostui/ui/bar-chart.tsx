@@ -87,6 +87,7 @@ function ChartBar({
   xDataKey = "month",
   layout = "horizontal",
   stackType,
+  variant,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
@@ -99,6 +100,7 @@ function ChartBar({
   xDataKey?: string;
   layout?: "horizontal" | "vertical";
   stackType?: "none" | "stacked" | "percent";
+  variant?: "panel" | "plain";
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
@@ -116,6 +118,7 @@ function ChartBar({
       config={config}
       data={data}
       className={cn("h-72 w-full", className)}
+      variant={variant}
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >

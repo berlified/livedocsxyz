@@ -15,10 +15,11 @@ import { components } from "@frostui/registry";
 
 import { AreaChart } from "@/components/ui/area-chart";
 import { LineChart } from "@/components/ui/line-chart";
+import { ChartThumbnail } from "@/components/chart-thumbnail";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { type ChartConfig } from "@/components/ui/chart";
-import { WhopDashboard } from "@/components/whop-dashboard";
+import { OverviewDashboard } from "@/components/overview-dashboard";
 import { getShadcnAddCommand } from "@/lib/registry-url";
 import { cn } from "@/lib/utils";
 
@@ -113,13 +114,18 @@ function ComponentBrowser() {
           <Link
             key={item.name}
             href={`/docs/components/${item.name}`}
-            className="group rounded-xl border border-border bg-card p-4 no-underline transition-colors hover:border-muted-foreground/40 hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            className="group overflow-hidden rounded-xl border border-border bg-card no-underline transition-colors hover:border-muted-foreground/40 hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <div className="flex items-center justify-between gap-2">
-              <p className="truncate text-sm font-medium tracking-tight">{item.title}</p>
-              <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" aria-hidden />
+            <div className="flex h-28 items-center justify-center border-b border-border bg-muted/25 px-6">
+              <ChartThumbnail name={item.name} />
             </div>
-            <p className="mt-1.5 line-clamp-2 min-h-10 text-[13px] leading-5 text-muted-foreground">{item.description}</p>
+            <div className="p-4">
+              <div className="flex items-center justify-between gap-2">
+                <p className="truncate text-sm font-medium tracking-tight">{item.title}</p>
+                <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" aria-hidden />
+              </div>
+              <p className="mt-1.5 line-clamp-2 min-h-10 text-[13px] leading-5 text-muted-foreground">{item.description}</p>
+            </div>
           </Link>
         ))}
         {!results.length ? <p className="col-span-full rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">No components match “{query}”.</p> : null}
@@ -280,22 +286,13 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section aria-label="Built for product teams" className="border-b border-border py-10">
-        <p className="text-center text-xs font-medium uppercase tracking-[0.18em] text-muted-foreground">Powering dashboards for product teams</p>
-        <div className="mx-auto mt-6 flex max-w-4xl flex-wrap items-center justify-center gap-x-10 gap-y-3 text-lg font-semibold tracking-tight text-muted-foreground">
-          {["Monetise", "Northwind", "Acme Inc", "Vercelia", "Craftly", "Statline"].map((name) => (
-            <span key={name} className="transition-colors hover:text-foreground">{name}</span>
-          ))}
-        </div>
-      </section>
-
-      <section aria-labelledby="system-title" className="space-y-8 py-16 sm:py-24">
+      <section aria-labelledby="system-title" className="space-y-8 border-t border-border py-16 sm:py-24">
         <SectionHeading
           eyebrow="A complete dashboard system"
           title="One registry. An entire overview page."
-          copy="Sidebar, revenue charts, stat cards, and payment breakdowns — every widget below is a live livedocs component. Click the filters, add widgets, hover the data."
+          copy="Revenue, MRR, subscriptions, monthly bars, and timelines — every widget below is a live livedocs component. Switch ranges, filter the feed, customize the layout."
         />
-        <WhopDashboard />
+        <OverviewDashboard />
       </section>
 
       <section aria-labelledby="browser-title" className="space-y-8 border-t border-border py-16 sm:py-24">
