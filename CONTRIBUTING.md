@@ -60,14 +60,3 @@ Report vulnerabilities privately. See [SECURITY.md](./SECURITY.md).
 ## Release notes
 
 User-facing changes belong in [CHANGELOG.md](./CHANGELOG.md) under **Unreleased**.
-
-## Maintainer checklist (going public)
-
-Do this once, before flipping the GitHub repo from private to public:
-
-1. Search git history for secrets (`gh secret` is not enough). Look for `.env`, API keys, tokens, and private URLs.
-2. Enable **secret scanning**, **push protection**, and **private vulnerability reporting** in the GitHub repo settings.
-3. Protect `main`: require a PR, require the CI check, and disallow force-push.
-4. Confirm the GitHub description and topics do not leak private brand names.
-5. Ship a GitHub release (`v0.1.0`) after the first public commit so consumers have a tag.
-6. Never `git push --force` to `main` after the repo is public.
