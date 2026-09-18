@@ -68,17 +68,17 @@ function ActivityChartRoot({
         </div>
         <div className="mt-3 h-44 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <RechartsBarChart data={data} margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
+            <RechartsBarChart data={data} barCategoryGap="28%" margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>
               <ChartTooltip />
               <XAxis
                 dataKey="label"
                 tickLine={false}
                 axisLine={false}
                 interval="preserveStartEnd"
-                minTickGap={32}
+                minTickGap={44}
                 tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
               />
-              <Bar dataKey="value" radius={[4, 4, 4, 4]} maxBarSize={18} isAnimationActive={false}>
+              <Bar dataKey="value" radius={[4, 4, 4, 4]} maxBarSize={10} isAnimationActive={false}>
                 {data.map((datum, index) => (
                   <Cell
                     key={datum.label}

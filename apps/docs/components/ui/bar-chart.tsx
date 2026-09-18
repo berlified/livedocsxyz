@@ -171,6 +171,7 @@ function BarBody({
         data={data}
         layout={vertical ? "vertical" : "horizontal"}
         stackOffset={stackType === "percent" ? "expand" : undefined}
+        barCategoryGap="30%"
         margin={{ top: 8, right: 8, left: 0, bottom: 0 }}
       >
         <defs>
@@ -224,6 +225,7 @@ function BarBody({
               dataKey={dataKey}
               fill={fill}
               radius={radius}
+              maxBarSize={28}
               stackId={stacked ? stackId ?? "stack" : stackId}
               activeBar={false}
               onClick={() => isClickable && setSelected(dataKey)}

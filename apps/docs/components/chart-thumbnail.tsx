@@ -206,7 +206,7 @@ const glyphs: Record<string, React.ReactNode> = {
               width={8}
               height={9}
               rx={2}
-              fill={level === 0 ? TRACK : C2}
+              fill={level === 0 ? TRACK : "var(--chart-heat-3)"}
               opacity={level === 0 ? 1 : 0.25 + level * 0.18}
             />
           );
@@ -253,8 +253,8 @@ const glyphs: Record<string, React.ReactNode> = {
         { x: 120, high: 26, low: 60, open: 50, close: 34, up: false },
       ].map((c, i) => (
         <g key={i}>
-          <line x1={c.x} y1={c.high} x2={c.x} y2={c.low} stroke={c.up ? C2 : BAD} strokeWidth={1.5} />
-          <rect x={c.x - 5} y={Math.min(c.open, c.close)} width={10} height={Math.max(4, Math.abs(c.close - c.open))} rx={2} fill={c.up ? C2 : BAD} />
+          <line x1={c.x} y1={c.high} x2={c.x} y2={c.low} stroke={c.up ? "var(--chart-up)" : BAD} strokeWidth={1.5} />
+          <rect x={c.x - 5} y={Math.min(c.open, c.close)} width={10} height={Math.max(4, Math.abs(c.close - c.open))} rx={2} fill={c.up ? "var(--chart-up)" : BAD} />
         </g>
       ))}
     </g>
