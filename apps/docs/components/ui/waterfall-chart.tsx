@@ -11,7 +11,6 @@ export type WaterfallDatum = { label: string; value: number; kind?: "change" | "
 export type WaterfallChartProps = {
   data: WaterfallDatum[];
   title?: string;
-  description?: string;
   config?: ChartConfig;
   formatValue?: (value: number) => string;
   onBarClick?: (datum: WaterfallDatum, index: number) => void;
@@ -28,7 +27,7 @@ const defaultConfig = {
 } satisfies ChartConfig;
 const formatNumber = (value: number) => value.toLocaleString("en-US", { maximumFractionDigits: 2 });
 
-export function WaterfallChart({ data, title = "Balance movement", description, config = defaultConfig, formatValue = formatNumber, onBarClick, isLoading, reaction, emptyLabel = "No changes to display", className }: WaterfallChartProps) {
+export function WaterfallChart({ data, title = "Balance movement", config = defaultConfig, formatValue = formatNumber, onBarClick, isLoading, reaction, emptyLabel = "No changes to display", className }: WaterfallChartProps) {
   const id = React.useId();
   const plot = React.useRef<SVGSVGElement>(null);
   const [cursor, setCursor] = React.useState(0);
@@ -92,7 +91,6 @@ export function WaterfallChart({ data, title = "Balance movement", description, 
     <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-label={title} aria-busy={isLoading || settings.isLoading}>
       <ChartSkeleton isLoading={isLoading}>
       <h3 className="text-[15px] font-medium tracking-tight">{title}</h3>
-      {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
       {validRows.length ? <p className="mt-1 tabular-nums text-4xl font-medium tracking-tight">{formatValue(balance)}</p> : null}
       <ChartContainer config={{ ...defaultConfig, ...config }} data={rows} variant="plain" className="mt-5 min-h-64" isLoading={isLoading} loadingVariant="waterfall" reaction={reaction}>
         {!validRows.length ? <p role="status" className="flex min-h-64 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</p> : (

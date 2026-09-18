@@ -350,23 +350,15 @@ export function ChartHoverTooltip({
 export function ChartHeading({
   title,
   value,
-  description,
 }: {
   title?: string;
   value?: string;
-  description?: string;
 }) {
   if (!title && !value) return null;
   return (
     <div className="min-w-0">
       {title ? <p className="truncate text-[15px] font-medium tracking-tight">{title}</p> : null}
       {value ? <p className="mt-1 tabular-nums text-5xl font-medium tracking-tight">{value}</p> : null}
-      {description ? (
-        <p className="mt-2 flex items-center gap-2 truncate text-[13px] text-muted-foreground">
-          <span className="size-2 shrink-0 rounded-full border-2 border-muted-foreground" aria-hidden />
-          {description}
-        </p>
-      ) : null}
     </div>
   );
 }

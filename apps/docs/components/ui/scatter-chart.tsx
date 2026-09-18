@@ -35,7 +35,6 @@ export type ScatterChartProps = {
   series?: string[];
   config?: ChartConfig;
   title?: string;
-  description?: string;
   xLabel?: string;
   yLabel?: string;
   xDomain?: [number | "auto", number | "auto"];
@@ -88,7 +87,6 @@ export function ScatterChart(props: ScatterChartProps) {
     series,
     config = defaultConfig,
     title = "Correlation",
-    description,
     xLabel = "X",
     yLabel = "Y",
     xDomain,
@@ -122,7 +120,6 @@ export function ScatterChart(props: ScatterChartProps) {
     <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-label={title}>
       <ChartSkeleton isLoading={isLoading}>
       {title ? <p className="text-sm font-medium tracking-tight">{title}</p> : null}
-      {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
       <ChartContainer
         isLoading={isLoading}
         loadingVariant={bubbleKey ? "bubble" : "scatter"}

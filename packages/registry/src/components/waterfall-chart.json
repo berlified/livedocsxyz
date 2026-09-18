@@ -12,7 +12,6 @@
   "props": [
     { "name": "data", "type": "WaterfallDatum[]", "description": "Ordered label, value, and kind (change or total). Changes accumulate; totals reset the balance. Nonfinite changes leave the balance unchanged." },
     { "name": "title", "type": "string", "description": "Accessible chart heading" },
-    { "name": "description", "type": "string", "description": "Secondary caption" },
     { "name": "config", "type": "ChartConfig", "description": "increase, decrease, and total semantic colors and labels" },
     { "name": "formatValue", "type": "(value: number) => string", "description": "Axis, details, and data table formatter" },
     { "name": "onBarClick", "type": "(datum: WaterfallDatum, index: number) => void", "description": "Pointer or keyboard activation with original data index" },

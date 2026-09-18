@@ -1,7 +1,7 @@
 "use client";
 
 import { ComponentPreview } from "@/components/component-preview";
-import { feedFor, moverShift, usePreviewEmotion, useShapedRecords } from "@/components/emotion-data";
+import { emotionConfig, emotionTone, feedFor, moverShift, usePreviewEmotion, useShapedRecords } from "@/components/emotion-data";
 import { FunnelChart } from "@/components/ui/funnel-chart";
 import { HeatmapChart } from "@/components/ui/heatmap-chart";
 import { ScatterChart } from "@/components/ui/scatter-chart";
@@ -71,25 +71,26 @@ export const scatterConfig = {
 };
 
 export function FunnelChartPreview() {
-  const { data } = useShapedRecords(funnelStages, ["value"], true);
+  const { data, emotion } = useShapedRecords(funnelStages, ["value"], true);
   return (
     <FunnelChart
       className="w-full"
       title="Acquisition funnel"
-      description="Visitors to closed deals"
-      config={funnelConfig}
+     
+      config={emotionConfig(funnelConfig, emotion)}
       stages={data}
     />
   );
 }
 
 export function HeatmapChartPreview() {
-  const { data } = useShapedRecords(heatmapCells, ["value"], true);
+  const { data, emotion } = useShapedRecords(heatmapCells, ["value"], true);
   return (
     <HeatmapChart
       title="Contributions"
-      description="A year of activity · Oct 2023 – Sep 2024"
+     
       layout="calendar"
+      palette={emotionTone(emotion) === "red" ? "red" : "green"}
       data={data}
       config={heatmapConfig}
     />
@@ -97,13 +98,13 @@ export function HeatmapChartPreview() {
 }
 
 export function ScatterChartPreview() {
-  const { data } = useShapedRecords(scatterCohorts, ["y"]);
+  const { data, emotion } = useShapedRecords(scatterCohorts, ["y"]);
   return (
     <ScatterChart
       title="Spend vs retention"
-      description="Weekly cohort performance"
+     
       data={data}
-      config={scatterConfig}
+      config={emotionConfig(scatterConfig, emotion)}
       xLabel="Spend ($)"
       yLabel="Retention (%)"
       meanLine
@@ -118,7 +119,7 @@ export function HeatmapChartExamples() {
       <ComponentPreview label="Last quarter" className="p-4">
         <HeatmapChart
           title="Recent contributions"
-          description="Last 13 weeks"
+         
           layout="calendar"
           data={heatmapCells.slice(-91)}
           config={heatmapConfig}
@@ -160,7 +161,7 @@ export function HeatmapChartExamples() {
       <ComponentPreview label="Click to inspect" className="p-4">
         <HeatmapChart
           title="Review throughput"
-          description="Select any day to log it"
+         
           layout="calendar"
           data={heatmapCells.slice(0, 182)}
           config={{ value: { label: "Reviews", color: "var(--chart-2)" } }}
@@ -170,6 +171,16 @@ export function HeatmapChartExamples() {
       <h2 className="text-xl font-semibold">Empty</h2>
       <ComponentPreview label="No data" className="p-4">
         <HeatmapChart data={[]} config={heatmapConfig} emptyLabel="No activity in this period" />
+      </ComponentPreview>
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <HeatmapChart
+          title="Contributions"
+          layout="calendar"
+          data={heatmapCells}
+          config={heatmapConfig}
+          isLoading
+        />
       </ComponentPreview>
     </section>
   );
@@ -185,6 +196,15 @@ export function FunnelChartExamples() {
       <h2 className="text-xl font-semibold">Empty</h2>
       <ComponentPreview label="No data" className="p-4">
         <FunnelChart stages={[]} config={funnelConfig} emptyLabel="No funnel stages yet" />
+      </ComponentPreview>
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <FunnelChart
+          title="Acquisition funnel"
+          stages={funnelStages}
+          config={funnelConfig}
+          isLoading
+        />
       </ComponentPreview>
     </section>
   );
@@ -216,6 +236,16 @@ export function ScatterChartExamples() {
       <ComponentPreview label="No points" className="p-4">
         <ScatterChart data={[]} config={scatterConfig} emptyLabel="No cohort data yet" />
       </ComponentPreview>
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <ScatterChart
+          data={scatterCohorts}
+          config={scatterConfig}
+          xLabel="Spend ($)"
+          yLabel="Retention (%)"
+          isLoading
+        />
+      </ComponentPreview>
     </section>
   );
 }
@@ -223,7 +253,7 @@ export function ScatterChartExamples() {
 export function LivePriceChartPreview() {
   const emotion = usePreviewEmotion();
   const feed = feedFor(emotion);
-  return <LivePriceChart symbol="BTC/USDT" basePrice={97500} seed={feed.seed} drift={feed.drift} vol={feed.vol} tickMs={1200} className="w-full" />;
+  return <LivePriceChart symbol="BTC/USDT" basePrice={97500} seed={feed.seed} drift={feed.drift} vol={feed.vol} tickMs={1200} config={emotionConfig({ price: { label: "Price", color: "var(--chart-1)" }, volume: { label: "Volume", color: "var(--chart-1)" } }, emotion)} className="w-full" />;
 }
 
 export function OrderBookPreview() {
@@ -252,6 +282,50 @@ export function LivePriceChartExamples() {
       </ComponentPreview>
       <ComponentPreview label="Loading" className="p-4">
         <LivePriceChart symbol="SOL/USDT" basePrice={214} isLoading className="w-full" />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function MarketMoversExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <MarketMovers isLoading className="w-full" />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function OrderBookExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <OrderBook symbol="BTC/USDT" basePrice={97500} isLoading className="w-full" />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function DepthChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <DepthChart symbol="BTC/USDT" basePrice={97500} isLoading className="w-full" />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function TradesFeedExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <TradesFeed symbol="BTC/USDT" basePrice={97500} isLoading className="w-full" />
       </ComponentPreview>
     </section>
   );

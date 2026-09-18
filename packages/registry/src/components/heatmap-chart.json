@@ -23,7 +23,6 @@
     { "name": "isLoading", "type": "boolean", "description": "Shared chart loading skeleton covering the title, description, and chart labels" },
     { "name": "reaction", "type": "ChartReactionOptions", "description": "Per-chart reaction overrides" },
     { "name": "title", "type": "string", "description": "Card heading" },
-    { "name": "description", "type": "string", "description": "Secondary caption" },
     { "name": "config", "type": "ChartConfig", "description": "Series color config" },
     { "name": "formatValue", "type": "(value: number) => string", "description": "Cell and legend formatter" },
     { "name": "onCellClick", "type": "(cell: HeatmapCell) => void", "description": "Cell activation callback" },

@@ -49,6 +49,7 @@ export function LivePriceChart({
   vol,
   showMA = true,
   showVolume = true,
+  config = defaultConfig,
   className,
   isLoading,
   reaction,
@@ -61,6 +62,7 @@ export function LivePriceChart({
   vol?: number;
   showMA?: boolean;
   showVolume?: boolean;
+  config?: ChartConfig;
   className?: string;
   isLoading?: boolean;
   reaction?: ChartReactionOptions;
@@ -132,7 +134,7 @@ export function LivePriceChart({
             </button>
           </div>
         </div>
-        <ChartContainer isLoading={isLoading} reaction={reaction} config={defaultConfig} data={rows} variant="plain" className="mt-3 h-72 w-full">
+        <ChartContainer isLoading={isLoading} reaction={reaction} config={{ ...defaultConfig, ...config }} data={rows} variant="plain" className="mt-3 h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <RechartsComposedChart data={rows} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
               <defs>

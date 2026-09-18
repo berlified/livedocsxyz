@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { ComponentPreview } from "@/components/component-preview";
-import { useShapedRecords } from "@/components/emotion-data";
+import { emotionConfig, useShapedRecords } from "@/components/emotion-data";
 import { Button } from "@/components/ui/button";
 import { CandlestickChart, type CandlestickDatum } from "@/components/ui/candlestick-chart";
 import { ChartReactionsProvider, type ChartEmotion } from "@/components/ui/chart-reactions";
@@ -35,13 +35,13 @@ export const priceSessions: CandlestickDatum[] = [
 const currency = (value: number) => value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 export function WaterfallChartPreview() {
-  const { data } = useShapedRecords(revenueBridge, ["value"], false, true);
-  return <WaterfallChart title="What moved revenue" description="Monthly recurring revenue · September" data={data} formatValue={currency} />;
+  const { data, emotion } = useShapedRecords(revenueBridge, ["value"], false, true);
+  return <WaterfallChart title="What moved revenue" data={data} formatValue={currency} config={emotionConfig({ increase: { label: "Increase", color: "var(--chart-2)" }, decrease: { label: "Decrease", color: "var(--chart-3)" }, total: { label: "Total", color: "var(--chart-1)" } }, emotion)} />;
 }
 
 export function CandlestickChartPreview() {
-  const { data } = useShapedRecords(priceSessions, ["open", "high", "low", "close", "volume"], false, true);
-  return <CandlestickChart title="Daily price range" description="Illustrative sessions · OHLC with traded volume" data={data} formatValue={currency} />;
+  const { data, emotion } = useShapedRecords(priceSessions, ["open", "high", "low", "close", "volume"], false, true);
+  return <CandlestickChart title="Daily price range" data={data} formatValue={currency} config={emotionConfig({ up: { label: "Up", color: "var(--chart-up)" }, down: { label: "Down", color: "var(--destructive)" } }, emotion)} />;
 }
 
 export function WaterfallChartExamples() {
@@ -99,7 +99,7 @@ export function ChartReactionsPreview() {
     </div>
     <div className="flex flex-wrap gap-2"><Button type="button" variant="ghost" size="sm" aria-pressed={automatic} onClick={() => setAutomatic(!automatic)}>Metric resolver: {automatic ? "on" : "off"}</Button><Button type="button" variant="ghost" size="sm" aria-pressed={animations} onClick={() => setAnimations(!animations)}>Motion: {animations ? "system preference" : "off"}</Button></div>
     <ChartReactionsProvider animationsEnabled={animations}>
-      <WaterfallChart title="Revenue vs last period" description={`Previous: ${metric.previous} · Current: ${metric.current}${metric.goal ? ` · Goal: ${metric.goal}` : ""}`} data={[{ label: "Previous", value: metric.previous, kind: "total" }, { label: "Change", value: metric.current - metric.previous }, { label: "Current", value: metric.current, kind: "total" }]} isLoading={emotion === "loading"} reaction={automatic ? { metric } : { emotion }} />
+      <WaterfallChart title="Revenue vs last period" data={[{ label: "Previous", value: metric.previous, kind: "total" }, { label: "Change", value: metric.current - metric.previous }, { label: "Current", value: metric.current, kind: "total" }]} isLoading={emotion === "loading"} reaction={automatic ? { metric } : { emotion }} />
     </ChartReactionsProvider>
   </div>;
 }

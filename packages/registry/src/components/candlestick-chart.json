@@ -12,7 +12,6 @@
   "props": [
     { "name": "data", "type": "CandlestickDatum[]", "description": "Ordered label, open, high, low, close, and optional volume. Invalid OHLC records remain as gaps; negative prices are allowed." },
     { "name": "title", "type": "string", "description": "Accessible chart heading" },
-    { "name": "description", "type": "string", "description": "Secondary caption" },
     { "name": "config", "type": "ChartConfig", "description": "up and down semantic colors" },
     { "name": "showVolume", "type": "boolean", "default": "true", "description": "Show a separate normalized volume pane when valid nonnegative volume exists" },
     { "name": "formatValue", "type": "(value: number) => string", "description": "OHLC and price axis formatter" },

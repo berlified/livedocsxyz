@@ -18,7 +18,6 @@
     { "name": "series", "type": "string[]", "description": "Explicit series order" },
     { "name": "config", "type": "ChartConfig", "description": "Per-series color config" },
     { "name": "title", "type": "string", "description": "Card heading" },
-    { "name": "description", "type": "string", "description": "Secondary caption" },
     { "name": "xLabel", "type": "string", "description": "X axis label" },
     { "name": "yLabel", "type": "string", "description": "Y axis label" },
     { "name": "xDomain", "type": "[number | \"auto\", number | \"auto\"]", "description": "X axis domain" },

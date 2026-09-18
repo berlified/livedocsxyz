@@ -15,8 +15,8 @@ export type HeatmapChartProps = {
   columns?: string[];
   rows?: string[];
   layout?: "calendar" | "matrix";
+  palette?: "green" | "red";
   title?: string;
-  description?: string;
   config?: ChartConfig;
   formatValue?: (value: number) => string;
   onCellClick?: (cell: HeatmapCell) => void;
@@ -39,8 +39,8 @@ export function HeatmapChart({
   columns,
   rows,
   layout,
+  palette = "green",
   title = "Activity heatmap",
-  description,
   config = defaultConfig,
   formatValue = formatNumber,
   onCellClick,
@@ -92,7 +92,8 @@ export function HeatmapChart({
   const low = finite.reduce((min, cell) => Math.min(min, cell.value! / scale), 0);
   const high = finite.reduce((max, cell) => Math.max(max, cell.value! / scale), 0);
   const level = (cell: HeatmapCell) => cell.value === null ? null : high === low || cell.value / scale === low ? 0 : Math.min(4, Math.max(1, Math.ceil((cell.value / scale - low) / (high - low) * 4)));
-  const fill = (index: number) => `var(--chart-heat-${index})`;
+  const heatPrefix = palette === "red" ? "heat-red" : "heat";
+  const fill = (index: number) => `var(--chart-${heatPrefix}-${index})`;
   const activeLevel = hoveredLevel ?? focusedLevel ?? selectedLevel;
   const activeIndex = dismissed ? null : hovered ?? focused;
   const active = activeIndex === null ? undefined : cells[activeIndex];
@@ -156,7 +157,6 @@ export function HeatmapChart({
     <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-labelledby={`${id}-title`} aria-busy={loading}>
       <ChartSkeleton isLoading={isLoading}>
       <h3 id={`${id}-title`} className="text-sm font-medium tracking-tight">{title}</h3>
-      {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
       <ChartContainer isLoading={isLoading} loadingVariant="heatmap" reaction={reaction} config={{ ...defaultConfig, ...config }} data={cells} variant="plain" className="mt-5">
         {!finite.length ? <p className="flex min-h-44 items-center justify-center text-sm text-muted-foreground" role="status">{emptyLabel}</p> : (
           <>
@@ -189,7 +189,7 @@ export function HeatmapChart({
                             aria-label={describe(cell)}
                             aria-describedby={activeIndex === index ? `${id}-tooltip` : undefined}
                             className={cn("relative block w-full p-0 hover:z-10 hover:ring-1 hover:ring-ring focus-visible:z-10", calendar ? "aspect-square h-auto rounded-[2px]" : "h-8 rounded-md", activeIndex === index && "z-10 ring-2 ring-ring ring-offset-2 ring-offset-card")}
-                            style={{ backgroundColor: intensity === null ? "var(--chart-heat-0)" : fill(intensity), opacity: activeIndex !== null ? activeIndex === index ? 1 : 0.6 : activeLevel !== null && intensity !== activeLevel ? 0.6 : 1 }}
+                            style={{ backgroundColor: intensity === null ? `var(--chart-${heatPrefix}-0)` : fill(intensity), opacity: activeIndex !== null ? activeIndex === index ? 1 : 0.6 : activeLevel !== null && intensity !== activeLevel ? 0.6 : 1 }}
                             onMouseEnter={(event) => { setHovered(index); placeTooltip(event.currentTarget); }}
                             onMouseLeave={() => setHovered(null)}
                             onFocus={(event) => { setFocused(index); setCursor(index); placeTooltip(event.currentTarget); }}

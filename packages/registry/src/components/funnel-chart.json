@@ -20,7 +20,6 @@
     { "name": "stages", "type": "FunnelStage[]", "description": "key, label, value, meta" },
     { "name": "config", "type": "ChartConfig", "description": "Per-stage color config" },
     { "name": "title", "type": "string", "description": "Card heading" },
-    { "name": "description", "type": "string", "description": "Secondary caption" },
     { "name": "showConversion", "type": "boolean", "description": "Overall conversion and whole-percent stage pills relative to the first stage" },
     { "name": "onStageClick", "type": "(stage: FunnelStage) => void", "description": "Activation callback for a valid nonnegative stage" },
     { "name": "formatValue", "type": "(value: number) => string", "description": "Stage value formatter" },

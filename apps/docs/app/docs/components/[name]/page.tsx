@@ -40,6 +40,17 @@ import {
   UsageMeterPreview,
   ActivityChartPreview,
   ActivityChartExamples,
+  MetricChartExamples,
+  ComparisonChartExamples,
+  BreakdownChartExamples,
+  RangeChartExamples,
+  CountryChartExamples,
+  RingMetricExamples,
+  CashflowChartExamples,
+  SpotlightChartExamples,
+  LaneChartExamples,
+  UsageMeterExamples,
+  SankeyChartExamples,
 } from "@/components/chart-previews";
 import {
   HeatmapChartPreview,
@@ -51,6 +62,10 @@ import {
   DepthChartPreview,
   TradesFeedPreview,
   MarketMoversPreview,
+  MarketMoversExamples,
+  OrderBookExamples,
+  DepthChartExamples,
+  TradesFeedExamples,
   WaterfallChartPreview,
   WaterfallChartExamples,
   CandlestickChartPreview,
@@ -103,7 +118,7 @@ export function Example() {
     <ActivityChart
       title="Sessions"
       value="48.2k"
-      description="Last 30 days"
+     
       data={[
         { label: "D3", value: 1240 },
         { label: "D9", value: 2140 },
@@ -184,7 +199,7 @@ import { AreaChart } from "@/components/ui/area-chart"
 
 export function Example() {
   return (
-    <AreaChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig}>
+    <AreaChart title="Traffic" value="128,430" data={monthlyData} config={trafficConfig}>
       <AreaChart.Grid />
       <AreaChart.Tooltip />
       <AreaChart.Legend isClickable />
@@ -198,7 +213,7 @@ import { LineChart } from "@/components/ui/line-chart"
 
 export function Example() {
   return (
-    <LineChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig}>
+    <LineChart title="Traffic" value="128,430" data={monthlyData} config={trafficConfig}>
       <LineChart.Grid />
       <LineChart.Tooltip />
       <LineChart.Legend isClickable />
@@ -212,7 +227,7 @@ import { BarChart } from "@/components/ui/bar-chart"
 
 export function Example() {
   return (
-    <BarChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig}>
+    <BarChart title="Traffic" value="128,430" data={monthlyData} config={trafficConfig}>
       <BarChart.Grid />
       <BarChart.Tooltip />
       <BarChart.Legend isClickable />
@@ -226,7 +241,7 @@ import { ComposedChart } from "@/components/ui/composed-chart"
 
 export function Example() {
   return (
-    <ComposedChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig}>
+    <ComposedChart title="Traffic" value="128,430" data={monthlyData} config={trafficConfig}>
       <ComposedChart.Grid />
       <ComposedChart.Tooltip />
       <ComposedChart.Bar dataKey="desktop" />
@@ -514,6 +529,21 @@ const examplesByName: Record<string, ReactNode> = {
   "trend-card": <TrendCardExamples />,
   "activity-chart": <ActivityChartExamples />,
   "live-price-chart": <LivePriceChartExamples />,
+  "metric-chart": <MetricChartExamples />,
+  "comparison-chart": <ComparisonChartExamples />,
+  "breakdown-chart": <BreakdownChartExamples />,
+  "range-chart": <RangeChartExamples />,
+  "country-chart": <CountryChartExamples />,
+  "ring-metric": <RingMetricExamples />,
+  "cashflow-chart": <CashflowChartExamples />,
+  "spotlight-chart": <SpotlightChartExamples />,
+  "lane-chart": <LaneChartExamples />,
+  "usage-meter": <UsageMeterExamples />,
+  "sankey-chart": <SankeyChartExamples />,
+  "market-movers": <MarketMoversExamples />,
+  "order-book": <OrderBookExamples />,
+  "depth-chart": <DepthChartExamples />,
+  "trades-feed": <TradesFeedExamples />,
 };
 
 const sourcePaths: Record<string, string> = {

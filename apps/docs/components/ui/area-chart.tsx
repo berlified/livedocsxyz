@@ -106,7 +106,6 @@ function ChartArea({
   variant,
   title,
   value,
-  description,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
@@ -120,7 +119,6 @@ function ChartArea({
   variant?: "panel" | "plain";
   title?: string;
   value?: string;
-  description?: string;
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
@@ -142,7 +140,7 @@ function ChartArea({
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      <ChartHeading title={title} value={value} description={description} />
+      <ChartHeading title={title} value={value} />
       <div className="min-h-0 w-full flex-1">
         <AreaBody
           data={data}

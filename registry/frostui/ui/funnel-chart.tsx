@@ -14,7 +14,6 @@ export type FunnelChartProps = {
   stages: FunnelStage[];
   config?: ChartConfig;
   title?: string;
-  description?: string;
   showConversion?: boolean;
   formatValue?: (value: number) => string;
   onStageClick?: (stage: FunnelStage) => void;
@@ -35,7 +34,6 @@ export function FunnelChart({
   stages,
   config = {},
   title = "Conversion funnel",
-  description,
   showConversion = true,
   formatValue = formatNumber,
   onStageClick,
@@ -120,7 +118,6 @@ export function FunnelChart({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 id={`${id}-title`} className="text-sm font-medium tracking-tight">{title}</h3>
-          {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
         </div>
         {available && showConversion ? <div className="text-right"><p className="font-mono text-xl font-semibold tracking-tight">{conversion(last, first)}</p><p className="text-[10px] text-muted-foreground">Overall conversion</p></div> : null}
       </div>

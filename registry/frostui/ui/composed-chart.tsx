@@ -97,7 +97,6 @@ function ChartComposed({
   height = 288,
   title,
   value,
-  description,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
@@ -109,7 +108,6 @@ function ChartComposed({
   height?: number;
   title?: string;
   value?: string;
-  description?: string;
 }) {
   const childArray = React.Children.toArray(children);
   const areas = childArray.filter(
@@ -141,7 +139,7 @@ function ChartComposed({
       className={cn("w-full", className)}
       style={{ height }}
     >
-      <ChartHeading title={title} value={value} description={description} />
+      <ChartHeading title={title} value={value} />
       <div className="min-h-0 w-full flex-1">
         <ComposedBody
           data={data}

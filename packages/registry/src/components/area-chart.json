@@ -24,11 +24,6 @@
       "description": "Headline metric rendered under the title"
     },
     {
-      "name": "description",
-      "type": "string",
-      "description": "Muted caption under the title"
-    },
-    {
       "name": "data",
       "type": "Record<string, unknown>[]",
       "description": "Series rows"

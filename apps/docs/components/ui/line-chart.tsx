@@ -84,7 +84,6 @@ function ChartLine({
   variant,
   title,
   value,
-  description,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
@@ -98,7 +97,6 @@ function ChartLine({
   variant?: "panel" | "plain";
   title?: string;
   value?: string;
-  description?: string;
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
@@ -120,7 +118,7 @@ function ChartLine({
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      <ChartHeading title={title} value={value} description={description} />
+      <ChartHeading title={title} value={value} />
       <div className="min-h-0 w-full flex-1">
         <LineBody
           data={data}

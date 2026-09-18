@@ -64,7 +64,7 @@ import { Card } from "@/components/ui/card";
 import { TrendCard } from "@/components/ui/trend-card";
 
 import { ComponentPreview } from "@/components/component-preview";
-import { money, shapeValues, sumKey, usePreviewEmotion, useShapedRecords } from "@/components/emotion-data";
+import { emotionConfig, money, shapeValues, sumKey, usePreviewEmotion, useShapedRecords } from "@/components/emotion-data";
 import { sparklineSample } from "@/components/ui/sparkline";
 
 export {
@@ -86,10 +86,10 @@ function PreviewPair({ children }: { children: React.ReactNode }) {
 }
 
 export function ChartPreview() {
-  const { data } = useShapedRecords(monthlyData, ["desktop", "mobile"]);
+  const { data, emotion } = useShapedRecords(monthlyData, ["desktop", "mobile"]);
   const total = Math.round(sumKey(data, "desktop"));
   return (
-    <AreaChart title="Traffic" value={total.toLocaleString("en-US")} description="Sessions · last 30 days" data={data} config={trafficConfig} className="h-[28rem] w-full">
+    <AreaChart title="Traffic" value={total.toLocaleString("en-US")} data={data} config={emotionConfig(trafficConfig, emotion)} className="h-[28rem] w-full">
       <AreaChart.Grid />
       <AreaChart.Tooltip />
       <AreaChart.Legend isClickable />
@@ -152,10 +152,10 @@ export function AreaChartExamples() {
 }
 
 export function LineChartPreview() {
-  const { data } = useShapedRecords(monthlyData, ["desktop", "mobile"]);
+  const { data, emotion } = useShapedRecords(monthlyData, ["desktop", "mobile"]);
   const total = Math.round(sumKey(data, "desktop"));
   return (
-    <LineChart title="Traffic" value={total.toLocaleString("en-US")} description="Sessions · last 30 days" data={data} config={trafficConfig} className="h-[28rem] w-full">
+    <LineChart title="Traffic" value={total.toLocaleString("en-US")} data={data} config={emotionConfig(trafficConfig, emotion)} className="h-[28rem] w-full">
       <LineChart.Grid />
       <LineChart.Tooltip />
       <LineChart.Legend isClickable />
@@ -184,6 +184,12 @@ export function LineChartExamples() {
           <LineChart.Line dataKey="mobile" curveType="linear" />
         </LineChart>
       </ComponentPreview>
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <LineChart data={monthlyData} config={trafficConfig} isLoading className="w-full">
+          <LineChart.Line dataKey="desktop" />
+        </LineChart>
+      </ComponentPreview>
     </section>
   );
 }
@@ -191,15 +197,15 @@ export function LineChartExamples() {
 const barPreviewData = monthlyData.slice(-6);
 
 export function BarChartPreview() {
-  const { data } = useShapedRecords(barPreviewData, ["desktop", "mobile"]);
+  const { data, emotion } = useShapedRecords(barPreviewData, ["desktop", "mobile"]);
   const total = data.reduce((sum, row) => sum + Number(row.desktop ?? 0), 0);
   return (
     <BarChart
       title="Revenue"
       value={`$${(total / 1000).toFixed(1)}k`}
-      description="Last 6 months"
+     
       data={data}
-      config={trafficConfig}
+      config={emotionConfig(trafficConfig, emotion)}
       className="h-[28rem] w-full"
     >
       <BarChart.Grid />
@@ -244,15 +250,21 @@ export function BarChartExamples() {
           <BarChart.Bar dataKey="desktop" variant="gradient" />
         </BarChart>
       </ComponentPreview>
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <BarChart data={monthlyData} config={trafficConfig} isLoading className="w-full">
+          <BarChart.Bar dataKey="desktop" />
+        </BarChart>
+      </ComponentPreview>
     </section>
   );
 }
 
 export function ComposedChartPreview() {
-  const { data } = useShapedRecords(composedDaily, ["daily", "average", "trend"], true);
+  const { data, emotion } = useShapedRecords(composedDaily, ["daily", "average", "trend"], true);
   const total = sumKey(data, "daily");
   return (
-    <ComposedChart title="Daily activity" value={total.toLocaleString("en-US")} description="Sessions · January" data={data} config={composedDailyConfig} xDataKey="day" className="w-full" height={340}>
+    <ComposedChart title="Daily activity" value={total.toLocaleString("en-US")} data={data} config={emotionConfig(composedDailyConfig, emotion)} xDataKey="day" className="w-full" height={340}>
       <ComposedChart.Grid />
       <ComposedChart.XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} ticks={["Jan 1", "Jan 5", "Jan 10", "Jan 15", "Jan 20", "Jan 25", "Jan 30"]} interval="preserveStartEnd" minTickGap={28} />
       <ComposedChart.Tooltip
@@ -282,16 +294,23 @@ export function ComposedChartExamples() {
           <ComposedChart.Bar dataKey="mobile" isClickable />
         </ComposedChart>
       </ComponentPreview>
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <ComposedChart data={monthlyData} config={trafficConfig} isLoading className="w-full">
+          <ComposedChart.Bar dataKey="desktop" />
+          <ComposedChart.Line dataKey="mobile" />
+        </ComposedChart>
+      </ComponentPreview>
     </section>
   );
 }
 
 export function PieChartPreview() {
-  const { data } = useShapedRecords(salesByCategory, ["sales"], true);
+  const { data, emotion } = useShapedRecords(salesByCategory, ["sales"], true);
   return (
     <PieChart
       data={data}
-      config={salesByCategoryConfig}
+      config={emotionConfig(salesByCategoryConfig, emotion)}
       dataKey="sales"
       nameKey="category"
       legendTitle="Sales by Category"
@@ -336,14 +355,28 @@ export function PieChartExamples() {
           <PieChart.Tooltip />
         </PieChart>
       </ComponentPreview>
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <PieChart
+          data={shareData}
+          config={shareConfig}
+          dataKey="visitors"
+          nameKey="browser"
+          innerRadius={64}
+          isLoading
+          className="w-full"
+        >
+          <PieChart.Tooltip />
+        </PieChart>
+      </ComponentPreview>
     </section>
   );
 }
 
 export function RadarChartPreview() {
-  const { data } = useShapedRecords(radarData, ["current", "previous"]);
+  const { data, emotion } = useShapedRecords(radarData, ["current", "previous"]);
   return (
-    <RadarChart data={data} config={radarConfig} className="w-full">
+    <RadarChart data={data} config={emotionConfig(radarConfig, emotion)} className="w-full">
       <RadarChart.Tooltip />
       <RadarChart.Legend isClickable />
       <RadarChart.Radar dataKey="current" isClickable />
@@ -362,14 +395,20 @@ export function RadarChartExamples() {
           <RadarChart.Radar dataKey="current" isGlowing />
         </RadarChart>
       </ComponentPreview>
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <RadarChart data={radarData} config={radarConfig} isLoading className="w-full">
+          <RadarChart.Radar dataKey="current" />
+        </RadarChart>
+      </ComponentPreview>
     </section>
   );
 }
 
 export function RadialChartPreview() {
-  const { data } = useShapedRecords(radialData, ["visitors"], true);
+  const { data, emotion } = useShapedRecords(radialData, ["visitors"], true);
   return (
-    <RadialChart data={data} config={shareConfig} nameKey="browser" className="w-full">
+    <RadialChart data={data} config={emotionConfig(shareConfig, emotion)} nameKey="browser" className="w-full">
       <RadialChart.Tooltip />
       <RadialChart.Legend />
       <RadialChart.RadialBar dataKey="visitors" showBackground isClickable />
@@ -393,17 +432,23 @@ export function RadialChartExamples() {
           <RadialChart.RadialBar dataKey="visitors" showBackground cornerRadius={8} />
         </RadialChart>
       </ComponentPreview>
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <RadialChart data={radialData} config={shareConfig} nameKey="browser" isLoading className="w-full">
+          <RadialChart.RadialBar dataKey="visitors" showBackground />
+        </RadialChart>
+      </ComponentPreview>
     </section>
   );
 }
 
 export function SankeyChartPreview() {
-  const { data: links } = useShapedRecords(sankeyLinks, ["value"], true);
+  const { data: links, emotion } = useShapedRecords(sankeyLinks, ["value"], true);
   return (
     <SankeyChart
       nodes={sankeyNodes}
       links={links}
-      config={sankeyConfig}
+      config={emotionConfig(sankeyConfig, emotion)}
       className="w-full"
     />
   );
@@ -501,12 +546,16 @@ export function SparklineExamples() {
       <ComponentPreview label="Labeled marker" className="p-0">
         <SparklineCalloutExample />
       </ComponentPreview>
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <Sparkline isLoading />
+      </ComponentPreview>
     </section>
   );
 }
 
 export function TrendCardPreview() {
-  const { data } = useShapedRecords(dailyOverlay, ["current", "previous"], true);
+  const { data, emotion } = useShapedRecords(dailyOverlay, ["current", "previous"], true);
   const total = sumKey(data, "current");
   const previous = sumKey(data, "previous");
   const diff = total - previous;
@@ -521,7 +570,7 @@ export function TrendCardPreview() {
         delta={`${diff >= 0 ? "+" : "−"}${money(Math.abs(diff))}`}
         tone={diff >= 0 ? "up" : "down"}
         data={data}
-        config={overlayConfig}
+        config={emotionConfig(overlayConfig, emotion)}
       />
       <TrendCard
         title="Churn"
@@ -530,14 +579,14 @@ export function TrendCardPreview() {
         delta={`${(Number(last?.current ?? 0) - Number(lastPrevious?.previous ?? 0)) >= 0 ? "+" : "−"}${Math.abs(Number(last?.current ?? 0) - Number(lastPrevious?.previous ?? 0)).toFixed(1)}pp`}
         tone={diff >= 0 ? "up" : "down"}
         data={data}
-        config={overlayConfig}
+        config={emotionConfig(overlayConfig, emotion)}
       />
     </PreviewPair>
   );
 }
 
 function TrendChurnExample() {
-  const { data } = useShapedRecords(dailyOverlay, ["current", "previous"], true);
+  const { data, emotion } = useShapedRecords(dailyOverlay, ["current", "previous"], true);
   const last = data[data.length - 1];
   const current = Number(last?.current ?? 0);
   const previous = Number(last?.previous ?? 0);
@@ -559,6 +608,17 @@ function TrendChurnExample() {
 export function TrendCardExamples() {
   return (
     <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <TrendCard
+          className="w-full max-w-sm"
+          title="Gross volume"
+          value="$48,210"
+          data={dailyOverlay}
+          config={overlayConfig}
+          isLoading
+        />
+      </ComponentPreview>
       <h2 className="text-xl font-semibold">Down tone</h2>
       <ComponentPreview label="Churn" className="p-4">
         <TrendChurnExample />
@@ -568,7 +628,7 @@ export function TrendCardExamples() {
 }
 
 export function MetricChartPreview() {
-  const { data } = useShapedRecords(metricSeries, ["period", "today"], true);
+  const { data, emotion } = useShapedRecords(metricSeries, ["period", "today"], true);
   const total = sumKey(data, "period");
   const diff = total - sumKey(data, "today");
   return (
@@ -579,7 +639,7 @@ export function MetricChartPreview() {
       delta={`${diff >= 0 ? "+" : "−"}${Math.abs(diff)}`}
       tone={diff >= 0 ? "up" : "down"}
       data={data}
-      config={metricConfig}
+      config={emotionConfig(metricConfig, emotion)}
       series={[
         { key: "period", label: "Current period" },
         { key: "today", label: "Today" },
@@ -589,7 +649,7 @@ export function MetricChartPreview() {
 }
 
 export function ComparisonChartPreview() {
-  const { data } = useShapedRecords(yearCompare, ["thisYear", "lastYear"], true);
+  const { data, emotion } = useShapedRecords(yearCompare, ["thisYear", "lastYear"], true);
   const total = sumKey(data, "thisYear");
   const previous = sumKey(data, "lastYear");
   const pct = previous === 0 ? 0 : ((total - previous) / Math.abs(previous)) * 100;
@@ -601,30 +661,70 @@ export function ComparisonChartPreview() {
       delta={`${pct >= 0 ? "+" : "−"}${Math.abs(pct).toFixed(1)}%`}
       tone={pct >= 0 ? "up" : "down"}
       data={data}
-      config={yearCompareConfig}
+      config={emotionConfig(yearCompareConfig, emotion)}
     />
   );
 }
 
+export function MetricChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <MetricChart
+          className="w-full"
+          title="Active members"
+          value="272"
+          data={metricSeries}
+          config={metricConfig}
+          series={[{ key: "period", label: "Current period" }]}
+          isLoading
+        />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function ComparisonChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <ComparisonChart
+          className="w-full"
+          title="Revenue"
+          value="$83,151"
+          data={yearCompare}
+          config={yearCompareConfig}
+          isLoading
+        />
+      </ComponentPreview>
+    </section>
+  );
+}
+
 function useShapedMix(items: { key: string; label: string; value: number; percent: number }[]) {
-  const { data } = useShapedRecords(items, ["value"], true);
+  const { data, emotion } = useShapedRecords(items, ["value"], true);
   const total = data.reduce((sum, item) => sum + item.value, 0);
-  return data.map((item) => ({
-    ...item,
-    percent: total > 0 ? Math.round((item.value / total) * 1000) / 10 : 0,
-  }));
+  return {
+    emotion,
+    items: data.map((item) => ({
+      ...item,
+      percent: total > 0 ? Math.round((item.value / total) * 1000) / 10 : 0,
+    })),
+  };
 }
 
 export function BreakdownChartPreview() {
-  const settlements = useShapedMix(paymentMix);
-  const cohorts = useShapedMix(cohortMix);
+  const { items: settlements, emotion: mixEmotion } = useShapedMix(paymentMix);
+  const { items: cohorts } = useShapedMix(cohortMix);
   return (
     <PreviewPair>
-      <BreakdownChart title="Settlements" items={settlements} config={mixConfig} />
+      <BreakdownChart title="Settlements" items={settlements} config={emotionConfig(mixConfig, mixEmotion)} />
       <BreakdownChart
         title="Cohorts"
         items={cohorts}
-        config={mixConfig}
+        config={emotionConfig(mixConfig, mixEmotion)}
         currency={false}
       />
     </PreviewPair>
@@ -632,31 +732,178 @@ export function BreakdownChartPreview() {
 }
 
 export function RangeChartPreview() {
-  const { data } = useShapedRecords(rangeBand, ["low", "high", "value"]);
+  const { data, emotion } = useShapedRecords(rangeBand, ["low", "high", "value"]);
   return (
     <RangeChart
       className="w-full"
       title="Expected vs actual"
       data={data}
-      config={rangeConfig}
+      config={emotionConfig(rangeConfig, emotion)}
     />
   );
 }
 
+export function BreakdownChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <BreakdownChart title="Settlements" items={paymentMix} config={mixConfig} isLoading />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function RangeChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <RangeChart
+          className="w-full"
+          title="Expected vs actual"
+          data={rangeBand}
+          config={rangeConfig}
+          isLoading
+        />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function CountryChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <CountryChart
+          className="w-full"
+          title="Revenue by market"
+          rows={marketRank}
+          config={marketConfig}
+          isLoading
+        />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function RingMetricExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <RingMetric
+          title="Members"
+          centerLabel="Total"
+          data={ringMembers}
+          config={ringConfig}
+          isLoading
+        />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function CashflowChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <CashflowChart
+          className="w-full"
+          title="Cash movement"
+          data={cashflowMonths}
+          config={cashflowConfig}
+          isLoading
+        />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function SpotlightChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <SpotlightChart
+          className="w-full"
+          title="Gross volume"
+          value="$107,843"
+          data={spotlightSeries}
+          config={spotlightConfig}
+          isLoading
+        />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function LaneChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <LaneChart
+          className="w-full"
+          title="Payment outcomes"
+          rows={laneRows}
+          config={laneConfig}
+          isLoading
+        />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function UsageMeterExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <UsageMeter
+          title="Credits remaining"
+          value={500}
+          max={1000}
+          isLoading
+        />
+      </ComponentPreview>
+    </section>
+  );
+}
+
+export function SankeyChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Loading</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <SankeyChart
+          nodes={sankeyNodes}
+          links={sankeyLinks}
+          config={sankeyConfig}
+          className="w-full"
+          isLoading
+        />
+      </ComponentPreview>
+    </section>
+  );
+}
+
 export function CountryChartPreview() {
-  const { data } = useShapedRecords(marketRank, ["current", "previous"], true);
+  const { data, emotion } = useShapedRecords(marketRank, ["current", "previous"], true);
   return (
     <CountryChart
       className="w-full"
       title="Revenue by market"
       rows={data}
-      config={marketConfig}
+      config={emotionConfig(marketConfig, emotion)}
     />
   );
 }
 
 export function RingMetricPreview() {
-  const { data: members } = useShapedRecords(ringMembers, ["value"], true);
+  const { data: members, emotion } = useShapedRecords(ringMembers, ["value"], true);
   const { data: payments } = useShapedRecords(ringPayments, ["value"], true);
   return (
     <PreviewPair>
@@ -664,20 +911,20 @@ export function RingMetricPreview() {
         title="Members"
         centerLabel="Total"
         data={members}
-        config={ringConfig}
+        config={emotionConfig(ringConfig, emotion)}
       />
       <RingMetric
         title="Transactions"
         centerLabel="Volume"
         data={payments}
-        config={ringConfig}
+        config={emotionConfig(ringConfig, emotion)}
       />
     </PreviewPair>
   );
 }
 
 export function CashflowChartPreview() {
-  const { data } = useShapedRecords(cashflowMonths, ["inflow", "outflow"], false, true);
+  const { data, emotion } = useShapedRecords(cashflowMonths, ["inflow", "outflow"], false, true);
   const inflow = sumKey(data, "inflow");
   const outflow = Math.abs(sumKey(data, "outflow"));
   return (
@@ -687,13 +934,13 @@ export function CashflowChartPreview() {
       inflowValue={money(inflow)}
       outflowValue={money(outflow)}
       data={data}
-      config={cashflowConfig}
+      config={emotionConfig(cashflowConfig, emotion)}
     />
   );
 }
 
 export function SpotlightChartPreview() {
-  const { data } = useShapedRecords(spotlightSeries, ["current", "previous"], true);
+  const { data, emotion } = useShapedRecords(spotlightSeries, ["current", "previous"], true);
   const total = sumKey(data, "current");
   const previous = sumKey(data, "previous");
   const pct = previous === 0 ? 0 : ((total - previous) / Math.abs(previous)) * 100;
@@ -705,20 +952,20 @@ export function SpotlightChartPreview() {
       delta={`${pct >= 0 ? "↑" : "↓"} ${Math.abs(pct).toFixed(0)}% vs last month`}
       tone={pct >= 0 ? "up" : "down"}
       data={data}
-      config={spotlightConfig}
+      config={emotionConfig(spotlightConfig, emotion)}
       markerLabel="Peak"
     />
   );
 }
 
 export function LaneChartPreview() {
-  const { data } = useShapedRecords(laneRows, ["value"], true);
+  const { data, emotion } = useShapedRecords(laneRows, ["value"], true);
   return (
     <LaneChart
       className="w-full"
       title="Payment outcomes"
       rows={data}
-      config={laneConfig}
+      config={emotionConfig(laneConfig, emotion)}
     />
   );
 }
@@ -757,15 +1004,15 @@ export const activityConfig = {
 };
 
 export function ActivityChartPreview() {
-  const { data } = useShapedRecords(activitySessions, ["value"], true);
+  const { data, emotion } = useShapedRecords(activitySessions, ["value"], true);
   const total = sumKey(data, "value");
   return (
     <ActivityChart
       title="Sessions"
       value={`${(total / 1000).toFixed(1)}k`}
-      description="Last 30 days"
+     
       data={data}
-      config={activityConfig}
+      config={emotionConfig(activityConfig, emotion)}
       className="w-full"
     />
   );

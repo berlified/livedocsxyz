@@ -27,7 +27,6 @@ const defaultConfig = { value: { label: "Value", color: "var(--chart-2)" } } sat
 function ActivityChartRoot({
   title,
   value,
-  description,
   data,
   config = defaultConfig,
   className,
@@ -37,7 +36,6 @@ function ActivityChartRoot({
 }: {
   title: string;
   value: string;
-  description?: string;
   data: ActivityDatum[];
   config?: ChartConfig;
   className?: string;
@@ -60,7 +58,7 @@ function ActivityChartRoot({
         variant="plain"
         className="w-full justify-start"
       >
-        <ChartHeading title={title} value={value} description={description} />
+        <ChartHeading title={title} value={value} />
         <div className="mt-3 h-44 w-full">
           <ResponsiveContainer width="100%" height="100%">
             <RechartsBarChart data={data} barCategoryGap="28%" margin={{ top: 4, right: 0, left: 0, bottom: 0 }}>

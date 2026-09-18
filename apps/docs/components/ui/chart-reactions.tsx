@@ -236,7 +236,7 @@ function ReactionMedia({ asset, emotion, animationsEnabled }: { asset?: ChartRea
 export function ChartReaction({ isLoading, reaction, className }: { isLoading?: boolean; reaction?: ChartReactionOptions; loadingVariant?: ChartReactionOptions["loadingVariant"]; className?: string }) {
   const { emotion, asset, animationsEnabled } = useChartReaction({ isLoading, reaction });
   const scoped = useChartReactionScope();
-  if (!emotion || scoped || emotion === "loading") return null;
+  if (!emotion || scoped || emotion === "loading" || (!asset?.src && !asset?.poster)) return null;
   return <div role="status" aria-live="polite" aria-atomic="true" data-chart-reaction={emotion} className={["flex w-fit items-center justify-center gap-2 rounded-md bg-card p-2 text-xs text-muted-foreground", className].filter(Boolean).join(" ")}>
     <ReactionMedia key={`${emotion}:${asset?.src}:${asset?.poster}`} asset={asset} emotion={emotion} animationsEnabled={animationsEnabled} />
   </div>;

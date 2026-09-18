@@ -11,7 +11,6 @@ export type CandlestickDatum = { label: string; open: number; high: number; low:
 export type CandlestickChartProps = {
   data: CandlestickDatum[];
   title?: string;
-  description?: string;
   config?: ChartConfig;
   showVolume?: boolean;
   formatValue?: (value: number) => string;
@@ -28,7 +27,7 @@ const formatNumber = (value: number) => value.toLocaleString("en-US", { maximumF
 const validCandle = (row: CandlestickDatum) => [row.open, row.high, row.low, row.close].every(Number.isFinite) && row.low <= Math.min(row.open, row.close) && row.high >= Math.max(row.open, row.close);
 const validVolume = (value: number | undefined): value is number => value !== undefined && Number.isFinite(value) && value >= 0;
 
-export function CandlestickChart({ data, title = "Price action", description, config = defaultConfig, showVolume = true, formatValue = formatNumber, formatVolume = formatNumber, onCandleClick, isLoading, reaction, emptyLabel = "No valid OHLC data available", className }: CandlestickChartProps) {
+export function CandlestickChart({ data, title = "Price action", config = defaultConfig, showVolume = true, formatValue = formatNumber, formatVolume = formatNumber, onCandleClick, isLoading, reaction, emptyLabel = "No valid OHLC data available", className }: CandlestickChartProps) {
   const id = React.useId();
   const plot = React.useRef<SVGSVGElement>(null);
   const [cursor, setCursor] = React.useState(0);
@@ -89,7 +88,6 @@ export function CandlestickChart({ data, title = "Price action", description, co
     <Card className={cn("min-w-0 w-full p-5", className)} role="region" aria-label={title} aria-busy={isLoading || settings.isLoading}>
       <ChartSkeleton isLoading={isLoading}>
       <h3 className="text-[15px] font-medium tracking-tight">{title}</h3>
-      {description ? <p className="mt-1 text-xs text-muted-foreground">{description}</p> : null}
       {validRows.length ? <p className="mt-1 tabular-nums text-4xl font-medium tracking-tight">{formatValue(validRows[validRows.length - 1]!.close)}</p> : null}
       <ChartContainer config={{ ...defaultConfig, ...config }} data={rows} variant="plain" isLoading={isLoading} loadingVariant="candlestick" reaction={reaction} className="mt-5 min-h-64">
         {!validRows.length ? <p role="status" className="flex min-h-64 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</p> : (

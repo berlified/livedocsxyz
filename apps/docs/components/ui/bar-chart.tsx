@@ -91,7 +91,6 @@ function ChartBar({
   variant,
   title,
   value,
-  description,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
@@ -107,7 +106,6 @@ function ChartBar({
   variant?: "panel" | "plain";
   title?: string;
   value?: string;
-  description?: string;
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
@@ -129,7 +127,7 @@ function ChartBar({
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      <ChartHeading title={title} value={value} description={description} />
+      <ChartHeading title={title} value={value} />
       <div className="min-h-0 w-full flex-1">
         <BarBody
           data={data}
