@@ -3,6 +3,7 @@
 import * as React from "react";
 
 import { ComponentPreview } from "@/components/component-preview";
+import { useShapedRecords } from "@/components/emotion-data";
 import { Button } from "@/components/ui/button";
 import { CandlestickChart, type CandlestickDatum } from "@/components/ui/candlestick-chart";
 import { ChartReactionsProvider, type ChartEmotion } from "@/components/ui/chart-reactions";
@@ -34,11 +35,13 @@ export const priceSessions: CandlestickDatum[] = [
 const currency = (value: number) => value.toLocaleString("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 });
 
 export function WaterfallChartPreview() {
-  return <WaterfallChart title="What moved revenue" description="Monthly recurring revenue · September" data={revenueBridge} formatValue={currency} />;
+  const { data } = useShapedRecords(revenueBridge, ["value"], false, true);
+  return <WaterfallChart title="What moved revenue" description="Monthly recurring revenue · September" data={data} formatValue={currency} />;
 }
 
 export function CandlestickChartPreview() {
-  return <CandlestickChart title="Daily price range" description="Illustrative sessions · OHLC with traded volume" data={priceSessions} formatValue={currency} />;
+  const { data } = useShapedRecords(priceSessions, ["open", "high", "low", "close", "volume"], false, true);
+  return <CandlestickChart title="Daily price range" description="Illustrative sessions · OHLC with traded volume" data={data} formatValue={currency} />;
 }
 
 export function WaterfallChartExamples() {

@@ -48,6 +48,11 @@
       "name": "reaction",
       "type": "ChartReactionOptions",
       "description": "Optional explicit emotion or metric comparison"
+    },
+    {
+      "name": "bias",
+      "type": "number",
+      "description": "Percentage-point shift applied to 24h changes"
     }
   ],
   "ai": {

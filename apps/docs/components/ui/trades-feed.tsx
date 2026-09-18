@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { Card } from "@/components/ui/card";
-import { ChartSkeleton } from "@/components/ui/chart-reactions";
+import { ChartReaction, ChartSkeleton } from "@/components/ui/chart-reactions";
 import { formatPrice, mulberry32, type ChartReactionOptions } from "@/components/ui/crypto-feed";
 import { cn } from "@/lib/utils";
 
@@ -75,7 +75,7 @@ export function TradesFeed({
         <style>{`@keyframes trade-in { from { background-color: var(--accent); } to { background-color: transparent; } }`}</style>
         <div className="flex items-center justify-between gap-2">
           <p className="truncate text-[15px] font-medium tracking-tight">Latest trades</p>
-          <p className="font-mono text-[11px] text-muted-foreground">{symbol}</p>
+          {!isLoading ? <ChartReaction reaction={reaction} /> : <p className="font-mono text-[11px] text-muted-foreground">{symbol}</p>}
         </div>
         <div className="mt-2 grid grid-cols-[1fr_1fr_1fr] px-1 font-mono text-[10px] uppercase tracking-wide text-muted-foreground" aria-hidden>
           <span>Price</span><span className="text-right">Amount</span><span className="text-right">Time</span>

@@ -45,6 +45,8 @@ export function LivePriceChart({
   basePrice = 97500,
   seed = 11,
   tickMs = 1200,
+  drift,
+  vol,
   showMA = true,
   showVolume = true,
   className,
@@ -55,6 +57,8 @@ export function LivePriceChart({
   basePrice?: number;
   seed?: number;
   tickMs?: number;
+  drift?: number;
+  vol?: number;
   showMA?: boolean;
   showVolume?: boolean;
   className?: string;
@@ -62,7 +66,7 @@ export function LivePriceChart({
   reaction?: ChartReactionOptions;
 }) {
   const [frame, setFrame] = React.useState<(typeof timeframes)[number]>(timeframes[1]);
-  const { ticks, last, change, streaming, setStreaming } = useLiveTicks({ seed, points: frame.points, start: basePrice, drift: frame.drift, vol: frame.vol, intervalMs: tickMs });
+  const { ticks, last, change, streaming, setStreaming } = useLiveTicks({ seed, points: frame.points, start: basePrice, drift: drift ?? frame.drift, vol: vol ?? frame.vol, intervalMs: tickMs });
   const up = change >= 0;
   const rows = React.useMemo(() => {
     const prices = ticks.map((tick) => tick.price);

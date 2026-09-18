@@ -1,5 +1,7 @@
 "use client";
 
+import * as React from "react";
+
 import { AreaChart } from "@/components/ui/area-chart";
 import { BarChart } from "@/components/ui/bar-chart";
 import { BreakdownChart } from "@/components/ui/breakdown-chart";
@@ -62,6 +64,8 @@ import { Card } from "@/components/ui/card";
 import { TrendCard } from "@/components/ui/trend-card";
 
 import { ComponentPreview } from "@/components/component-preview";
+import { money, shapeValues, sumKey, usePreviewEmotion, useShapedRecords } from "@/components/emotion-data";
+import { sparklineSample } from "@/components/ui/sparkline";
 
 export {
   WaterfallChartPreview,
@@ -82,8 +86,10 @@ function PreviewPair({ children }: { children: React.ReactNode }) {
 }
 
 export function ChartPreview() {
+  const { data } = useShapedRecords(monthlyData, ["desktop", "mobile"]);
+  const total = Math.round(sumKey(data, "desktop"));
   return (
-    <AreaChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig} className="w-full">
+    <AreaChart title="Traffic" value={total.toLocaleString("en-US")} description="Sessions · last 30 days" data={data} config={trafficConfig} className="h-[28rem] w-full">
       <AreaChart.Grid />
       <AreaChart.Tooltip />
       <AreaChart.Legend isClickable />
@@ -146,8 +152,10 @@ export function AreaChartExamples() {
 }
 
 export function LineChartPreview() {
+  const { data } = useShapedRecords(monthlyData, ["desktop", "mobile"]);
+  const total = Math.round(sumKey(data, "desktop"));
   return (
-    <LineChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig} className="w-full">
+    <LineChart title="Traffic" value={total.toLocaleString("en-US")} description="Sessions · last 30 days" data={data} config={trafficConfig} className="h-[28rem] w-full">
       <LineChart.Grid />
       <LineChart.Tooltip />
       <LineChart.Legend isClickable />
@@ -181,17 +189,18 @@ export function LineChartExamples() {
 }
 
 const barPreviewData = monthlyData.slice(-6);
-const barPreviewTotal = barPreviewData.reduce((sum, row) => sum + Number(row.desktop ?? 0), 0);
 
 export function BarChartPreview() {
+  const { data } = useShapedRecords(barPreviewData, ["desktop", "mobile"]);
+  const total = data.reduce((sum, row) => sum + Number(row.desktop ?? 0), 0);
   return (
     <BarChart
       title="Revenue"
-      value={`$${(barPreviewTotal / 1000).toFixed(1)}k`}
+      value={`$${(total / 1000).toFixed(1)}k`}
       description="Last 6 months"
-      data={barPreviewData}
+      data={data}
       config={trafficConfig}
-      className="w-full"
+      className="h-[28rem] w-full"
     >
       <BarChart.Grid />
       <BarChart.Tooltip />
@@ -240,8 +249,10 @@ export function BarChartExamples() {
 }
 
 export function ComposedChartPreview() {
+  const { data } = useShapedRecords(composedDaily, ["daily", "average", "trend"], true);
+  const total = sumKey(data, "daily");
   return (
-    <ComposedChart title="Daily activity" value="48,210" description="Sessions · January" data={composedDaily} config={composedDailyConfig} xDataKey="day" className="w-full" height={340}>
+    <ComposedChart title="Daily activity" value={total.toLocaleString("en-US")} description="Sessions · January" data={data} config={composedDailyConfig} xDataKey="day" className="w-full" height={340}>
       <ComposedChart.Grid />
       <ComposedChart.XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} ticks={["Jan 1", "Jan 5", "Jan 10", "Jan 15", "Jan 20", "Jan 25", "Jan 30"]} interval="preserveStartEnd" minTickGap={28} />
       <ComposedChart.Tooltip
@@ -276,9 +287,10 @@ export function ComposedChartExamples() {
 }
 
 export function PieChartPreview() {
+  const { data } = useShapedRecords(salesByCategory, ["sales"], true);
   return (
     <PieChart
-      data={salesByCategory}
+      data={data}
       config={salesByCategoryConfig}
       dataKey="sales"
       nameKey="category"
@@ -329,8 +341,9 @@ export function PieChartExamples() {
 }
 
 export function RadarChartPreview() {
+  const { data } = useShapedRecords(radarData, ["current", "previous"]);
   return (
-    <RadarChart data={radarData} config={radarConfig} className="w-full">
+    <RadarChart data={data} config={radarConfig} className="w-full">
       <RadarChart.Tooltip />
       <RadarChart.Legend isClickable />
       <RadarChart.Radar dataKey="current" isClickable />
@@ -354,8 +367,9 @@ export function RadarChartExamples() {
 }
 
 export function RadialChartPreview() {
+  const { data } = useShapedRecords(radialData, ["visitors"], true);
   return (
-    <RadialChart data={radialData} config={shareConfig} nameKey="browser" className="w-full">
+    <RadialChart data={data} config={shareConfig} nameKey="browser" className="w-full">
       <RadialChart.Tooltip />
       <RadialChart.Legend />
       <RadialChart.RadialBar dataKey="visitors" showBackground isClickable />
@@ -384,20 +398,87 @@ export function RadialChartExamples() {
 }
 
 export function SankeyChartPreview() {
+  const { data: links } = useShapedRecords(sankeyLinks, ["value"], true);
   return (
     <SankeyChart
       nodes={sankeyNodes}
-      links={sankeyLinks}
+      links={links}
       config={sankeyConfig}
       className="w-full"
     />
   );
 }
 
+const sparkEmotionBase = Array.from({ length: 40 }, (_, index) => Math.round((50 + Math.sin(index / 5) * 12 + index * 0.4) * 1000) / 1000);
+
 export function SparklinePreview() {
+  const emotion = usePreviewEmotion();
+  const data = React.useMemo(() => shapeValues(sparkEmotionBase, emotion), [emotion]);
   return (
     <Sparkline
       className="w-full"
+      data={data}
+      tone={emotion === "sad" || emotion === "disappointed" ? "down" : "up"}
+      format={(value) =>
+        value.toLocaleString("en-US", { style: "currency", currency: "USD" })
+      }
+    />
+  );
+}
+
+function useShapedNumbers(values: number[]) {
+  const emotion = usePreviewEmotion();
+  return React.useMemo(() => shapeValues(values, emotion), [values, emotion]);
+}
+
+const sparkInlineBase = sparklineSample.slice(0, 20);
+
+function SparklineInlineExample() {
+  const data = useShapedNumbers(sparkInlineBase);
+  const last = data[data.length - 1] ?? 0;
+  return (
+    <div className="flex w-full items-center justify-between gap-4">
+      <div>
+        <p className="text-sm text-muted-foreground">Available balance</p>
+        <p className="font-mono text-lg font-semibold">{money(last)}</p>
+      </div>
+      <Sparkline
+        className="max-w-40 bg-transparent"
+        size="sm"
+        data={data}
+        tone="up"
+        interactive={false}
+        showValue={false}
+      />
+    </div>
+  );
+}
+
+function SparklineCardExample() {
+  const data = useShapedNumbers(sparklineSample);
+  const last = data[data.length - 1] ?? 0;
+  return (
+    <Card className="w-full max-w-sm p-5 sm:p-6">
+      <p className="text-sm text-muted-foreground">Volume</p>
+      <p className="mt-1 font-mono text-2xl font-semibold tracking-tight">{money(last)}</p>
+      <Sparkline
+        className="mt-3 bg-transparent"
+        size="md"
+        data={data}
+        tone="up"
+        showValue
+      />
+    </Card>
+  );
+}
+
+function SparklineCalloutExample() {
+  const data = useShapedNumbers(sparklineSample);
+  return (
+    <Sparkline
+      data={data}
+      markerLabel="Peak balance"
+      markerIndex={31}
       tone="up"
       format={(value) =>
         value.toLocaleString("en-US", { style: "currency", currency: "USD" })
@@ -411,68 +492,67 @@ export function SparklineExamples() {
     <section className="space-y-6">
       <h2 className="text-xl font-semibold">Sizes</h2>
       <ComponentPreview label="Inline" className="p-4">
-        <div className="flex w-full items-center justify-between gap-4">
-          <div>
-            <p className="text-sm text-muted-foreground">Available balance</p>
-            <p className="font-mono text-lg font-semibold">$12,480</p>
-          </div>
-          <Sparkline
-            className="max-w-40 bg-transparent"
-            size="sm"
-            tone="up"
-            interactive={false}
-            showValue={false}
-          />
-        </div>
+        <SparklineInlineExample />
       </ComponentPreview>
       <ComponentPreview label="Card" className="p-4">
-        <Card className="w-full max-w-sm p-5 sm:p-6">
-          <p className="text-sm text-muted-foreground">Volume</p>
-          <p className="mt-1 font-mono text-2xl font-semibold tracking-tight">$48,210</p>
-          <Sparkline
-            className="mt-3 bg-transparent"
-            size="md"
-            tone="up"
-            showValue
-          />
-        </Card>
+        <SparklineCardExample />
       </ComponentPreview>
       <h2 className="text-xl font-semibold">Callout</h2>
       <ComponentPreview label="Labeled marker" className="p-0">
-        <Sparkline
-          markerLabel="Peak balance"
-          markerIndex={31}
-          tone="up"
-          format={(value) =>
-            value.toLocaleString("en-US", { style: "currency", currency: "USD" })
-          }
-        />
+        <SparklineCalloutExample />
       </ComponentPreview>
     </section>
   );
 }
 
 export function TrendCardPreview() {
+  const { data } = useShapedRecords(dailyOverlay, ["current", "previous"], true);
+  const total = sumKey(data, "current");
+  const previous = sumKey(data, "previous");
+  const diff = total - previous;
+  const last = data[data.length - 1];
+  const lastPrevious = data[data.length - 1];
   return (
     <PreviewPair>
       <TrendCard
         title="Gross volume"
-        value="$48,210"
-        baseline="$11,640"
-        delta="+$940"
-        data={dailyOverlay}
+        value={money(total)}
+        baseline={money(previous)}
+        delta={`${diff >= 0 ? "+" : "−"}${money(Math.abs(diff))}`}
+        tone={diff >= 0 ? "up" : "down"}
+        data={data}
         config={overlayConfig}
       />
       <TrendCard
         title="Churn"
-        value="3.8%"
-        baseline="6.1%"
-        delta="-0.4%"
-        tone="down"
-        data={dailyOverlay}
+        value={`${Number(last?.current ?? 0).toFixed(1)}%`}
+        baseline={`${Number(lastPrevious?.previous ?? 0).toFixed(1)}%`}
+        delta={`${(Number(last?.current ?? 0) - Number(lastPrevious?.previous ?? 0)) >= 0 ? "+" : "−"}${Math.abs(Number(last?.current ?? 0) - Number(lastPrevious?.previous ?? 0)).toFixed(1)}pp`}
+        tone={diff >= 0 ? "up" : "down"}
+        data={data}
         config={overlayConfig}
       />
     </PreviewPair>
+  );
+}
+
+function TrendChurnExample() {
+  const { data } = useShapedRecords(dailyOverlay, ["current", "previous"], true);
+  const last = data[data.length - 1];
+  const current = Number(last?.current ?? 0);
+  const previous = Number(last?.previous ?? 0);
+  const diff = current - previous;
+  return (
+    <TrendCard
+      className="w-full max-w-sm"
+      title="Churn"
+      value={`${current.toFixed(1)}%`}
+      baseline={`${previous.toFixed(1)}%`}
+      delta={`${diff >= 0 ? "+" : "−"}${Math.abs(diff).toFixed(1)}pp`}
+      tone={diff >= 0 ? "up" : "down"}
+      data={data}
+      config={overlayConfig}
+    />
   );
 }
 
@@ -481,29 +561,24 @@ export function TrendCardExamples() {
     <section className="space-y-6">
       <h2 className="text-xl font-semibold">Down tone</h2>
       <ComponentPreview label="Churn" className="p-4">
-        <TrendCard
-          className="w-full max-w-sm"
-          title="Churn"
-          value="3.8%"
-          baseline="6.1%"
-          delta="-0.4%"
-          tone="down"
-          data={dailyOverlay}
-          config={overlayConfig}
-        />
+        <TrendChurnExample />
       </ComponentPreview>
     </section>
   );
 }
 
 export function MetricChartPreview() {
+  const { data } = useShapedRecords(metricSeries, ["period", "today"], true);
+  const total = sumKey(data, "period");
+  const diff = total - sumKey(data, "today");
   return (
     <MetricChart
       className="w-full"
       title="Active members"
-      value="272"
-      delta="+24"
-      data={metricSeries}
+      value={String(total)}
+      delta={`${diff >= 0 ? "+" : "−"}${Math.abs(diff)}`}
+      tone={diff >= 0 ? "up" : "down"}
+      data={data}
       config={metricConfig}
       series={[
         { key: "period", label: "Current period" },
@@ -514,25 +589,41 @@ export function MetricChartPreview() {
 }
 
 export function ComparisonChartPreview() {
+  const { data } = useShapedRecords(yearCompare, ["thisYear", "lastYear"], true);
+  const total = sumKey(data, "thisYear");
+  const previous = sumKey(data, "lastYear");
+  const pct = previous === 0 ? 0 : ((total - previous) / Math.abs(previous)) * 100;
   return (
     <ComparisonChart
       className="w-full"
       title="Revenue"
-      value="$83,151"
-      delta="+12.8%"
-      data={yearCompare}
+      value={money(total)}
+      delta={`${pct >= 0 ? "+" : "−"}${Math.abs(pct).toFixed(1)}%`}
+      tone={pct >= 0 ? "up" : "down"}
+      data={data}
       config={yearCompareConfig}
     />
   );
 }
 
+function useShapedMix(items: { key: string; label: string; value: number; percent: number }[]) {
+  const { data } = useShapedRecords(items, ["value"], true);
+  const total = data.reduce((sum, item) => sum + item.value, 0);
+  return data.map((item) => ({
+    ...item,
+    percent: total > 0 ? Math.round((item.value / total) * 1000) / 10 : 0,
+  }));
+}
+
 export function BreakdownChartPreview() {
+  const settlements = useShapedMix(paymentMix);
+  const cohorts = useShapedMix(cohortMix);
   return (
     <PreviewPair>
-      <BreakdownChart title="Settlements" items={paymentMix} config={mixConfig} />
+      <BreakdownChart title="Settlements" items={settlements} config={mixConfig} />
       <BreakdownChart
         title="Cohorts"
-        items={cohortMix}
+        items={cohorts}
         config={mixConfig}
         currency={false}
       />
@@ -541,40 +632,44 @@ export function BreakdownChartPreview() {
 }
 
 export function RangeChartPreview() {
+  const { data } = useShapedRecords(rangeBand, ["low", "high", "value"]);
   return (
     <RangeChart
       className="w-full"
       title="Expected vs actual"
-      data={rangeBand}
+      data={data}
       config={rangeConfig}
     />
   );
 }
 
 export function CountryChartPreview() {
+  const { data } = useShapedRecords(marketRank, ["current", "previous"], true);
   return (
     <CountryChart
       className="w-full"
       title="Revenue by market"
-      rows={marketRank}
+      rows={data}
       config={marketConfig}
     />
   );
 }
 
 export function RingMetricPreview() {
+  const { data: members } = useShapedRecords(ringMembers, ["value"], true);
+  const { data: payments } = useShapedRecords(ringPayments, ["value"], true);
   return (
     <PreviewPair>
       <RingMetric
         title="Members"
         centerLabel="Total"
-        data={ringMembers}
+        data={members}
         config={ringConfig}
       />
       <RingMetric
         title="Transactions"
         centerLabel="Volume"
-        data={ringPayments}
+        data={payments}
         config={ringConfig}
       />
     </PreviewPair>
@@ -582,26 +677,34 @@ export function RingMetricPreview() {
 }
 
 export function CashflowChartPreview() {
+  const { data } = useShapedRecords(cashflowMonths, ["inflow", "outflow"], false, true);
+  const inflow = sumKey(data, "inflow");
+  const outflow = Math.abs(sumKey(data, "outflow"));
   return (
     <CashflowChart
       className="w-full"
       title="Cash movement"
-      inflowValue="$967,830"
-      outflowValue="$351,420"
-      data={cashflowMonths}
+      inflowValue={money(inflow)}
+      outflowValue={money(outflow)}
+      data={data}
       config={cashflowConfig}
     />
   );
 }
 
 export function SpotlightChartPreview() {
+  const { data } = useShapedRecords(spotlightSeries, ["current", "previous"], true);
+  const total = sumKey(data, "current");
+  const previous = sumKey(data, "previous");
+  const pct = previous === 0 ? 0 : ((total - previous) / Math.abs(previous)) * 100;
   return (
     <SpotlightChart
       className="w-full"
       title="Gross volume"
-      value="$107,843"
-      delta="↑ 88% vs last month"
-      data={spotlightSeries}
+      value={money(total)}
+      delta={`${pct >= 0 ? "↑" : "↓"} ${Math.abs(pct).toFixed(0)}% vs last month`}
+      tone={pct >= 0 ? "up" : "down"}
+      data={data}
       config={spotlightConfig}
       markerLabel="Peak"
     />
@@ -609,29 +712,33 @@ export function SpotlightChartPreview() {
 }
 
 export function LaneChartPreview() {
+  const { data } = useShapedRecords(laneRows, ["value"], true);
   return (
     <LaneChart
       className="w-full"
       title="Payment outcomes"
-      rows={laneRows}
+      rows={data}
       config={laneConfig}
     />
   );
 }
 
 export function UsageMeterPreview() {
+  const emotion = usePreviewEmotion();
+  const credits = React.useMemo(() => shapeValues([500], emotion, true)[0] ?? 500, [emotion]);
+  const reserve = React.useMemo(() => shapeValues([186], emotion, true)[0] ?? 186, [emotion]);
   return (
     <PreviewPair>
       <UsageMeter
         title="Credits remaining"
-        value={500}
+        value={credits}
         max={1000}
         remainingLabel="of $1,000 this cycle"
         resetLabel="Resets Jul 1"
       />
       <UsageMeter
         title="Payout reserve"
-        value={186}
+        value={reserve}
         max={800}
         remainingLabel="of $800 held"
         resetLabel="Clears on payout"
@@ -650,12 +757,14 @@ export const activityConfig = {
 };
 
 export function ActivityChartPreview() {
+  const { data } = useShapedRecords(activitySessions, ["value"], true);
+  const total = sumKey(data, "value");
   return (
     <ActivityChart
       title="Sessions"
-      value="48.2k"
+      value={`${(total / 1000).toFixed(1)}k`}
       description="Last 30 days"
-      data={activitySessions}
+      data={data}
       config={activityConfig}
       className="w-full"
     />

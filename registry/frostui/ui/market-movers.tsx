@@ -29,12 +29,14 @@ function TokenSpark({ seed, up }: { seed: number; up: boolean }) {
 export function MarketMovers({
   title = "Market movers",
   tickMs = 2000,
+  bias = 0,
   className,
   isLoading,
   reaction,
 }: {
   title?: string;
   tickMs?: number;
+  bias?: number;
   className?: string;
   isLoading?: boolean;
   reaction?: ChartReactionOptions;
@@ -52,12 +54,12 @@ export function MarketMovers({
 
   const rows = React.useMemo(() => {
     return tokens.map((token, index) => {
-      const wobble = Math.sin(nonce * 0.7 + index * 1.7) * 0.35;
-      const change = token.change24h + wobble;
-      return { ...token, change, price: token.price * (1 + wobble / 100) };
+      const wobble = Math.round(Math.sin(nonce * 0.7 + index * 1.7) * 3500) / 10000;
+      const change = token.change24h + wobble + bias;
+      return { ...token, change, price: token.price * (1 + (wobble + bias) / 100) };
     }).filter((token) => (tab === "gainers" ? token.change >= 0 : token.change < 0))
       .sort((a, b) => (tab === "gainers" ? b.change - a.change : a.change - b.change));
-  }, [tab, nonce]);
+  }, [tab, nonce, bias]);
 
   void reaction;
 
@@ -106,7 +108,7 @@ export function MarketMovers({
               </li>
             );
           })}
-          {!rows.length ? <li className="py-6 text-center text-sm text-muted-foreground">No losers right now. Bull market.</li> : null}
+          {!rows.length ? <li className="py-6 text-center text-sm text-muted-foreground">{tab === "gainers" ? "No gainers right now." : "No losers right now. Bull market."}</li> : null}
         </ul>
       </ChartSkeleton>
     </Card>

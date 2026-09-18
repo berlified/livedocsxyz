@@ -1,6 +1,7 @@
 "use client";
 
 import { ComponentPreview } from "@/components/component-preview";
+import { feedFor, moverShift, usePreviewEmotion, useShapedRecords } from "@/components/emotion-data";
 import { FunnelChart } from "@/components/ui/funnel-chart";
 import { HeatmapChart } from "@/components/ui/heatmap-chart";
 import { ScatterChart } from "@/components/ui/scatter-chart";
@@ -70,35 +71,38 @@ export const scatterConfig = {
 };
 
 export function FunnelChartPreview() {
+  const { data } = useShapedRecords(funnelStages, ["value"], true);
   return (
     <FunnelChart
       className="w-full"
       title="Acquisition funnel"
       description="Visitors to closed deals"
       config={funnelConfig}
-      stages={funnelStages}
+      stages={data}
     />
   );
 }
 
 export function HeatmapChartPreview() {
+  const { data } = useShapedRecords(heatmapCells, ["value"], true);
   return (
     <HeatmapChart
       title="Contributions"
       description="A year of activity · Oct 2023 – Sep 2024"
       layout="calendar"
-      data={heatmapCells}
+      data={data}
       config={heatmapConfig}
     />
   );
 }
 
 export function ScatterChartPreview() {
+  const { data } = useShapedRecords(scatterCohorts, ["y"]);
   return (
     <ScatterChart
       title="Spend vs retention"
       description="Weekly cohort performance"
-      data={scatterCohorts}
+      data={data}
       config={scatterConfig}
       xLabel="Spend ($)"
       yLabel="Retention (%)"
@@ -217,7 +221,9 @@ export function ScatterChartExamples() {
 }
 
 export function LivePriceChartPreview() {
-  return <LivePriceChart symbol="BTC/USDT" basePrice={97500} className="w-full" />;
+  const emotion = usePreviewEmotion();
+  const feed = feedFor(emotion);
+  return <LivePriceChart symbol="BTC/USDT" basePrice={97500} seed={feed.seed} drift={feed.drift} vol={feed.vol} tickMs={1200} className="w-full" />;
 }
 
 export function OrderBookPreview() {
@@ -233,7 +239,8 @@ export function TradesFeedPreview() {
 }
 
 export function MarketMoversPreview() {
-  return <MarketMovers className="w-full" />;
+  const emotion = usePreviewEmotion();
+  return <MarketMovers bias={moverShift(emotion)} className="w-full" />;
 }
 
 export function LivePriceChartExamples() {

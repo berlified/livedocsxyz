@@ -70,6 +70,16 @@
       "name": "reaction",
       "type": "ChartReactionOptions",
       "description": "Optional explicit emotion or metric comparison"
+    },
+    {
+      "name": "drift",
+      "type": "number",
+      "description": "Per-tick drift override for the simulated feed"
+    },
+    {
+      "name": "vol",
+      "type": "number",
+      "description": "Per-tick volatility override for the simulated feed"
     }
   ],
   "ai": {

@@ -164,6 +164,13 @@ export function ChartSkeleton({ children, isLoading = false, className }: { chil
   const ref = React.useRef<HTMLDivElement>(null);
   const labelRef = React.useRef<HTMLSpanElement>(null);
   const boxes = useLoadingTextPlaceholders(ref, owner);
+  const [mediaFailed, setMediaFailed] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => { setMounted(true); }, []);
+  const loadingAsset = { ...settings.assets?.loading, ...settings.reaction?.assets?.loading };
+  const sadLoading = settings.reaction?.emotion === "sad";
+  const loadingSrc = !animate || !sadLoading ? undefined : !mediaFailed && loadingAsset.src?.trim() ? loadingAsset.src.trim() : undefined;
+  const loadingPoster = !animate || !sadLoading || loadingSrc ? undefined : loadingAsset.poster?.trim() || undefined;
   React.useEffect(() => {
     if (!animate) return;
     const animation = labelRef.current?.animate?.(
@@ -184,6 +191,16 @@ export function ChartSkeleton({ children, isLoading = false, className }: { chil
           maskImage: "linear-gradient(90deg, rgb(0 0 0 / 30%) 0%, rgb(0 0 0 / 30%) 35%, black 50%, rgb(0 0 0 / 30%) 65%, rgb(0 0 0 / 30%) 100%)",
           maskSize: "250% 100%", maskPosition: "50% 0%",
         } : undefined}>{children}</div>
+        {owner && mounted && (loadingSrc || loadingPoster) ? (
+          <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[1] overflow-hidden rounded-lg">
+            <img
+              src={loadingSrc ?? loadingPoster}
+              alt=""
+              className="h-full w-full object-cover opacity-75"
+              onError={() => setMediaFailed(true)}
+            />
+          </div>
+        ) : null}
         {owner ? <style>{`[data-chart-loading-text="true"],[data-chart-loading-text="true"] *{-webkit-text-fill-color:transparent!important;text-shadow:none!important}[data-chart-loading-text="true"] :is(text,tspan,textPath){fill:transparent!important;stroke:transparent!important}`}</style> : null}
         {owner && boxes.length ? (
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[2] overflow-hidden">
@@ -214,12 +231,12 @@ function ReactionMedia({ asset, emotion, animationsEnabled }: { asset?: ChartRea
   const source = animationsEnabled && asset?.src?.trim() && !failed.includes(asset.src.trim()) ? asset.src.trim() : staticPoster;
   const src = source && !failed.includes(source) ? source : undefined;
   const alt = asset?.alt?.trim() || labels[emotion];
-  return <>{src ? <img src={src} alt={alt} width={80} height={64} className="max-h-16 max-w-20 rounded-md object-contain" onError={() => setFailed(current => [...current, src])} /> : null}<span>{src ? labels[emotion] : alt}</span></>;
+  return <>{src ? <img src={src} alt={alt} width={160} height={144} className="max-h-36 max-w-40 rounded-md object-contain" onError={() => setFailed(current => [...current, src])} /> : null}<span>{src ? labels[emotion] : alt}</span></>;
 }
 export function ChartReaction({ isLoading, reaction, className }: { isLoading?: boolean; reaction?: ChartReactionOptions; loadingVariant?: ChartReactionOptions["loadingVariant"]; className?: string }) {
   const { emotion, asset, animationsEnabled } = useChartReaction({ isLoading, reaction });
   const scoped = useChartReactionScope();
-  if (!emotion || scoped || (emotion === "loading" && !asset?.src && !asset?.poster)) return null;
+  if (!emotion || scoped || emotion === "loading") return null;
   return <div role="status" aria-live="polite" aria-atomic="true" data-chart-reaction={emotion} className={["flex w-fit items-center justify-center gap-2 rounded-md bg-card p-2 text-xs text-muted-foreground", className].filter(Boolean).join(" ")}>
     <ReactionMedia key={`${emotion}:${asset?.src}:${asset?.poster}`} asset={asset} emotion={emotion} animationsEnabled={animationsEnabled} />
   </div>;
