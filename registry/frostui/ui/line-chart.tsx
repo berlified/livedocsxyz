@@ -80,6 +80,7 @@ function ChartLine({
   defaultSelectedDataKey,
   onSelectionChange,
   xDataKey = "month",
+  variant,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
@@ -90,6 +91,7 @@ function ChartLine({
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
   xDataKey?: string;
+  variant?: "panel" | "plain";
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
@@ -107,6 +109,7 @@ function ChartLine({
       config={config}
       data={data}
       className={cn("h-72 w-full", className)}
+      variant={variant}
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
@@ -132,6 +135,15 @@ function LineBody({
   extras: React.ReactNode[];
 }) {
   const { selected, setSelected } = useChart();
+  const [hovered, setHovered] = React.useState<string>();  const interaction = (key: string) => ({
+    onMouseEnter: () => setHovered(key),
+    onMouseLeave: () => setHovered(undefined),
+    onFocus: () => setHovered(key),
+    onBlur: () => setHovered(undefined),
+    tabIndex: 0,
+    "aria-label": key,
+    className: "transition-opacity duration-150 motion-reduce:transition-none [&_.recharts-curve]:transition-opacity [&_.recharts-curve]:duration-150 motion-reduce:[&_.recharts-curve]:transition-none",
+  });
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -159,9 +171,10 @@ function LineBody({
               strokeLinejoin="round"
               strokeDasharray={strokeVariant === "dashed" ? "6 4" : undefined}
               connectNulls={connectNulls}
-              dot={dot ? { r: 3, fill: colorVar(dataKey) } : false}
-              activeDot={{ r: 4, fill: colorVar(dataKey) }}
-              opacity={muted ? 0.2 : 1}
+              {...interaction(dataKey)}
+              dot={dot ? { r: 3, fill: colorVar(dataKey), ...interaction(dataKey) } : false}
+              activeDot={{ r: 4, fill: colorVar(dataKey), ...interaction(dataKey), opacity: hovered ? (hovered === dataKey ? 1 : 0.6) : muted ? 0.2 : 1 }}
+              opacity={hovered ? (hovered === dataKey ? 1 : 0.6) : muted ? 0.2 : 1}
               onClick={() => isClickable && setSelected(dataKey)}
               cursor={isClickable ? "pointer" : undefined}
             />

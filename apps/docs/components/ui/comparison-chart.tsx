@@ -3,6 +3,8 @@
 import * as React from "react";
 import {
   Area,
+  AreaRevealShape,
+  type AreaRevealShapeProps,
   AreaChart as RechartsAreaChart,
   CartesianGrid,
   ResponsiveContainer,
@@ -22,6 +24,20 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { ChartSkeleton } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
+
+function InteractiveAreaShape({ onMouseEnter, onMouseLeave, onFocus, onBlur, onClick, ...props }: AreaRevealShapeProps) {
+  return (
+    <g
+      onMouseEnter={onMouseEnter as unknown as React.MouseEventHandler<SVGGElement>}
+      onMouseLeave={onMouseLeave as unknown as React.MouseEventHandler<SVGGElement>}
+      onFocus={onFocus as unknown as React.FocusEventHandler<SVGGElement>}
+      onBlur={onBlur as unknown as React.FocusEventHandler<SVGGElement>}
+      onClick={onClick as unknown as React.MouseEventHandler<SVGGElement>}
+    >
+      <AreaRevealShape {...props} />
+    </g>
+  );
+}
 
 function ComparisonChartRoot({
   title,
@@ -109,6 +125,17 @@ function ComparisonBody({
   compareKey: string;
 }) {
   const id = React.useId().replace(/:/g, "");
+  const [hovered, setHovered] = React.useState<string>();
+  const interaction = (key: string) => ({
+    onMouseEnter: () => setHovered(key),
+    onMouseLeave: () => setHovered(undefined),
+    onFocus: () => setHovered(key),
+    onBlur: () => setHovered(undefined),
+    tabIndex: 0,
+    "aria-label": key,
+    className: "transition-opacity duration-150 motion-reduce:transition-none [&_.recharts-curve]:transition-opacity [&_.recharts-curve]:duration-150 motion-reduce:[&_.recharts-curve]:transition-none",
+    opacity: hovered && hovered !== key ? 0.6 : 1,
+  });
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -129,16 +156,22 @@ function ComparisonBody({
           content={<ChartTooltipContent />}
         />
         <Area
+          shape={InteractiveAreaShape}
           type="monotone"
           dataKey={compareKey}
+          {...interaction(compareKey)}
+          activeDot={{ ...interaction(compareKey), r: 4 }}
           stroke={colorVar(compareKey)}
           fill={`url(#${id}-${compareKey})`}
           fillOpacity={1}
           strokeWidth={1.5}
         />
         <Area
+          shape={InteractiveAreaShape}
           type="monotone"
           dataKey={primaryKey}
+          {...interaction(primaryKey)}
+          activeDot={{ ...interaction(primaryKey), r: 4 }}
           stroke={colorVar(primaryKey)}
           fill={`url(#${id}-${primaryKey})`}
           fillOpacity={1}

@@ -224,13 +224,14 @@ export function ChartTooltipContent({
   const { config, selected } = useChart();
   if (!active || !payload?.length) return null;
 
-  const rows = uniquePayload(payload, config).filter(
+  const items = uniquePayload(payload, config);
+  const rows = (items.length <= 1 ? items : items.filter(
     ({ key, item }) =>
       !selected ||
       selected === key ||
       selected === String(item.dataKey ?? "") ||
       selected === String(item.name ?? "")
-  );
+  ));
 
   if (!rows.length) return null;
 
@@ -274,6 +275,74 @@ export function ChartTooltipContent({
           );
         })}
       </div>
+    </div>
+  );
+}
+
+export function ChartTooltipSurface({
+  title,
+  children,
+  id,
+  className,
+}: {
+  title?: React.ReactNode;
+  children?: React.ReactNode;
+  id?: string;
+  className?: string;
+}) {
+  return (
+    <div
+      id={id}
+      role="tooltip"
+      className={cn(
+        "pointer-events-none relative min-w-48 overflow-hidden rounded-sm border-0 bg-[var(--chart-tooltip-background)] px-3.5 py-3 text-xs text-[var(--chart-tooltip-foreground)] shadow-lg",
+        className
+      )}
+    >
+      {title !== undefined && title !== null && title !== "" ? (
+        <p className="mb-2 text-[11px] font-bold">{title}</p>
+      ) : null}
+      <div className="space-y-2">{children}</div>
+    </div>
+  );
+}
+
+export function ChartHoverTooltip({
+  children,
+  content,
+  className,
+  onActiveChange,
+}: {
+  children: React.ReactNode;
+  content: React.ReactNode;
+  className?: string;
+  onActiveChange?: (active: boolean) => void;
+}) {
+  const [open, setOpen] = React.useState(false);
+  const set = React.useCallback(
+    (next: boolean) => {
+      setOpen(next);
+      onActiveChange?.(next);
+    },
+    [onActiveChange]
+  );
+  return (
+    <div
+      className={cn("relative", className)}
+      onMouseEnter={() => set(true)}
+      onMouseLeave={() => set(false)}
+      onFocus={() => set(true)}
+      onBlur={() => set(false)}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") set(false);
+      }}
+    >
+      {children}
+      {open ? (
+        <div className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 w-max max-w-60 -translate-x-1/2">
+          {content}
+        </div>
+      ) : null}
     </div>
   );
 }

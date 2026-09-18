@@ -92,6 +92,8 @@ function Sparkline({
   const uid = React.useId().replace(/:/g, "");
   const fallbackIndex = markerIndex ?? Math.max(0, data.length - 1);
   const [active, setActive] = React.useState(fallbackIndex);
+  const [hovered, setHovered] = React.useState(false);
+  const [focused, setFocused] = React.useState(false);
   const svgRef = React.useRef<SVGSVGElement>(null);
 
   React.useEffect(() => {
@@ -110,9 +112,11 @@ function Sparkline({
   const marker = points[Math.min(Math.max(active, 0), Math.max(points.length - 1, 0))];
 
   const moveTo = (clientX: number) => {
-    if (!interactive || points.length < 2 || !svgRef.current) return;
-    const rect = svgRef.current.getBoundingClientRect();
-    const x = ((clientX - rect.left) / rect.width) * width;
+    if (!interactive || !points.length || !svgRef.current) return;
+    setHovered(true);
+    const matrix = svgRef.current.getScreenCTM();
+    if (!matrix) return;
+    const x = (clientX - matrix.e) / matrix.a;
     let nearest = 0;
     let best = Infinity;
     points.forEach((point, index) => {
@@ -125,7 +129,10 @@ function Sparkline({
     setActive(nearest);
   };
 
-  const reset = () => setActive(markerIndex ?? Math.max(0, data.length - 1));
+  const reset = () => {
+    setHovered(false);
+    setActive(fallbackIndex);
+  };
 
   const onKeyDown = (event: React.KeyboardEvent<SVGSVGElement>) => {
     if (!interactive || points.length < 2) return;
@@ -146,7 +153,8 @@ function Sparkline({
     }
   };
 
-  const caption = markerLabel ?? (marker ? format(marker.value) : "");
+  const inspecting = interactive && (hovered || focused);
+  const tooltipVisible = Boolean(marker && (inspecting ? showValue : Boolean(markerLabel) || showValue));
 
   return (
     <div
@@ -163,7 +171,8 @@ function Sparkline({
           viewBox={`0 0 ${width} ${height}`}
           className={cn("block w-full select-none rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", sizeClass[size], toneClass[tone])}
           role={interactive && points.length ? "slider" : "img"}
-          aria-label={caption || "Trend"}
+          aria-label="Trend"
+          aria-describedby={tooltipVisible ? `${uid}-tooltip` : undefined}
           aria-valuemin={interactive && points.length ? 1 : undefined}
           aria-valuemax={interactive && points.length ? points.length : undefined}
           aria-valuenow={interactive && marker ? points.indexOf(marker) + 1 : undefined}
@@ -189,6 +198,8 @@ function Sparkline({
             if (event.pointerType !== "mouse") reset();
           }}
           onPointerLeave={reset}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
           onKeyDown={onKeyDown}
         >
           {area ? (
@@ -249,22 +260,23 @@ function Sparkline({
             </g>
           ) : null}
         </svg>
-        {marker && (markerLabel || showValue) ? (
+        {tooltipVisible && marker ? (
           <div
+            id={`${uid}-tooltip`}
             className="pointer-events-none absolute top-1 max-w-[calc(100%-1rem)] -translate-x-1/2"
             style={{
               left: `${Math.min(86, Math.max(14, (marker.x / width) * 100))}%`,
             }}
           >
             <div className="rounded-lg border border-border bg-popover px-2.5 py-1.5 tabular-nums shadow-sm">
-              {markerLabel ? (
+              {markerLabel && !inspecting ? (
                 <p className="text-xs text-muted-foreground">{markerLabel}</p>
               ) : null}
               {showValue ? (
                 <p
                   className={cn(
                     "text-xs font-medium text-foreground",
-                    markerLabel && "mt-0.5"
+                    markerLabel && !inspecting && "mt-0.5"
                   )}
                 >
                   {format(marker.value)}

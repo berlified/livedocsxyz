@@ -3,6 +3,8 @@
 import * as React from "react";
 import {
   Area,
+  AreaRevealShape,
+  type AreaRevealShapeProps,
   CartesianGrid,
   ComposedChart as RechartsComposedChart,
   Line,
@@ -24,6 +26,20 @@ import {
 import { Card } from "@/components/ui/card";
 import { ChartSkeleton } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
+
+function InteractiveAreaShape({ onMouseEnter, onMouseLeave, onFocus, onBlur, onClick, ...props }: AreaRevealShapeProps) {
+  return (
+    <g
+      onMouseEnter={onMouseEnter as unknown as React.MouseEventHandler<SVGGElement>}
+      onMouseLeave={onMouseLeave as unknown as React.MouseEventHandler<SVGGElement>}
+      onFocus={onFocus as unknown as React.FocusEventHandler<SVGGElement>}
+      onBlur={onBlur as unknown as React.FocusEventHandler<SVGGElement>}
+      onClick={onClick as unknown as React.MouseEventHandler<SVGGElement>}
+    >
+      <AreaRevealShape {...props} />
+    </g>
+  );
+}
 
 function RangeChartRoot({
   title,
@@ -70,6 +86,17 @@ function RangeBody({
   xDataKey: string;
 }) {
   const { id } = useChart();
+  const [hovered, setHovered] = React.useState<string>();
+  const interaction = (key: string) => ({
+    onMouseEnter: () => setHovered(key),
+    onMouseLeave: () => setHovered(undefined),
+    onFocus: () => setHovered(key),
+    onBlur: () => setHovered(undefined),
+    tabIndex: 0,
+    "aria-label": key === "high" ? "Forecast range" : "Actual",
+    className: "transition-opacity duration-150 motion-reduce:transition-none [&_.recharts-curve]:transition-opacity [&_.recharts-curve]:duration-150 motion-reduce:[&_.recharts-curve]:transition-none",
+    opacity: hovered && hovered !== key ? 0.6 : 1,
+  });
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -89,15 +116,20 @@ function RangeBody({
           content={<ChartTooltipContent />}
         />
         <Area
+          shape={InteractiveAreaShape}
           type="monotone"
           dataKey="high"
+          {...interaction("high")}
+          activeDot={{ r: 4, ...interaction("high") }}
           stroke="none"
           fill={pixelPatternUrl(id, "high")}
           fillOpacity={1}
         />
         <Area
+          shape={InteractiveAreaShape}
           type="monotone"
           dataKey="low"
+          activeDot={false}
           stroke="none"
           fill="var(--card)"
           fillOpacity={1}
@@ -105,9 +137,11 @@ function RangeBody({
         <Line
           type="monotone"
           dataKey="value"
+          {...interaction("value")}
+          activeDot={{ r: 4, ...interaction("value") }}
           stroke={colorVar("value")}
           strokeWidth={2.25}
-          dot={{ r: 3, fill: colorVar("value"), stroke: "var(--background)", strokeWidth: 2 }}
+          dot={{ r: 3, fill: colorVar("value"), stroke: "var(--background)", strokeWidth: 2, ...interaction("value") }}
         />
       </RechartsComposedChart>
     </ResponsiveContainer>

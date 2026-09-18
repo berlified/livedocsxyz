@@ -3,6 +3,8 @@
 import * as React from "react";
 import {
   Area,
+  AreaRevealShape,
+  type AreaRevealShapeProps,
   AreaChart as RechartsAreaChart,
   Brush,
   ResponsiveContainer,
@@ -23,6 +25,20 @@ import {
 } from "@/components/ui/chart";
 import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
+
+function InteractiveAreaShape({ onMouseEnter, onMouseLeave, onFocus, onBlur, onClick, ...props }: AreaRevealShapeProps) {
+  return (
+    <g
+      onMouseEnter={onMouseEnter as unknown as React.MouseEventHandler<SVGGElement>}
+      onMouseLeave={onMouseLeave as unknown as React.MouseEventHandler<SVGGElement>}
+      onFocus={onFocus as unknown as React.FocusEventHandler<SVGGElement>}
+      onBlur={onBlur as unknown as React.FocusEventHandler<SVGGElement>}
+      onClick={onClick as unknown as React.MouseEventHandler<SVGGElement>}
+    >
+      <AreaRevealShape {...props} />
+    </g>
+  );
+}
 
 type AreaVariant = "default" | "gradient" | "hatched";
 type StrokeVariant = "solid" | "dashed";
@@ -138,6 +154,16 @@ function AreaBody({
   extras: React.ReactNode[];
 }) {
   const { id, selected, setSelected } = useChart();
+  const [hovered, setHovered] = React.useState<string>();
+  const interaction = (key: string) => ({
+    onMouseEnter: () => setHovered(key),
+    onMouseLeave: () => setHovered(undefined),
+    onFocus: () => setHovered(key),
+    onBlur: () => setHovered(undefined),
+    tabIndex: 0,
+    "aria-label": key,
+    className: "transition-opacity duration-150 motion-reduce:transition-none [&_.recharts-curve]:transition-opacity [&_.recharts-curve]:duration-150 motion-reduce:[&_.recharts-curve]:transition-none",
+  });
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -175,6 +201,7 @@ function AreaBody({
                 : `url(#${id}-${dataKey}-fill)`;
           return (
             <Area
+              shape={InteractiveAreaShape}
               key={dataKey}
               type={curveType ?? type ?? "monotone"}
               dataKey={dataKey}
@@ -184,10 +211,11 @@ function AreaBody({
               strokeWidth={strokeWidth}
               strokeDasharray={strokeVariant === "dashed" ? "6 4" : undefined}
               connectNulls={connectNulls}
-              opacity={muted ? 0.2 : 1}
+              {...interaction(dataKey)}
+              opacity={hovered ? (hovered === dataKey ? 1 : 0.6) : muted ? 0.2 : 1}
               onClick={() => isClickable && setSelected(dataKey)}
               cursor={isClickable ? "pointer" : undefined}
-              activeDot={{ r: 4, strokeWidth: 2, fill: "var(--background)" }}
+              activeDot={{ r: 4, strokeWidth: 2, fill: "var(--background)", ...interaction(dataKey), opacity: hovered ? (hovered === dataKey ? 1 : 0.6) : muted ? 0.2 : 1 }}
             />
           );
         })}

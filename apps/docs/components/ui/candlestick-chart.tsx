@@ -3,7 +3,7 @@
 import * as React from "react";
 
 import { Card } from "@/components/ui/card";
-import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltipSurface, type ChartConfig } from "@/components/ui/chart";
 import { ChartSkeleton, useChartReducedMotion, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
@@ -32,7 +32,23 @@ export function CandlestickChart({ data, title = "Price action", description, co
   const id = React.useId();
   const plot = React.useRef<SVGSVGElement>(null);
   const [cursor, setCursor] = React.useState(0);
-  const [active, setActive] = React.useState<number | null>(null);
+  const [hovered, setHovered] = React.useState<number | null>(null);
+  const [focused, setFocused] = React.useState<number | null>(null);
+  const [dismissed, setDismissed] = React.useState(false);
+  const active = dismissed ? null : hovered ?? focused;
+  const tooltipHost = React.useRef<HTMLDivElement>(null);
+  const [tooltipPoint, setTooltipPoint] = React.useState({ left: 0, top: 0 });
+  const placeTooltip = (element: SVGGElement) => {
+    const host = tooltipHost.current?.getBoundingClientRect();
+    const bounds = element.getBoundingClientRect();
+    if (host) setTooltipPoint({ left: Math.max(0, Math.min(bounds.left - host.left + bounds.width + 8, host.width - 224)), top: bounds.top - host.top + 8 });
+    setDismissed(false);
+  };
+  React.useEffect(() => {
+    const dismiss = (event: KeyboardEvent) => { if (event.key === "Escape") setDismissed(true); };
+    document.addEventListener("keydown", dismiss);
+    return () => document.removeEventListener("keydown", dismiss);
+  }, []);
   const reducedMotion = useChartReducedMotion();
   const settings = useChartReactions();
   const animate = !reducedMotion && settings.animationsEnabled !== false;
@@ -61,8 +77,8 @@ export function CandlestickChart({ data, title = "Price action", description, co
     else if (event.key === "ArrowLeft" || event.key === "ArrowUp") next = Math.max(0, index - 1);
     else if (event.key === "Home") next = 0;
     else if (event.key === "End") next = rows.length - 1;
-    else if (event.key === "Escape") { setActive(null); return; }
-    else if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setActive(index); if (rows[index]?.valid) onCandleClick?.(data[index]!, index); return; }
+    else if (event.key === "Escape") { setDismissed(true); return; }
+    else if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setFocused(index); setDismissed(false); if (rows[index]?.valid) onCandleClick?.(data[index]!, index); return; }
     else return;
     event.preventDefault();
     setCursor(next);
@@ -79,7 +95,8 @@ export function CandlestickChart({ data, title = "Price action", description, co
           <>
             <div className="mb-3 flex flex-wrap gap-4 text-[11px] text-muted-foreground"><span>Hollow: close ≥ open</span><span>Filled: close &lt; open</span>{hasVolume ? <span>Volume below</span> : null}</div>
             <p id={`${id}-help`} className="sr-only">Use arrow keys, Home, and End to explore candles. Enter activates a candle; Escape dismisses details. Invalid OHLC records are shown as gaps.</p>
-            <div className="overflow-x-auto p-1">
+            <div ref={tooltipHost} className="relative">
+            <div className="overflow-x-auto p-1" onScroll={() => setDismissed(true)}>
               <svg ref={plot} viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="block w-full overflow-visible" style={{ minWidth: chartWidth }} role="group" aria-label={title} aria-describedby={`${id}-help`}>
                 {[0, 0.25, 0.5, 0.75, 1].map((fraction) => {
                   const normalized = high - (high - low) * fraction;
@@ -93,9 +110,10 @@ export function CandlestickChart({ data, title = "Price action", description, co
                   const bodyTop = row.valid ? Math.min(y(row.open), y(row.close)) : 120;
                   const bodyHeight = row.valid ? Math.max(1.5, Math.abs(y(row.open) - y(row.close))) : 0;
                   return <g key={index}>
-                    <g data-candle={index} tabIndex={index === Math.min(cursor, rows.length - 1) ? 0 : -1} role={onCandleClick ? "button" : "img"} aria-label={describe(row)} aria-describedby={active === index ? `${id}-detail` : undefined}
-                      onFocus={() => { setActive(index); setCursor(index); }} onBlur={() => setActive(null)} onMouseEnter={() => setActive(index)} onMouseLeave={() => setActive(null)} onKeyDown={(event) => navigate(event, index)} onClick={() => { setActive(index); if (row.valid) onCandleClick?.(data[index]!, index); }}
-                      className="cursor-pointer rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
+                    <g data-candle={index} tabIndex={index === Math.min(cursor, rows.length - 1) ? 0 : -1} role={onCandleClick ? "button" : "img"} aria-label={describe(row)} aria-describedby={active === index ? `${id}-tooltip` : undefined}
+                      onFocus={(event) => { setFocused(index); setCursor(index); placeTooltip(event.currentTarget); }} onBlur={() => setFocused(null)} onMouseEnter={(event) => { setHovered(index); placeTooltip(event.currentTarget); }} onMouseLeave={() => setHovered(null)} onKeyDown={(event) => navigate(event, index)} onClick={(event) => { event.currentTarget.focus(); placeTooltip(event.currentTarget); if (row.valid) onCandleClick?.(data[index]!, index); }}
+                      opacity={active !== null && active !== index ? 0.6 : 1}
+                      className={cn("cursor-pointer rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring", animate && "transition-opacity duration-150")}>
                       <rect x={x(index) - step / 2 + 2} y={18} width={step - 4} height={hasVolume ? 269 : 206} rx={4} fill="var(--accent)" fillOpacity={active === index ? 0.7 : 0} className={cn(animate && "transition-[fill-opacity] duration-150")} />
                       {row.valid ? <>
                         <line x1={x(index)} x2={x(index)} y1={y(row.high)} y2={y(row.low)} stroke={color} strokeWidth={1.5} />
@@ -110,13 +128,15 @@ export function CandlestickChart({ data, title = "Price action", description, co
                   <line x1={x(active)} x2={x(active)} y1={18} y2={hasVolume ? 286 : 216} stroke="var(--muted-foreground)" strokeDasharray="4 4" strokeOpacity={0.65} />
                   <line x1={64} x2={chartWidth - 12} y1={y(selected.close)} y2={y(selected.close)} stroke="var(--muted-foreground)" strokeDasharray="4 4" strokeOpacity={0.65} />
                   <circle cx={x(active)} cy={y(selected.close)} r={3} fill="var(--card)" stroke="var(--foreground)" />
-                  <g transform={`translate(${Math.max(66, Math.min(chartWidth - 194, x(active) + (x(active) > chartWidth / 2 ? -194 : 14)))}, ${y(selected.close) < 120 ? 126 : 28})`}>
-                    <rect width={180} height={82} rx={8} fill="var(--popover)" stroke="var(--border)" />
-                    <text x={12} y={18} className="fill-popover-foreground text-[11px] font-medium">{selected.label.length > 24 ? `${selected.label.slice(0, 23)}…` : selected.label}</text>
-                    {[`Open ${formatValue(selected.open)} · Close ${formatValue(selected.close)}`, `High ${formatValue(selected.high)}`, `Low ${formatValue(selected.low)}`].map((line, index) => <text key={index} x={12} y={36 + index * 16} className="fill-popover-foreground font-mono text-[10px]">{line}</text>)}
-                  </g>
                 </g> : null}
               </svg>
+            </div>
+            {selected ? <div className="pointer-events-none absolute z-50 w-56 max-w-full" style={tooltipPoint}>
+              <ChartTooltipSurface id={`${id}-tooltip`} title={selected.label}>
+                {selected.valid ? (["open", "high", "low", "close"] as const).map((key) => <div key={key} className="flex items-center justify-between gap-6"><span className="capitalize text-muted-foreground">{key}</span><span className="font-mono font-bold tabular-nums">{formatValue(selected[key])}</span></div>) : <p className="text-muted-foreground">Unavailable OHLC data</p>}
+                <div className="flex items-center justify-between gap-6"><span className="text-muted-foreground">Volume</span><span className="font-mono font-bold tabular-nums">{validVolume(selected.volume) ? formatVolume(selected.volume) : "Unavailable"}</span></div>
+              </ChartTooltipSurface>
+            </div> : null}
             </div>
             <p id={`${id}-detail`} role="status" className="mt-3 min-h-9 rounded-lg border border-border bg-accent/40 px-3 py-2 text-xs">{selected ? describe(selected) : "Hover or focus a candle to inspect OHLC and volume."}</p>
             <details className="mt-3 text-xs text-muted-foreground"><summary className="w-fit cursor-pointer rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring">View data</summary><div className="mt-2 overflow-x-auto"><table className="w-full text-left"><caption className="sr-only">{title}</caption><thead><tr>{["Period", "Open", "High", "Low", "Close", "Volume"].map((label) => <th key={label} className="p-2">{label}</th>)}</tr></thead><tbody>{rows.map((row, index) => <tr key={index} className="border-t border-border"><th scope="row" className="p-2 font-normal">{row.label}{!row.valid ? " (unavailable)" : ""}</th>{[row.open, row.high, row.low, row.close].map((value, column) => <td key={column} className="p-2 font-mono">{Number.isFinite(value) ? formatValue(value) : "—"}</td>)}<td className="p-2 font-mono">{validVolume(row.volume) ? formatVolume(row.volume) : "—"}</td></tr>)}</tbody></table></div></details>

@@ -7,12 +7,23 @@ import {
   ChartContainer,
   ChartLegend,
   ChartTooltip,
+  PixelSwatch,
   colorVar,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
 import { useChartReducedMotion, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+
+const PieInspectionContext = React.createContext<{
+  key?: string;
+  index?: number;
+  dataKey: string;
+  nameKey: string;
+  setHoveredKey: (key?: string) => void;
+  setFocusedKey: (key?: string) => void;
+} | null>(null);
 
 export function ChartInteractiveSector({
   geometry,
@@ -39,7 +50,7 @@ export function ChartInteractiveSector({
   const [focused, setFocused] = React.useState(false);
   const reducedMotion = useChartReducedMotion();
   const { animationsEnabled = true } = useChartReactions();
-  const active = hovered || focused || selected || emphasized;
+  const active = !muted && (hovered || focused || selected || emphasized);
   const angle = (((geometry.startAngle ?? 0) + (geometry.endAngle ?? 0)) / 2) * Math.PI / 180;
   const offset = active ? 6 : 0;
   const { key: sectorKey, ...sectorProps } = geometry as SectorProps & { key?: React.Key };
@@ -53,7 +64,7 @@ export function ChartInteractiveSector({
       aria-label={label}
       aria-pressed={onActivate ? selected : undefined}
       className="outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-      opacity={muted && !active ? 0.3 : 1}
+      opacity={muted ? 0.6 : 1}
       stroke={focused ? "var(--ring)" : geometry.stroke}
       strokeWidth={focused ? 3 : geometry.strokeWidth}
       style={{
@@ -96,11 +107,72 @@ export function ChartInteractiveSector({
 }
 
 function Tooltip(props: React.ComponentProps<typeof ChartTooltip>) {
-  return <ChartTooltip {...props} cursor={false} />;
+  const inspection = React.useContext(PieInspectionContext);
+  const { config, data } = useChart();
+  const index = inspection?.index;
+  const key = inspection?.key;
+  const dataKey = inspection?.dataKey;
+  const item = index === undefined ? undefined : data[index];
+  const series = key ? config[key] : undefined;
+  const value = item === undefined || dataKey === undefined ? undefined : item[dataKey];
+  const formatted = typeof value === "number" || typeof value === "string"
+    ? series?.valueFormatter?.(value) ?? value.toLocaleString("en-US")
+    : "";
+  return (
+    <ChartTooltip
+      {...props}
+      cursor={false}
+      active={props.active === false ? false : item ? true : props.active}
+      defaultIndex={index ?? props.defaultIndex}
+      {...(item && key ? { content: () => (
+        <div role="tooltip" className="rounded-sm bg-[var(--chart-tooltip-background,var(--popover))] px-3.5 py-3 text-xs text-[var(--chart-tooltip-foreground,var(--popover-foreground))] shadow-lg">
+          <div className="flex items-center justify-between gap-6">
+            <span className="flex items-center gap-2 text-[var(--chart-tooltip-muted,var(--muted-foreground))]">
+              <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: colorVar(key) }} />
+              {series?.label ?? key}
+            </span>
+            <span className="font-mono font-bold tabular-nums">{formatted}</span>
+          </div>
+        </div>
+      ) } : {})}
+    />
+  );
 }
 Tooltip.displayName = "Tooltip";
-function Legend(props: React.ComponentProps<typeof ChartLegend>) {
-  return <ChartLegend {...props} />;
+function Legend({ isClickable, ...props }: React.ComponentProps<typeof ChartLegend>) {
+  const inspection = React.useContext(PieInspectionContext);
+  const { config, data, selected, setSelected } = useChart();
+  if (!inspection) return <ChartLegend {...props} isClickable={isClickable} />;
+  return (
+    <ChartLegend
+      {...props}
+      content={props.content ?? (
+        <div role="group" aria-label="Chart series" className="flex flex-wrap justify-center gap-1 pt-3">
+          {data.map((item) => {
+            const key = String(item[inspection.nameKey]);
+            return (
+              <Button
+                key={key}
+                type="button"
+                variant="ghost"
+                size="sm"
+                aria-pressed={isClickable ? selected === key : undefined}
+                onClick={isClickable ? () => setSelected(key) : undefined}
+                onMouseEnter={() => inspection.setHoveredKey(key)}
+                onMouseLeave={() => inspection.setHoveredKey(undefined)}
+                onFocus={() => inspection.setFocusedKey(key)}
+                onBlur={() => inspection.setFocusedKey(undefined)}
+                className={cn("h-8 gap-2 rounded-full px-3 text-xs text-muted-foreground", selected === key && "bg-background text-foreground shadow-sm")}
+              >
+                <PixelSwatch color={colorVar(key)} />
+                {config[key]?.label ?? key}
+              </Button>
+            );
+          })}
+        </div>
+      )}
+    />
+  );
 }
 Legend.displayName = "Legend";
 
@@ -213,7 +285,10 @@ function PieBody({
   const reducedMotion = useChartReducedMotion();
   const { animationsEnabled = true } = useChartReactions();
 
+  const tooltipKey = hoveredKey ?? focusedKey;
+  const tooltipIndex = data.findIndex((item) => String(item[nameKey]) === tooltipKey);
   const chart = (
+    <PieInspectionContext.Provider value={{ key: tooltipKey, index: tooltipIndex < 0 ? undefined : tooltipIndex, dataKey, nameKey, setHoveredKey, setFocusedKey }}>
     <ResponsiveContainer width="100%" height="100%">
       <RechartsPieChart>
         {children}
@@ -264,6 +339,7 @@ function PieBody({
         </Pie>
       </RechartsPieChart>
     </ResponsiveContainer>
+    </PieInspectionContext.Provider>
   );
 
   if (!legendTitle) return chart;
@@ -279,9 +355,17 @@ function PieBody({
             const value = item[dataKey];
             const series = config[key];
             return (
-              <div
+              <Button
                 key={key}
-                className="flex w-full items-center gap-3 text-muted-foreground"
+                type="button"
+                variant="ghost"
+                aria-pressed={selected === key}
+                onClick={() => setSelected(key)}
+                onMouseEnter={() => setHoveredKey(key)}
+                onMouseLeave={() => setHoveredKey(undefined)}
+                onFocus={() => setFocusedKey(key)}
+                onBlur={() => setFocusedKey(undefined)}
+                className={cn("h-auto w-full justify-start gap-3 px-0 text-xs text-muted-foreground", activeKey && activeKey !== key && "opacity-60")}
               >
                 <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: colorVar(key) }} />
                 <span className="truncate">{series?.label ?? key}</span>
@@ -290,7 +374,7 @@ function PieBody({
                     ? series?.valueFormatter?.(value) ?? value.toLocaleString("en-US")
                     : ""}
                 </span>
-              </div>
+              </Button>
             );
           })}
         </div>

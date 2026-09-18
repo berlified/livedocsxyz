@@ -2,7 +2,7 @@
 
 import * as React from "react";
 
-import { ChartContainer, colorVar, pixelFillStyle, type ChartConfig } from "@/components/ui/chart";
+import { ChartContainer, ChartHoverTooltip, ChartTooltipSurface, colorVar, pixelFillStyle, type ChartConfig } from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
@@ -25,6 +25,7 @@ function LaneChartRoot({
 }) {
   const max = Math.max(...rows.map((row) => row.value), 1);
   const [selected, setSelected] = React.useState<string>();
+  const [active, setActive] = React.useState<string>();
 
   return (
     <Card className={cn("p-5", className)}>
@@ -40,23 +41,28 @@ function LaneChartRoot({
         {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
         <ul className="mt-4 space-y-3">
           {rows.map((row) => {
-            const muted = selected && selected !== row.key;
+            const emphasized = active ?? selected;
+            const muted = emphasized !== undefined && emphasized !== row.key;
             return (
-              <li key={row.key}>
+              <li key={row.key} onKeyDown={(event) => { if (event.key === "Escape") setSelected(undefined); }}>
+                <ChartHoverTooltip
+                  onActiveChange={(next: boolean) => setActive((current) => next ? row.key : current === row.key ? undefined : current)}
+                  content={<ChartTooltipSurface title={config[row.key]?.label ?? row.label}><div className="flex items-center justify-between gap-6"><span className="text-muted-foreground">Value</span><span className="font-mono font-bold tabular-nums">{row.value.toLocaleString("en-US", { maximumFractionDigits: 20 })}</span></div></ChartTooltipSurface>}
+                >
                 <button
                   type="button"
+                  aria-pressed={selected === row.key}
                   onClick={() =>
                     setSelected((current) => (current === row.key ? undefined : row.key))
                   }
                   className={cn(
-                    "grid w-full grid-cols-[7rem_1fr_3rem] items-center gap-3 rounded-lg text-left transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    muted && "opacity-35"
+                    "grid w-full grid-cols-[7rem_1fr_3rem] items-center gap-3 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   )}
                 >
                   <span className="truncate text-sm text-muted-foreground">
                     {config[row.key]?.label ?? row.label}
                   </span>
-                  <span className="h-3 overflow-hidden rounded-full bg-muted">
+                  <span className={cn("h-3 overflow-hidden rounded-full bg-muted transition-opacity motion-reduce:transition-none", muted && "opacity-60")}>
                     <span
                       className="block h-full rounded-full"
                       style={{
@@ -67,6 +73,7 @@ function LaneChartRoot({
                   </span>
                   <span className="text-right tabular-nums text-xs">{row.value}</span>
                 </button>
+                </ChartHoverTooltip>
               </li>
             );
           })}

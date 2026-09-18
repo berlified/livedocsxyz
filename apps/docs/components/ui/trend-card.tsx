@@ -7,6 +7,7 @@ import {
   LineChart as RechartsLineChart,
   ResponsiveContainer,
   Tooltip,
+  XAxis,
 } from "recharts";
 
 import {
@@ -52,6 +53,17 @@ function TrendCardRoot({
   isLoading?: boolean;
   reaction?: ChartReactionOptions;
 }) {
+  const [hovered, setHovered] = React.useState<string>();
+  const interaction = (key: string) => ({
+    onMouseEnter: () => setHovered(key),
+    onMouseLeave: () => setHovered(undefined),
+    onFocus: () => setHovered(key),
+    onBlur: () => setHovered(undefined),
+    tabIndex: 0,
+    "aria-label": key,
+    className: "transition-opacity duration-150 motion-reduce:transition-none [&_.recharts-curve]:transition-opacity [&_.recharts-curve]:duration-150 motion-reduce:[&_.recharts-curve]:transition-none",
+    opacity: hovered ? (hovered === key ? 1 : 0.6) : key === compareKey ? 0.65 : 1,
+  });
   const deltaClass =
     tone === "down"
       ? "border-destructive/30 bg-destructive/15 text-destructive"
@@ -101,6 +113,7 @@ function TrendCardRoot({
       >
         <ResponsiveContainer width="100%" height="100%">
           <RechartsLineChart data={data} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
+            <XAxis dataKey={xDataKey} hide />
             <Tooltip
               cursor={false}
               content={<ChartTooltipContent />}
@@ -111,7 +124,8 @@ function TrendCardRoot({
               stroke={colorVar(compareKey)}
               strokeWidth={2}
               dot={false}
-              opacity={0.65}
+              {...interaction(compareKey)}
+              activeDot={{ r: 4, ...interaction(compareKey) }}
               isAnimationActive={false}
             />
             <Line
@@ -121,6 +135,7 @@ function TrendCardRoot({
               strokeWidth={3}
               dot={false}
               isAnimationActive={false}
+              {...interaction(currentKey)}
               activeDot={{ r: 0 }}
             />
           </RechartsLineChart>

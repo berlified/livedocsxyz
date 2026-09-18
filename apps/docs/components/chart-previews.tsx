@@ -424,7 +424,7 @@ export function SparklineExamples() {
             className="mt-3 bg-transparent"
             size="md"
             tone="up"
-            showValue={false}
+            showValue
           />
         </Card>
       </ComponentPreview>

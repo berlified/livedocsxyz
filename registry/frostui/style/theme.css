@@ -64,4 +64,9 @@
   --chart-teal: oklch(0.59 0.10 185);
   --chart-turquoise: oklch(0.72 0.12 180);
   --chart-teal-strong: oklch(0.40 0.08 185);
+  --chart-tooltip-background: oklch(1 0 0);
+  --chart-tooltip-foreground: oklch(0.145 0 0);
+  --chart-tooltip-muted: oklch(0.48 0 0);
+  --chart-cursor: oklch(0.145 0 0);
+  --chart-cursor-foreground: oklch(0.985 0 0);
 }

@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChartContainer, colorVar, type ChartConfig } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltipSurface, colorVar, type ChartConfig } from "@/components/ui/chart";
 import { ChartSkeleton, useChartReactions, useChartReducedMotion, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
@@ -54,9 +54,22 @@ export function HeatmapChart({
   const [hovered, setHovered] = React.useState<number | null>(null);
   const [focused, setFocused] = React.useState<number | null>(null);
   const [dismissed, setDismissed] = React.useState(false);
+  const tooltipHost = React.useRef<HTMLDivElement>(null);
+  const [tooltipPoint, setTooltipPoint] = React.useState({ left: 0, top: 0 });
+  const placeTooltip = (element: HTMLElement) => {
+    const host = tooltipHost.current?.getBoundingClientRect();
+    const bounds = element.getBoundingClientRect();
+    if (host) setTooltipPoint({ left: Math.max(0, Math.min(bounds.left - host.left, host.width - 208)), top: bounds.top - host.top - 8 });
+    setDismissed(false);
+  };
   const [selectedLevel, setSelectedLevel] = React.useState<number | null>(null);
   const [hoveredLevel, setHoveredLevel] = React.useState<number | null>(null);
   const [focusedLevel, setFocusedLevel] = React.useState<number | null>(null);
+  React.useEffect(() => {
+    const dismiss = (event: KeyboardEvent) => { if (event.key === "Escape") setDismissed(true); };
+    document.addEventListener("keydown", dismiss);
+    return () => document.removeEventListener("keydown", dismiss);
+  }, []);
   const settings = useChartReactions();
   const reducedMotion = useChartReducedMotion();
   const animate = !reducedMotion && settings.animationsEnabled !== false;
@@ -84,15 +97,16 @@ export function HeatmapChart({
   const active = activeIndex === null ? undefined : cells[activeIndex];
   const tabStop = Math.min(cursor, Math.max(0, cells.length - 1));
   const template = `${calendar ? "2rem" : "4.5rem"} repeat(${xLabels.length}, minmax(0, 1fr))`;
-  const describe = (cell: HeatmapCell) => {
+  const cellLabel = (cell: HeatmapCell) => {
     let label = `${cell.y}, ${cell.x}`;
     if (calendar && parseWeek(cell.x) && weekdays.includes(cell.y)) {
       const date = new Date(`${cell.x}T00:00:00Z`);
       date.setUTCDate(date.getUTCDate() + (weekdays.indexOf(cell.y) - date.getUTCDay() + 7) % 7);
       label = date.toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
     }
-    return `${label}: ${cell.value === null ? "No data" : formatValue(cell.value)}`;
+    return label;
   };
+  const describe = (cell: HeatmapCell) => `${cellLabel(cell)}: ${cell.value === null ? "No data" : formatValue(cell.value)}`;
   const describeLevel = (index: number) => index === 0 ? formatValue(low * scale) : `${formatValue((low + (high - low) * (index - 1) / 4) * scale)}–${formatValue((low + (high - low) * index / 4) * scale)}`;
   const gridSignature = JSON.stringify([xLabels, yLabels]);
 
@@ -133,7 +147,8 @@ export function HeatmapChart({
         {!finite.length ? <p className="flex min-h-44 items-center justify-center text-sm text-muted-foreground" role="status">{emptyLabel}</p> : (
           <>
             <p id={`${id}-help`} className="sr-only">Use arrow keys to explore cells, Home and End to move within a row. Press Escape to dismiss details. Use the legend to highlight an intensity level.</p>
-            <div className="overflow-x-auto p-1">
+            <div ref={tooltipHost} className="relative">
+            <div className="overflow-x-auto p-1" onScroll={() => setDismissed(true)}>
               <div ref={gridRef} role="grid" aria-label={title} aria-describedby={`${id}-help`} aria-rowcount={yLabels.length + 1} aria-colcount={xLabels.length + 1} className={cn("grid", calendar ? "gap-[3px]" : "gap-1.5")} style={{ minWidth: Math.max(240, xLabels.length * (calendar ? 12 : 30) + (calendar ? 36 : 72)) }}>
                 <div role="row" className={cn("grid items-end", calendar ? "gap-[3px]" : "gap-1.5")} style={{ gridTemplateColumns: template }}>
                   <span role="columnheader"><span className="sr-only">{calendar ? "Day" : "Row"}</span></span>
@@ -158,15 +173,15 @@ export function HeatmapChart({
                             data-cell-index={index}
                             tabIndex={index === tabStop ? 0 : -1}
                             aria-label={describe(cell)}
-                            aria-describedby={activeIndex === index ? `${id}-detail` : undefined}
+                            aria-describedby={activeIndex === index ? `${id}-tooltip` : undefined}
                             className={cn("relative block w-full border border-border/30 p-0 hover:z-10 hover:ring-1 hover:ring-ring focus-visible:z-10", calendar ? "aspect-square h-auto rounded-[3px]" : "h-8 rounded-md", animate ? "transition-[opacity,box-shadow] duration-200" : "transition-none", activeIndex === index && "z-10 ring-2 ring-ring ring-offset-2 ring-offset-card")}
-                            style={{ backgroundColor: intensity === null ? "var(--muted)" : fill(intensity), opacity: activeLevel !== null && intensity !== activeLevel && activeIndex !== index ? 0.2 : 1 }}
-                            onMouseEnter={() => { setHovered(index); setDismissed(false); }}
+                            style={{ backgroundColor: intensity === null ? "var(--muted)" : fill(intensity), opacity: activeIndex !== null ? activeIndex === index ? 1 : 0.6 : activeLevel !== null && intensity !== activeLevel ? 0.6 : 1 }}
+                            onMouseEnter={(event) => { setHovered(index); placeTooltip(event.currentTarget); }}
                             onMouseLeave={() => setHovered(null)}
-                            onFocus={() => { setFocused(index); setCursor(index); setDismissed(false); }}
+                            onFocus={(event) => { setFocused(index); setCursor(index); placeTooltip(event.currentTarget); }}
                             onBlur={() => setFocused(null)}
                             onKeyDown={(event) => navigate(event, index)}
-                            onClick={() => { setFocused(index); setDismissed(false); onCellClick?.(cell); }}
+                            onClick={(event) => { event.currentTarget.focus(); placeTooltip(event.currentTarget); onCellClick?.(cell); }}
                           >
                             {cell.value === null ? <span aria-hidden className={cn("text-muted-foreground", calendar && "sr-only")}>–</span> : null}
                           </Button>
@@ -176,6 +191,10 @@ export function HeatmapChart({
                   </div>
                 ))}
               </div>
+            </div>
+            {active ? <div className="pointer-events-none absolute z-50 w-52 max-w-full -translate-y-full" style={tooltipPoint}>
+              <ChartTooltipSurface id={`${id}-tooltip`} title={cellLabel(active)}><div className="flex items-center justify-between gap-6"><span className="text-muted-foreground">{config.value?.label ?? "Value"}</span><span className="font-mono font-bold tabular-nums">{active.value === null ? "No data" : formatValue(active.value)}</span></div></ChartTooltipSurface>
+            </div> : null}
             </div>
             <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
               <p id={`${id}-detail`} role="status" aria-live="polite" className="min-h-4">{active ? describe(active) : activeLevel !== null ? `Highlighting ${describeLevel(activeLevel)}` : `Hover or focus a ${calendar ? "day" : "cell"} to explore`}</p>

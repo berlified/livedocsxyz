@@ -5,7 +5,7 @@ import * as React from "react";
 import { badgeVariants } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltipSurface, type ChartConfig } from "@/components/ui/chart";
 import { ChartSkeleton, useChartReducedMotion, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
@@ -49,6 +49,20 @@ export function FunnelChart({
   const [hovered, setHovered] = React.useState<string | null>(null);
   const [focused, setFocused] = React.useState<string | null>(null);
   const [selected, setSelected] = React.useState<string | null>(null);
+  const [dismissed, setDismissed] = React.useState(false);
+  const tooltipHost = React.useRef<HTMLDivElement>(null);
+  const [tooltipPoint, setTooltipPoint] = React.useState({ left: 0, top: 0 });
+  const placeTooltip = (element: HTMLElement) => {
+    const host = tooltipHost.current?.getBoundingClientRect();
+    const bounds = element.getBoundingClientRect();
+    if (host) setTooltipPoint({ left: Math.max(0, Math.min(bounds.left - host.left, host.width - 208)), top: bounds.top - host.top + 44 });
+    setDismissed(false);
+  };
+  React.useEffect(() => {
+    const dismiss = (event: KeyboardEvent) => { if (event.key === "Escape") setDismissed(true); };
+    document.addEventListener("keydown", dismiss);
+    return () => document.removeEventListener("keydown", dismiss);
+  }, []);
   const reducedMotion = useChartReducedMotion();
   const settings = useChartReactions();
   const animate = !reducedMotion && settings.animationsEnabled !== false;
@@ -57,7 +71,9 @@ export function FunnelChart({
   const available = stages.some((stage) => valid(stage.value));
   const first = stages[0]?.value ?? 0;
   const last = stages[stages.length - 1]?.value ?? 0;
-  const active = hovered ?? focused ?? selected;
+  const transient = dismissed ? null : hovered ?? focused;
+  const active = transient ?? selected;
+  const tooltipStage = stages.find((stage) => stage.key === transient);
   const activeStage = stages.find((stage) => stage.key === active);
   const step = 1000 / Math.max(1, stages.length);
   const proportions = [...stages.map((stage) => stage.value), last].map((value) => valid(value) && max > 0 ? value / max : 0);
@@ -92,7 +108,7 @@ export function FunnelChart({
     else if (event.key === "ArrowLeft") next = Math.max(0, index - 1);
     else if (event.key === "Home") next = 0;
     else if (event.key === "End") next = stages.length - 1;
-    else if (event.key === "Escape") { setSelected(null); setHovered(null); return; }
+    else if (event.key === "Escape") { setSelected(null); setDismissed(true); return; }
     else return;
     event.preventDefault();
     drawing.current?.querySelector<HTMLButtonElement>(`[data-stage-index="${next}"]`)?.focus();
@@ -112,7 +128,8 @@ export function FunnelChart({
         {!available ? <p role="status" className="flex min-h-48 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</p> : (
           <>
             <p id={`${id}-help`} className="sr-only">Use Left and Right arrow keys to explore stages. Press Enter or Space to select, or Escape to clear selection. Stage percentages compare each stage with the first stage, rounded to the nearest whole percent.</p>
-            <div className="overflow-x-auto p-1">
+            <div ref={tooltipHost} className="relative">
+            <div className="overflow-x-auto p-1" onScroll={() => setDismissed(true)}>
               <div ref={drawing} className="relative" style={{ minWidth: Math.max(360, stages.length * 104) }}>
                 <svg viewBox="0 0 1000 224" preserveAspectRatio="none" className="pointer-events-none absolute top-11 h-56 w-full overflow-visible" aria-hidden="true">
                   <defs>
@@ -124,7 +141,7 @@ export function FunnelChart({
                     const fill = `var(--color-${stage.key}, var(--chart-2, var(--primary)))`;
                     const emphasized = active === stage.key || selected === stage.key;
                     return (
-                      <g key={`${stage.key}-${index}`} clipPath={`url(#${id}-stage-${index})`}>
+                      <g key={`${stage.key}-${index}`} clipPath={`url(#${id}-stage-${index})`} opacity={transient !== null && transient !== stage.key ? 0.6 : 1} className={cn(animate && "transition-opacity duration-150")}>
                         <g data-funnel-stage={index}>
                           {paths.map((path, layer) => <path key={layer} d={path} fill={fill} fillOpacity={layer === 2 ? emphasized ? 0.92 : 0.72 : layer === 1 ? 0.13 : 0.06} className={cn(animate && "transition-[fill-opacity] duration-300")} />)}
                         </g>
@@ -138,10 +155,10 @@ export function FunnelChart({
                     <li key={`${stage.key}-${index}`} className="min-w-0" data-funnel-stage={index}>
                       <Button type="button" variant="ghost" data-stage-index={index} aria-pressed={selected === stage.key}
                         aria-label={`${stage.label}: ${valid(stage.value) ? formatValue(stage.value) : "Unavailable"}${showConversion ? `, ${conversion(stage.value, first, 0)} of first stage` : ""}`}
-                        aria-describedby={`${id}-help`}
+                        aria-describedby={transient === stage.key ? `${id}-help ${id}-tooltip` : `${id}-help`}
                         className={cn("grid h-[312px] w-full grid-rows-[44px_224px_44px] gap-0 rounded-lg p-0 text-center hover:bg-accent/10 hover:text-foreground", !animate && "transition-none", (active === stage.key || selected === stage.key) && "bg-accent/10")}
-                        onFocus={() => setFocused(stage.key)} onBlur={() => setFocused(null)}
-                        onMouseEnter={() => setHovered(stage.key)} onMouseLeave={() => setHovered(null)}
+                        onFocus={(event) => { setFocused(stage.key); placeTooltip(event.currentTarget); }} onBlur={() => setFocused(null)}
+                        onMouseEnter={(event) => { setHovered(stage.key); placeTooltip(event.currentTarget); }} onMouseLeave={() => setHovered(null)}
                         onKeyDown={(event) => navigate(event, index)}
                         onClick={() => { setSelected((current) => current === stage.key ? null : stage.key); if (valid(stage.value)) onStageClick?.(stage); }}>
                         <span className="truncate px-2 font-mono text-xl font-semibold tracking-tight">{valid(stage.value) ? formatValue(stage.value) : "—"}</span>
@@ -152,6 +169,14 @@ export function FunnelChart({
                   ))}
                 </ol>
               </div>
+            </div>
+            {tooltipStage ? <div className="pointer-events-none absolute z-50 w-52 max-w-full" style={tooltipPoint}>
+              <ChartTooltipSurface id={`${id}-tooltip`} title={tooltipStage.label}>
+                <div className="flex items-center justify-between gap-6"><span className="text-muted-foreground">Value</span><span className="font-mono font-bold tabular-nums">{valid(tooltipStage.value) ? tooltipStage.value.toLocaleString("en-US", { maximumFractionDigits: 20 }) : "Unavailable"}</span></div>
+                <div className="flex items-center justify-between gap-6"><span className="text-muted-foreground">Of first stage</span><span className="font-mono font-bold tabular-nums">{conversion(tooltipStage.value, first)}</span></div>
+                {stages.indexOf(tooltipStage) > 0 ? <div className="flex items-center justify-between gap-6"><span className="text-muted-foreground">From previous</span><span className="font-mono font-bold tabular-nums">{conversion(tooltipStage.value, stages[stages.indexOf(tooltipStage) - 1]!.value)}</span></div> : null}
+              </ChartTooltipSurface>
+            </div> : null}
             </div>
             <p role="status" aria-live="polite" className="sr-only">{activeStage ? `${activeStage.label}: ${valid(activeStage.value) ? formatValue(activeStage.value) : "Unavailable"}${activeStage.meta ? `. ${activeStage.meta}` : ""}` : "Select a stage to inspect conversion."}</p>
             {activeStage?.meta ? <p className="mt-3 text-xs text-muted-foreground">{activeStage.meta}</p> : null}

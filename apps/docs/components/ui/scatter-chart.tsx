@@ -179,13 +179,18 @@ function ScatterBody({
   quadrantLines: boolean;
   onPointClick?: (point: ScatterPoint) => void;
 }) {
-  const { id, config, selected, setSelected } = useChart();
+  const { config, selected, setSelected } = useChart();
+  const [hovered, setHovered] = React.useState<string>();
+  const [focused, setFocused] = React.useState<string>();
+  const activePoint = hovered ?? focused;
+  const inspected = groups.flatMap((group) => group.points.map((point, index) => ({ point, key: `${group.name}:${index}` }))).find((item) => item.key === activePoint)?.point;
   const xs = numeric(groups.flatMap((g) => g.points.map((p) => p.x)));
   const ys = numeric(groups.flatMap((g) => g.points.map((p) => p.y)));
   const meanX = xs.length ? xs.reduce((a, b) => a + b, 0) / xs.length : 0;
   const meanY = ys.length ? ys.reduce((a, b) => a + b, 0) / ys.length : 0;
 
   return (
+    <div className="relative h-full w-full">
     <ResponsiveContainer width="100%" height="100%">
       <RechartsScatterChart
         margin={{ ...baseMargin, bottom: 20 }}
@@ -224,7 +229,8 @@ function ScatterBody({
         ) : null}
         <RechartsTooltip
           cursor={false}
-          content={<ScatterTooltipContent xLabel={xLabel} yLabel={yLabel} />}
+          active={inspected ? false : undefined}
+          content={<ScatterTooltipContent xLabel={xLabel} yLabel={yLabel} bubbleKey={bubbleKey} />}
           isAnimationActive={false}
         />
         {groups.map((group) => (
@@ -234,14 +240,17 @@ function ScatterBody({
             data={group.points}
             fill={colorVar(group.name)}
             fillOpacity={1}
-            onClick={() => setSelected(group.name)}
             cursor={onPointClick ? "pointer" : undefined}
             shape={(dotProps: RechartsScatterShapeProps) => (
               <ScatterDot
                 {...dotProps}
                 group={group.name}
                 seriesLabel={config[group.name]?.label ?? group.name}
-                onPointClick={onPointClick}
+                bubbleKey={bubbleKey}
+                muted={activePoint !== undefined ? activePoint !== `${group.name}:${dotProps.index}` : Boolean(selected && selected !== group.name)}
+                onHoverChange={(active) => setHovered(active ? `${group.name}:${dotProps.index}` : undefined)}
+                onFocusChange={(active) => setFocused(active ? `${group.name}:${dotProps.index}` : undefined)}
+                onActivate={(point) => { setSelected(group.name); onPointClick?.(point); }}
               />
             )}
           />
@@ -249,6 +258,12 @@ function ScatterBody({
         {bubbleKey ? <ZAxis type="number" dataKey={bubbleKey} range={[24, 400]} domain={zDomain} /> : <ZAxis range={[24, 24]} />}
       </RechartsScatterChart>
     </ResponsiveContainer>
+    {inspected ? (
+      <div className="pointer-events-none absolute left-1/2 top-0 z-10 w-max max-w-full -translate-x-1/2">
+        <ScatterTooltipContent active payload={[{ payload: inspected as Record<string, unknown> }]} xLabel={xLabel} yLabel={yLabel} bubbleKey={bubbleKey} />
+      </div>
+    ) : null}
+    </div>
   );
 }
 
@@ -263,26 +278,33 @@ function ScatterTooltipContent({
   payload,
   xLabel,
   yLabel,
-}: ScatterTooltipProps & { xLabel: string; yLabel: string }) {
+  bubbleKey,
+}: ScatterTooltipProps & { xLabel: string; yLabel: string; bubbleKey?: string }) {
   const { config } = useChart();
   if (!active || !payload?.length) return null;
   const row = (payload[0]?.payload ?? {}) as Record<string, unknown>;
   const key = String(row.series ?? "series");
   const series = config[key];
   return (
-    <div className="relative min-w-40 overflow-hidden rounded-md border border-border/60 bg-popover px-3 py-2 font-mono shadow-sm">
+    <div role="tooltip" className="relative min-w-40 overflow-hidden rounded-md border border-border/60 bg-popover px-3 py-2 font-mono shadow-sm">
       <p className="mb-1.5 font-medium uppercase tracking-wide text-foreground">
         {String(row.label ?? series?.label ?? key)}
       </p>
       <div className="space-y-1">
         <div className="flex items-center justify-between gap-6">
           <span className="text-muted-foreground">{xLabel}</span>
-          <span className="text-foreground">{formatTick(Number(row.x))}</span>
+          <span className="text-foreground">{Number(row.x).toLocaleString("en-US", { maximumFractionDigits: 20 })}</span>
         </div>
         <div className="flex items-center justify-between gap-6">
           <span className="text-muted-foreground">{yLabel}</span>
-          <span className="text-foreground">{formatTick(Number(row.y))}</span>
+          <span className="text-foreground">{Number(row.y).toLocaleString("en-US", { maximumFractionDigits: 20 })}</span>
         </div>
+        {bubbleKey ? (
+          <div className="flex items-center justify-between gap-6">
+            <span className="text-muted-foreground">{config[bubbleKey]?.label ?? bubbleKey}</span>
+            <span className="text-foreground">{config[bubbleKey]?.valueFormatter?.(Number(row[bubbleKey])) ?? Number(row[bubbleKey]).toLocaleString("en-US", { maximumFractionDigits: 20 })}</span>
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -291,35 +313,49 @@ function ScatterTooltipContent({
 type RechartsScatterShapeProps = {
   cx?: number;
   cy?: number;
+  size?: number;
+  index?: number;
   payload?: Record<string, unknown>;
 };
 
 type ScatterDotProps = RechartsScatterShapeProps & {
   group: string;
   seriesLabel?: React.ReactNode;
-  onPointClick?: (point: ScatterPoint) => void;
+  bubbleKey?: string;
+  muted: boolean;
+  onHoverChange: (active: boolean) => void;
+  onFocusChange: (active: boolean) => void;
+  onActivate: (point: ScatterPoint) => void;
 };
 
-function ScatterDot(props: ScatterDotProps) {
-  const { cx, cy, payload, group, seriesLabel, onPointClick } = props;
-  const { selected } = useChart();
+function ScatterDot({ cx, cy, size, payload, group, seriesLabel, bubbleKey, muted, onHoverChange, onFocusChange, onActivate }: ScatterDotProps) {
   if (typeof cx !== "number" || typeof cy !== "number" || !payload) return <g />;
   const row = payload as ScatterPoint & Record<string, unknown>;
-  const nameText =
-    typeof row.label === "string" || typeof row.label === "number"
-      ? row.label
-      : seriesLabel ?? group;
-  const muted = selected && selected !== group;
-  const summary = `${nameText}: x ${formatTick(Number(row.x))}, y ${formatTick(Number(row.y))}`;
+  const nameText = row.label ?? (typeof seriesLabel === "string" ? seriesLabel : group);
+  const formatValue = (value: unknown) => Number(value).toLocaleString("en-US", { maximumFractionDigits: 20 });
+  const summary = `${nameText}: x ${formatValue(row.x)}, y ${formatValue(row.y)}${bubbleKey ? `, ${bubbleKey} ${formatValue(row[bubbleKey])}` : ""}`;
+  const radius = bubbleKey && typeof size === "number" && Number.isFinite(size) ? Math.sqrt(Math.max(0, size) / Math.PI) : 4.5;
   return (
     <g
-      role="img"
+      tabIndex={0}
+      role="button"
       aria-label={summary}
-      onClick={() => onPointClick?.(row)}
-      className="cursor-pointer outline-none"
-      opacity={muted ? 0.2 : 1}
+      onMouseEnter={() => onHoverChange(true)}
+      onMouseLeave={() => onHoverChange(false)}
+      onFocus={() => onFocusChange(true)}
+      onBlur={() => onFocusChange(false)}
+      onClick={() => onActivate(row)}
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          event.stopPropagation();
+          onActivate(row);
+        }
+      }}
+      className="cursor-pointer outline-none transition-opacity focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring motion-reduce:transition-none"
+      opacity={muted ? 0.6 : 1}
     >
-      <circle cx={cx} cy={cy} r={4.5} fill={colorVar(group)} stroke="var(--background)" strokeWidth={2} />
+      <circle cx={cx} cy={cy} r={radius} fill={colorVar(group)} stroke="var(--background)" strokeWidth={2} />
     </g>
   );
 }

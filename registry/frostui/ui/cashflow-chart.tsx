@@ -84,6 +84,17 @@ function CashflowChartRoot({
 
 function CashflowBars({ data }: { data: Record<string, unknown>[] }) {
   const { id } = useChart();
+  const [hovered, setHovered] = React.useState<{ key: string; index: number }>();
+  const interaction = (key: string, index: number) => ({
+    onMouseEnter: () => setHovered({ key, index }),
+    onMouseLeave: () => setHovered(undefined),
+    onFocus: () => setHovered({ key, index }),
+    onBlur: () => setHovered(undefined),
+    tabIndex: 0,
+    "aria-label": `${data[index]?.month}: ${key} ${data[index]?.[key]}`,
+    className: "transition-opacity duration-150 motion-reduce:transition-none",
+    opacity: hovered && (hovered.key !== key || hovered.index !== index) ? 0.6 : 1,
+  });
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -105,14 +116,14 @@ function CashflowBars({ data }: { data: Record<string, unknown>[] }) {
           cursor={false}
           content={<ChartTooltipContent />}
         />
-        <Bar dataKey="inflow" stackId="flow" radius={0} isAnimationActive={false}>
+        <Bar dataKey="inflow" stackId="flow" radius={0} activeBar={false} isAnimationActive={false}>
           {data.map((_, index) => (
-            <Cell key={`in-${index}`} fill={pixelPatternUrl(id, "inflow")} />
+            <Cell key={`in-${index}`} fill={pixelPatternUrl(id, "inflow")} {...interaction("inflow", index)} />
           ))}
         </Bar>
-        <Bar dataKey="outflow" stackId="flow" radius={0} isAnimationActive={false}>
+        <Bar dataKey="outflow" stackId="flow" radius={0} activeBar={false} isAnimationActive={false}>
           {data.map((_, index) => (
-            <Cell key={`out-${index}`} fill={pixelPatternUrl(id, "outflow")} />
+            <Cell key={`out-${index}`} fill={pixelPatternUrl(id, "outflow")} {...interaction("outflow", index)} />
           ))}
         </Bar>
       </RechartsBarChart>

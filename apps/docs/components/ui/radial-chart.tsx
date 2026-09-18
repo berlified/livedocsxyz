@@ -220,7 +220,7 @@ function RadialBody({
                 onMouseLeave={() => setHoveredKey(undefined)}
                 onFocus={() => setFocusedKey(key)}
                 onBlur={() => setFocusedKey(undefined)}
-                className={cn("h-9 w-full justify-start gap-3 px-3 text-muted-foreground", activeKey === key && "bg-accent text-foreground", activeKey && activeKey !== key && "opacity-50")}
+                className={cn("h-9 w-full justify-start gap-3 px-3 text-muted-foreground", activeKey === key && "bg-accent text-foreground", activeKey && activeKey !== key && "opacity-60")}
               >
                 <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: colorVar(key) }} />
                 <span className="truncate">{config[key]?.label ?? key}</span>

@@ -57,7 +57,7 @@ function InteractiveRadarShape({
   const [focused, setFocused] = React.useState(false);
   const reducedMotion = useChartReducedMotion();
   const { animationsEnabled = true } = useChartReactions();
-  const active = hovered || focused || selected || emphasized;
+  const active = !muted && (hovered || focused || selected || emphasized);
 
   return (
     <g
@@ -80,7 +80,7 @@ function InteractiveRadarShape({
         }
       }}
       style={{
-        opacity: muted && !hovered && !focused ? 0.25 : 1,
+        opacity: muted ? 0.6 : 1,
         filter: active || glowing ? "drop-shadow(0 2px 3px color-mix(in oklab, var(--foreground) 12%, transparent))" : "drop-shadow(0 0 0 transparent)",
         transition: animationsEnabled && !reducedMotion ? "opacity 220ms ease, filter 220ms ease" : "none",
         cursor: onActivate ? "pointer" : undefined,
@@ -289,7 +289,7 @@ function RadarBody({
                 onMouseLeave={() => setHoveredKey(undefined)}
                 onFocus={() => setFocusedKey(dataKey)}
                 onBlur={() => setFocusedKey(undefined)}
-                className={cn("h-9 w-full justify-start gap-3 px-3 text-muted-foreground", activeKey === dataKey && "bg-accent text-foreground", activeKey && activeKey !== dataKey && "opacity-50")}
+                className={cn("h-9 w-full justify-start gap-3 px-3 text-muted-foreground", activeKey === dataKey && "bg-accent text-foreground", activeKey && activeKey !== dataKey && "opacity-60")}
               >
                 <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: colorVar(dataKey) }} />
                 <span className="truncate">{config[dataKey]?.label ?? dataKey}</span>

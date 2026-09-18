@@ -4,6 +4,8 @@ import * as React from "react";
 
 import {
   ChartContainer,
+  ChartHoverTooltip,
+  ChartTooltipSurface,
   PixelSwatch,
   colorVar,
   pixelFillStyle,
@@ -44,6 +46,8 @@ function CountryChartRoot({
 }) {
   const max = Math.max(...rows.flatMap((row) => [row.current, row.previous ?? 0]), 1);
   const [selected, setSelected] = React.useState<string>();
+  const [active, setActive] = React.useState<string>();
+  const formatAmount = (value: number) => value.toLocaleString("en-US", currency ? { style: "currency", currency: "USD" } : { maximumFractionDigits: 20 });
 
   return (
     <Card className={cn("p-5", className)}>
@@ -72,22 +76,30 @@ function CountryChartRoot({
         </div>
         <ul className="mt-4 space-y-3">
           {rows.map((row) => {
-            const muted = selected && selected !== row.region;
+            const emphasized = active ?? selected;
+            const muted = emphasized !== undefined && emphasized !== row.region;
             const currentPct = (row.current / max) * 100;
             const previousPct =
               row.previous == null ? null : (row.previous / max) * 100;
             return (
-              <li key={row.region}>
+              <li key={row.region} onKeyDown={(event) => { if (event.key === "Escape") setSelected(undefined); }}>
+                <ChartHoverTooltip
+                  onActiveChange={(next: boolean) => setActive((current) => next ? row.region : current === row.region ? undefined : current)}
+                  content={<ChartTooltipSurface title={row.region}>
+                    <div className="flex items-center justify-between gap-6"><span className="text-muted-foreground">{config.current?.label ?? "This period"}</span><span className="font-mono font-bold tabular-nums">{formatAmount(row.current)}</span></div>
+                    <div className="flex items-center justify-between gap-6"><span className="text-muted-foreground">{config.previous?.label ?? "Last period"}</span><span className="font-mono font-bold tabular-nums">{row.previous == null ? "Unavailable" : formatAmount(row.previous)}</span></div>
+                  </ChartTooltipSurface>}
+                >
                 <button
                   type="button"
+                  aria-pressed={selected === row.region}
                   onClick={() =>
                     setSelected((current) =>
                       current === row.region ? undefined : row.region
                     )
                   }
                   className={cn(
-                    "grid w-full grid-cols-[7.5rem_1fr_3.5rem] items-center gap-3 rounded-lg text-left transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    muted && "opacity-35"
+                    "grid w-full grid-cols-[7.5rem_1fr_3.5rem] items-center gap-3 rounded-lg text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   )}
                 >
                   <span className="flex min-w-0 items-center gap-2">
@@ -98,7 +110,7 @@ function CountryChartRoot({
                     ) : null}
                     <span className="truncate text-sm text-foreground">{row.region}</span>
                   </span>
-                  <span className="relative h-2 overflow-visible rounded-full bg-muted">
+                  <span className={cn("relative h-2 overflow-visible rounded-full bg-muted transition-opacity motion-reduce:transition-none", muted && "opacity-60")}>
                     <span
                       className="absolute inset-y-0 left-0 rounded-full"
                       style={{
@@ -110,7 +122,6 @@ function CountryChartRoot({
                       <span
                         className="absolute top-1/2 z-10 h-3.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-foreground"
                         style={{ left: `${previousPct}%` }}
-                        title="Last period"
                       />
                     ) : null}
                   </span>
@@ -118,6 +129,7 @@ function CountryChartRoot({
                     {currency ? formatCompact(row.current) : row.current.toLocaleString("en-US")}
                   </span>
                 </button>
+                </ChartHoverTooltip>
               </li>
             );
           })}

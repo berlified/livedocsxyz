@@ -70,6 +70,9 @@ function RingBody({
   const { selected, setSelected } = useChart();
   const [focused, setFocused] = React.useState<string>();
   const [hovered, setHovered] = React.useState<string>();
+  const activeKey = hovered ?? focused ?? selected;
+  const tooltipKey = hovered ?? focused;
+  const tooltipItem = data.find((item) => item.key === tooltipKey);
   const reducedMotion = useChartReducedMotion();
   const { animationsEnabled = true } = useChartReactions();
 
@@ -79,7 +82,7 @@ function RingBody({
         <ResponsiveContainer width="100%" height="100%">
           <RechartsPieChart>
             <defs />
-            <ChartTooltip content={<ChartTooltipContent />} cursor={false} />
+            <ChartTooltip active={tooltipItem ? false : undefined} content={<ChartTooltipContent />} cursor={false} />
             <Pie
               data={data}
               dataKey="value"
@@ -101,9 +104,12 @@ function RingBody({
                     geometry={props}
                     label={`${item.label}: ${item.value.toLocaleString("en-US")}`}
                     selected={selected === item.key}
-                    muted={Boolean(selected && selected !== item.key)}
-                    emphasized={focused === item.key || hovered === item.key}
+                    muted={Boolean(activeKey && activeKey !== item.key)}
+                    emphasized={activeKey === item.key}
                     onActivate={() => setSelected(item.key)}
+                    onHoverChange={(active) => setHovered(active ? item.key : undefined)}
+                    onFocus={() => setFocused(item.key)}
+                    onBlur={() => setFocused(undefined)}
                   />
                 );
               }}
@@ -117,6 +123,17 @@ function RingBody({
             </Pie>
           </RechartsPieChart>
         </ResponsiveContainer>
+        {tooltipItem ? (
+          <div role="tooltip" className="pointer-events-none absolute left-1/2 top-0 z-10 w-max max-w-full -translate-x-1/2 rounded-sm bg-[var(--chart-tooltip-background,var(--popover))] px-3.5 py-3 text-xs text-[var(--chart-tooltip-foreground,var(--popover-foreground))] shadow-lg">
+            <div className="flex items-center justify-between gap-6">
+              <span className="flex items-center gap-2 text-[var(--chart-tooltip-muted,var(--muted-foreground))]">
+                <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: colorVar(tooltipItem.key) }} />
+                {tooltipItem.label}
+              </span>
+              <span className="font-mono font-bold tabular-nums">{tooltipItem.value.toLocaleString("en-US")}</span>
+            </div>
+          </div>
+        ) : null}
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <p className="tabular-nums text-2xl font-semibold tracking-tight">
             {total.toLocaleString("en-US")}
@@ -131,7 +148,7 @@ function RingBody({
       <ul className="space-y-2 text-sm">
         {data.map((item) => {
           const share = total ? (item.value / total) * 100 : 0;
-          const muted = selected && selected !== item.key;
+          const muted = activeKey && activeKey !== item.key;
           return (
             <li key={item.key}>
               <button
@@ -144,7 +161,7 @@ function RingBody({
                 onBlur={() => setFocused(undefined)}
                 className={cn(
                   "flex w-full items-center justify-between gap-2 rounded-md text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
-                  muted && focused !== item.key && hovered !== item.key && "opacity-40"
+                  muted && "opacity-60"
                 )}
                 style={{ transition: animationsEnabled && !reducedMotion ? "opacity 220ms ease" : "none" }}
               >

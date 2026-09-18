@@ -109,7 +109,7 @@ function SankeyBody({ nodes, links }: { nodes: SankeyNode[]; links: SankeyLink[]
       <Layer
         {...events(key)}
         aria-label={`${accessibleLabel(index)}: ${nodeValue(index)}`}
-        style={{ opacity: isRelatedNode(index) ? 1 : 0.25, transition }}
+        style={{ opacity: isRelatedNode(index) ? 1 : 0.6, transition }}
       >
         <Rectangle
           x={x}
@@ -155,7 +155,8 @@ function SankeyBody({ nodes, links }: { nodes: SankeyNode[]; links: SankeyLink[]
         d={`M${sourceX},${sourceY} C${sourceControlX},${sourceY} ${targetControlX},${targetY} ${targetX},${targetY}`}
         fill="none"
         stroke={focusedKey === key ? "var(--ring)" : nodeColor(link.source)}
-        strokeOpacity={isRelatedLink(index) ? activeKey ? 0.7 : 0.35 : 0.08}
+        strokeOpacity={isRelatedLink(index) && activeKey ? 0.7 : 0.35}
+        opacity={isRelatedLink(index) ? 1 : 0.6}
         strokeWidth={Math.max(linkWidth, 2)}
         style={{ transition }}
       />
@@ -209,7 +210,7 @@ function SankeyBody({ nodes, links }: { nodes: SankeyNode[]; links: SankeyLink[]
               onMouseLeave={() => setHoveredKey(undefined)}
               onFocus={() => setFocusedKey(nodeKey(index))}
               onBlur={() => setFocusedKey(undefined)}
-              className={cn("h-9 w-full justify-start gap-3 px-3 text-muted-foreground", activeNode === index && "bg-accent text-foreground", !isRelatedNode(index) && "opacity-50")}
+              className={cn("h-9 w-full justify-start gap-3 px-3 text-muted-foreground", activeNode === index && "bg-accent text-foreground", !isRelatedNode(index) && "opacity-60")}
             >
               <span aria-hidden="true" className="size-2.5 shrink-0 rounded-full" style={{ backgroundColor: nodeColor(index) }} />
               <span className="truncate">{config[node.name]?.label ?? node.name}</span>

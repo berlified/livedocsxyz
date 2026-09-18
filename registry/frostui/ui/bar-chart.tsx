@@ -5,6 +5,7 @@ import {
   Bar,
   BarChart as RechartsBarChart,
   Brush,
+  Cell,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -146,6 +147,7 @@ function BarBody({
   stackType?: "none" | "stacked" | "percent";
 }) {
   const { id, selected, setSelected } = useChart();
+  const [hovered, setHovered] = React.useState<{ key: string; index: number }>();
 
   const stacked = stackType === "stacked" || stackType === "percent";
   const vertical = layout === "vertical";
@@ -210,10 +212,24 @@ function BarBody({
               fill={fill}
               radius={radius}
               stackId={stacked ? stackId ?? "stack" : stackId}
-              opacity={muted ? 0.25 : 1}
+              activeBar={false}
               onClick={() => isClickable && setSelected(dataKey)}
               cursor={isClickable ? "pointer" : undefined}
-            />
+            >
+              {data.map((row, index) => (
+                <Cell
+                  key={index}
+                  opacity={hovered ? (hovered.key === dataKey && hovered.index === index ? 1 : 0.6) : muted ? 0.25 : 1}
+                  onMouseEnter={() => setHovered({ key: dataKey, index })}
+                  onMouseLeave={() => setHovered(undefined)}
+                  onFocus={() => setHovered({ key: dataKey, index })}
+                  onBlur={() => setHovered(undefined)}
+                  tabIndex={0}
+                  aria-label={`${row[xDataKey]}: ${dataKey} ${row[dataKey]}`}
+                  className="transition-opacity duration-150 motion-reduce:transition-none"
+                />
+              ))}
+            </Bar>
           );
         })}
         {extras.some(
