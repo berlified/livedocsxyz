@@ -1,0 +1,83 @@
+{
+  "name": "trades-feed",
+  "title": "Trades Feed",
+  "category": "charts",
+  "description": "Live time-and-sales tape with side colors and new-print flash.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json",
+    "https://livedocs.xyz/r/chart-reactions.json"
+  ],
+  "files": [
+    "apps/docs/components/ui/crypto-feed.ts",
+    "apps/docs/components/ui/trades-feed.tsx"
+  ],
+  "examples": [
+    "live"
+  ],
+  "variants": [
+    "default"
+  ],
+  "keywords": [
+    "trades",
+    "tape",
+    "time and sales",
+    "crypto",
+    "trading"
+  ],
+  "props": [
+    {
+      "name": "symbol",
+      "type": "string",
+      "description": "Trading pair label"
+    },
+    {
+      "name": "basePrice",
+      "type": "number",
+      "description": "Starting price for the simulated tape"
+    },
+    {
+      "name": "seed",
+      "type": "number",
+      "description": "Tape randomness seed"
+    },
+    {
+      "name": "tickMs",
+      "type": "number",
+      "description": "Milliseconds between prints"
+    },
+    {
+      "name": "rows",
+      "type": "number",
+      "description": "Visible prints"
+    },
+    {
+      "name": "isLoading",
+      "type": "boolean",
+      "description": "Show shared loading feedback"
+    },
+    {
+      "name": "reaction",
+      "type": "ChartReactionOptions",
+      "description": "Optional explicit emotion or metric comparison"
+    }
+  ],
+  "ai": {
+    "purpose": "Stream the latest executed trades with buy/sell color.",
+    "useWhen": [
+      "Token pages",
+      "Trading terminals"
+    ],
+    "preferOver": [
+      "An order book for pending orders"
+    ],
+    "avoid": [
+      "Long histories"
+    ],
+    "compositions": [
+      "TradesFeed beside a LivePriceChart"
+    ]
+  }
+}

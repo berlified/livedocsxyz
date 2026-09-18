@@ -1,0 +1,90 @@
+{
+  "name": "depth-chart",
+  "title": "Depth Chart",
+  "category": "charts",
+  "description": "Cumulative bid/ask staircase with mid-price marker and hover inspection.",
+  "dependencies": [
+    "recharts"
+  ],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json",
+    "https://livedocs.xyz/r/chart-reactions.json"
+  ],
+  "files": [
+    "apps/docs/components/ui/crypto-feed.ts",
+    "apps/docs/components/ui/depth-chart.tsx"
+  ],
+  "examples": [
+    "live"
+  ],
+  "variants": [
+    "default"
+  ],
+  "keywords": [
+    "depth",
+    "liquidity",
+    "bids",
+    "asks",
+    "crypto",
+    "trading"
+  ],
+  "props": [
+    {
+      "name": "symbol",
+      "type": "string",
+      "description": "Trading pair label"
+    },
+    {
+      "name": "basePrice",
+      "type": "number",
+      "description": "Mid price for the simulated book"
+    },
+    {
+      "name": "tickSize",
+      "type": "number",
+      "description": "Price step between levels"
+    },
+    {
+      "name": "levels",
+      "type": "number",
+      "description": "Levels per side"
+    },
+    {
+      "name": "seed",
+      "type": "number",
+      "description": "Book randomness seed"
+    },
+    {
+      "name": "tickMs",
+      "type": "number",
+      "description": "Milliseconds between refreshes"
+    },
+    {
+      "name": "isLoading",
+      "type": "boolean",
+      "description": "Show shared loading feedback"
+    },
+    {
+      "name": "reaction",
+      "type": "ChartReactionOptions",
+      "description": "Optional explicit emotion or metric comparison"
+    }
+  ],
+  "ai": {
+    "purpose": "Visualize cumulative liquidity on both sides of mid.",
+    "useWhen": [
+      "Trading terminals"
+    ],
+    "preferOver": [
+      "An order book for exact levels"
+    ],
+    "avoid": [
+      "Flat markets"
+    ],
+    "compositions": [
+      "DepthChart beside an OrderBook"
+    ]
+  }
+}

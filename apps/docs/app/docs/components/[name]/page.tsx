@@ -45,6 +45,12 @@ import {
   HeatmapChartPreview,
   FunnelChartPreview,
   ScatterChartPreview,
+  LivePriceChartPreview,
+  LivePriceChartExamples,
+  OrderBookPreview,
+  DepthChartPreview,
+  TradesFeedPreview,
+  MarketMoversPreview,
   WaterfallChartPreview,
   WaterfallChartExamples,
   CandlestickChartPreview,
@@ -64,6 +70,31 @@ export function Example() {
     { label: "Churn", value: -5400 },
     { label: "Closing", value: 61100, kind: "total" },
   ]} reaction={{ metric: { current: 61100, previous: 48000 } }} />
+}`,
+  "live-price-chart": `import { LivePriceChart } from "@/components/ui/live-price-chart"
+
+export function Example() {
+  return <LivePriceChart symbol="BTC/USDT" basePrice={97500} />
+}`,
+  "order-book": `import { OrderBook } from "@/components/ui/order-book"
+
+export function Example() {
+  return <OrderBook symbol="BTC/USDT" basePrice={97500} />
+}`,
+  "depth-chart": `import { DepthChart } from "@/components/ui/depth-chart"
+
+export function Example() {
+  return <DepthChart symbol="BTC/USDT" basePrice={97500} />
+}`,
+  "trades-feed": `import { TradesFeed } from "@/components/ui/trades-feed"
+
+export function Example() {
+  return <TradesFeed symbol="BTC/USDT" basePrice={97500} />
+}`,
+  "market-movers": `import { MarketMovers } from "@/components/ui/market-movers"
+
+export function Example() {
+  return <MarketMovers />
 }`,
   "activity-chart": `import { ActivityChart } from "@/components/ui/activity-chart"
 
@@ -459,6 +490,11 @@ const previewByName: Record<string, ReactNode> = {
   "funnel-chart": <FunnelChartPreview />,
   "scatter-chart": <ScatterChartPreview />,
   "activity-chart": <ActivityChartPreview />,
+  "live-price-chart": <LivePriceChartPreview />,
+  "order-book": <OrderBookPreview />,
+  "depth-chart": <DepthChartPreview />,
+  "trades-feed": <TradesFeedPreview />,
+  "market-movers": <MarketMoversPreview />,
 };
 
 const examplesByName: Record<string, ReactNode> = {
@@ -477,6 +513,7 @@ const examplesByName: Record<string, ReactNode> = {
   "radial-chart": <RadialChartExamples />,
   "trend-card": <TrendCardExamples />,
   "activity-chart": <ActivityChartExamples />,
+  "live-price-chart": <LivePriceChartExamples />,
 };
 
 const sourcePaths: Record<string, string> = {
@@ -508,6 +545,11 @@ const sourcePaths: Record<string, string> = {
   "candlestick-chart": "apps/docs/components/ui/candlestick-chart.tsx",
   "chart-reactions": "apps/docs/components/ui/chart-reactions.tsx",
   "activity-chart": "apps/docs/components/ui/activity-chart.tsx",
+  "live-price-chart": "apps/docs/components/ui/live-price-chart.tsx",
+  "order-book": "apps/docs/components/ui/order-book.tsx",
+  "depth-chart": "apps/docs/components/ui/depth-chart.tsx",
+  "trades-feed": "apps/docs/components/ui/trades-feed.tsx",
+  "market-movers": "apps/docs/components/ui/market-movers.tsx",
 };
 
 function readRegistrySource(name: string) {

@@ -1,0 +1,91 @@
+{
+  "name": "live-price-chart",
+  "title": "Live Price Chart",
+  "category": "charts",
+  "description": "Streaming crypto price with volume bars, MA overlay, timeframe pills, and 24h stats.",
+  "dependencies": [
+    "recharts"
+  ],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json",
+    "https://livedocs.xyz/r/chart-reactions.json"
+  ],
+  "files": [
+    "apps/docs/components/ui/crypto-feed.ts",
+    "apps/docs/components/ui/live-price-chart.tsx"
+  ],
+  "examples": [
+    "live"
+  ],
+  "variants": [
+    "default"
+  ],
+  "keywords": [
+    "live",
+    "price",
+    "crypto",
+    "trading",
+    "streaming",
+    "bitcoin"
+  ],
+  "props": [
+    {
+      "name": "symbol",
+      "type": "string",
+      "description": "Trading pair label"
+    },
+    {
+      "name": "basePrice",
+      "type": "number",
+      "description": "Starting price for the simulated feed"
+    },
+    {
+      "name": "seed",
+      "type": "number",
+      "description": "Feed randomness seed"
+    },
+    {
+      "name": "tickMs",
+      "type": "number",
+      "description": "Milliseconds between live ticks"
+    },
+    {
+      "name": "showMA",
+      "type": "boolean",
+      "description": "Show the 20-period moving average"
+    },
+    {
+      "name": "showVolume",
+      "type": "boolean",
+      "description": "Show volume bars under the price"
+    },
+    {
+      "name": "isLoading",
+      "type": "boolean",
+      "description": "Show shared loading feedback"
+    },
+    {
+      "name": "reaction",
+      "type": "ChartReactionOptions",
+      "description": "Optional explicit emotion or metric comparison"
+    }
+  ],
+  "ai": {
+    "purpose": "Stream a live crypto price with volume and moving average.",
+    "useWhen": [
+      "Token pages",
+      "Trading terminals"
+    ],
+    "preferOver": [
+      "A static area for live data"
+    ],
+    "avoid": [
+      "Multi-asset comparison"
+    ],
+    "compositions": [
+      "LivePriceChart beside an OrderBook"
+    ]
+  }
+}

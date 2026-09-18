@@ -41,6 +41,12 @@ const uiComponents = [
   "waterfall-chart",
   "candlestick-chart",
   "activity-chart",
+  "crypto-feed",
+  "live-price-chart",
+  "order-book",
+  "depth-chart",
+  "trades-feed",
+  "market-movers",
 ];
 
 function syncDocsToRegistry() {
@@ -53,9 +59,10 @@ function syncDocsToRegistry() {
   fs.mkdirSync(path.dirname(registryUtils), { recursive: true });
 
   for (const name of uiComponents) {
+    const ext = fs.existsSync(path.join(docsUiDir, `${name}.tsx`)) ? ".tsx" : ".ts";
     fs.copyFileSync(
-      path.join(docsUiDir, `${name}.tsx`),
-      path.join(registryUiDir, `${name}.tsx`)
+      path.join(docsUiDir, `${name}${ext}`),
+      path.join(registryUiDir, `${name}${ext}`)
     );
   }
 

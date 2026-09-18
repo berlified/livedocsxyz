@@ -626,6 +626,126 @@
           "target": "components/ui/activity-chart.tsx"
         }
       ]
+    },
+    {
+      "name": "live-price-chart",
+      "type": "registry:ui",
+      "title": "Live Price Chart",
+      "description": "Streaming crypto price with volume bars, MA overlay, timeframe pills, and 24h stats.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/chart-reactions.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/crypto-feed.ts",
+          "type": "registry:ui",
+          "target": "components/ui/crypto-feed.ts"
+        },
+        {
+          "path": "apps/docs/components/ui/live-price-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/live-price-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "order-book",
+      "type": "registry:ui",
+      "title": "Order Book",
+      "description": "Live bid/ask ladder with depth bars, spread readout, and imbalance meter.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/chart-reactions.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/crypto-feed.ts",
+          "type": "registry:ui",
+          "target": "components/ui/crypto-feed.ts"
+        },
+        {
+          "path": "apps/docs/components/ui/order-book.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/order-book.tsx"
+        }
+      ]
+    },
+    {
+      "name": "depth-chart",
+      "type": "registry:ui",
+      "title": "Depth Chart",
+      "description": "Cumulative bid/ask staircase with mid-price marker and hover inspection.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/chart-reactions.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/crypto-feed.ts",
+          "type": "registry:ui",
+          "target": "components/ui/crypto-feed.ts"
+        },
+        {
+          "path": "apps/docs/components/ui/depth-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/depth-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "trades-feed",
+      "type": "registry:ui",
+      "title": "Trades Feed",
+      "description": "Live time-and-sales tape with side colors and new-print flash.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/chart-reactions.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/crypto-feed.ts",
+          "type": "registry:ui",
+          "target": "components/ui/crypto-feed.ts"
+        },
+        {
+          "path": "apps/docs/components/ui/trades-feed.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/trades-feed.tsx"
+        }
+      ]
+    },
+    {
+      "name": "market-movers",
+      "type": "registry:ui",
+      "title": "Market Movers",
+      "description": "Gainers/losers screener with sparklines, change pills, and live ticks.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/chart-reactions.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/crypto-feed.ts",
+          "type": "registry:ui",
+          "target": "components/ui/crypto-feed.ts"
+        },
+        {
+          "path": "apps/docs/components/ui/market-movers.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/market-movers.tsx"
+        }
+      ]
     }
   ]
 }

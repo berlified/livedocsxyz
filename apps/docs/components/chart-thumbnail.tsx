@@ -265,6 +265,57 @@ const glyphs: Record<string, React.ReactNode> = {
       <circle cx={140} cy={22} r={3} fill={C1} stroke="none" />
     </g>
   ),
+  live: (
+    <g>
+      <Grid />
+      <path d="M0,50 C20,48 28,34 46,36 C64,38 70,46 88,40 C106,34 118,22 140,24 L140,64 L0,64 Z" fill={C1} opacity={0.25} />
+      <path d="M0,50 C20,48 28,34 46,36 C64,38 70,46 88,40 C106,34 118,22 140,24" fill="none" stroke={C1} strokeWidth={2.5} strokeLinecap="round" />
+      <circle cx={140} cy={24} r={3.5} fill={C1} stroke="var(--background)" strokeWidth={1.5} />
+      <circle cx={118} cy={30} r={2} fill={C2} />
+    </g>
+  ),
+  book: (
+    <g fontSize={8} fontFamily="monospace">
+      {[0, 1, 2, 3].map((row) => (
+        <g key={row}>
+          <rect x={76} y={8 + row * 13} width={58 - row * 9} height={9} rx={2} fill={BAD} opacity={0.28} />
+          <rect x={10 + row * 7} y={8 + row * 13} width={58 - row * 9} height={9} rx={2} fill={C1} opacity={0.28} />
+        </g>
+      ))}
+    </g>
+  ),
+  depth: (
+    <g>
+      <path d="M8,56 L40,56 L40,44 L64,44 L64,30 L88,30 L88,30 L72,30 L72,64 L8,64 Z" fill={C1} opacity={0.3} />
+      <path d="M8,56 L40,56 L40,44 L64,44 L64,30 L72,30" fill="none" stroke={C1} strokeWidth={2} strokeLinejoin="round" />
+      <path d="M136,56 L112,56 L112,40 L96,40 L96,26 L88,26 L72,26 L72,64 L136,64 Z" fill={BAD} opacity={0.3} />
+      <path d="M136,56 L112,56 L112,40 L96,40 L96,26 L88,26 L72,26" fill="none" stroke={BAD} strokeWidth={2} strokeLinejoin="round" />
+      <line x1={72} y1={8} x2={72} y2={64} stroke={MUTED} strokeWidth={1} strokeDasharray="3 3" />
+    </g>
+  ),
+  tape: (
+    <g fontSize={9} fontFamily="monospace">
+      {[0, 1, 2, 3, 4].map((row) => (
+        <g key={row}>
+          <circle cx={18} cy={12 + row * 12} r={3} fill={row % 2 ? BAD : C1} />
+          <line x1={30} y1={12 + row * 12} x2={86 - row * 7} y2={12 + row * 12} stroke={MUTED} strokeWidth={5} strokeLinecap="round" />
+          <line x1={96} y1={12 + row * 12} x2={134} y2={12 + row * 12} stroke={GRID} strokeWidth={5} strokeLinecap="round" />
+        </g>
+      ))}
+    </g>
+  ),
+  movers: (
+    <g>
+      {[0, 1, 2].map((row) => (
+        <g key={row}>
+          <circle cx={16} cy={14 + row * 20} r={7} fill={TRACK} />
+          <line x1={30} y1={12 + row * 20} x2={62} y2={12 + row * 20} stroke={MUTED} strokeWidth={4} strokeLinecap="round" />
+          <line x1={30} y1={19 + row * 20} x2={50} y2={19 + row * 20} stroke={GRID} strokeWidth={3} strokeLinecap="round" />
+          <path d={`M76,${22 + row * 20} C88,${20 + row * 20} 96,${12 + row * 20} 108,${14 + row * 20} C118,${15 + row * 20} 126,${10 + row * 20} 136,${8 + row * 20}`} fill="none" stroke={row === 1 ? BAD : C1} strokeWidth={2} strokeLinecap="round" />
+        </g>
+      ))}
+    </g>
+  ),
   primitives: (
     <g>
       <line x1={8} y1={6} x2={8} y2={64} stroke={MUTED} strokeWidth={1.5} />
@@ -315,6 +366,11 @@ const byName: Record<string, keyof typeof glyphs | string> = {
   "candlestick-chart": "candle",
   sparkline: "spark",
   "activity-chart": "bar",
+  "live-price-chart": "live",
+  "order-book": "book",
+  "depth-chart": "depth",
+  "trades-feed": "tape",
+  "market-movers": "movers",
   chart: "primitives",
   "chart-reactions": "reaction",
 };
