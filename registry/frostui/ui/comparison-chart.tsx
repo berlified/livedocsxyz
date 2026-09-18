@@ -71,9 +71,9 @@ function ComparisonChartRoot({
       <ChartSkeleton isLoading={isLoading}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm text-muted-foreground">{title}</p>
-          <div className="mt-2 flex items-center gap-2">
-            <p className="tabular-nums text-3xl font-semibold tracking-tight">{value}</p>
+          <p className="text-[15px] font-medium tracking-tight">{title}</p>
+          <div className="mt-1 flex items-center gap-2">
+            <p className="tabular-nums text-4xl font-medium tracking-tight">{value}</p>
             {delta ? (
               <Badge
                 variant="outline"

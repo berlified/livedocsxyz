@@ -60,7 +60,8 @@ function CountryChartRoot({
         className="w-full justify-start"
         variant="plain"
       >
-        {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
+        {title ? <p className="text-[15px] font-medium tracking-tight">{title}</p> : null}
+        <p className="mt-1 tabular-nums text-4xl font-medium tracking-tight">{formatAmount(rows.reduce((sum, row) => sum + row.current, 0))}</p>
         <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
             <PixelSwatch color={colorVar("current")} />

@@ -74,9 +74,9 @@ function MetricChartRoot({
       <ChartSkeleton isLoading={isLoading}>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm text-muted-foreground">{title}</p>
-          <div className="mt-2 flex items-center gap-2.5">
-            <p className="tabular-nums text-4xl font-semibold leading-none tracking-tight">{value}</p>
+          <p className="text-[15px] font-medium tracking-tight">{title}</p>
+          <div className="mt-1 flex items-center gap-2.5">
+            <p className="tabular-nums text-4xl font-medium leading-none tracking-tight">{value}</p>
             {delta ? (
               <Badge
                 variant="outline"

@@ -53,7 +53,7 @@ function CashflowChartRoot({
   return (
     <Card className={cn("p-5 sm:p-6", className)}>
       <ChartContainer isLoading={isLoading} loadingVariant="cashflow" reaction={reaction} config={config} data={data} className="w-full justify-start" variant="plain">
-        {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
+        {title ? <p className="text-[15px] font-medium tracking-tight">{title}</p> : null}
         <div className="mt-3 flex flex-wrap gap-6">
         <div>
           <p className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -61,7 +61,7 @@ function CashflowChartRoot({
             {inflowLabel ?? config.inflow?.label ?? "Inflow"}
           </p>
           {inflowValue ? (
-            <p className="mt-1 tabular-nums text-2xl font-semibold tracking-tight">{inflowValue}</p>
+            <p className="mt-1 tabular-nums text-3xl font-medium tracking-tight">{inflowValue}</p>
           ) : null}
         </div>
         <div>
@@ -70,7 +70,7 @@ function CashflowChartRoot({
             {outflowLabel ?? config.outflow?.label ?? "Outflow"}
           </p>
           {outflowValue ? (
-            <p className="mt-1 tabular-nums text-2xl font-semibold tracking-tight">{outflowValue}</p>
+            <p className="mt-1 tabular-nums text-3xl font-medium tracking-tight">{outflowValue}</p>
           ) : null}
         </div>
         </div>

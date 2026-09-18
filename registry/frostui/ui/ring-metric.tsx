@@ -41,7 +41,7 @@ function RingMetricRoot({
   return (
     <Card className={cn("@container/ring min-w-0 p-5", className)}>
       <ChartSkeleton isLoading={isLoading}>
-      {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
+      {title ? <p className="text-[15px] font-medium tracking-tight">{title}</p> : null}
       <ChartContainer
         isLoading={isLoading}
         loadingVariant="ring"
@@ -135,7 +135,7 @@ function RingBody({
           </div>
         ) : null}
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <p className="tabular-nums text-2xl font-semibold tracking-tight">
+          <p className="tabular-nums text-3xl font-medium tracking-tight">
             {total.toLocaleString("en-US")}
           </p>
           {centerLabel ? (

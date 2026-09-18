@@ -79,10 +79,10 @@ function SpotlightChartRoot({
   return (
     <Card className={cn("p-5 sm:p-6", className)}>
       <ChartSkeleton isLoading={isLoading}>
-      {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
+      {title ? <p className="text-[15px] font-medium tracking-tight">{title}</p> : null}
       {value ? (
-        <div className="mt-2 flex items-end gap-2">
-          <p className="tabular-nums text-3xl font-semibold tracking-tight">{value}</p>
+        <div className="mt-1 flex items-end gap-2">
+          <p className="tabular-nums text-4xl font-medium tracking-tight">{value}</p>
           {delta ? (
             <Badge
               variant="outline"
