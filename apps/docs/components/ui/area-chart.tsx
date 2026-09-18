@@ -102,6 +102,7 @@ function ChartArea({
   defaultSelectedDataKey,
   onSelectionChange,
   xDataKey = "month",
+  variant,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
@@ -112,6 +113,7 @@ function ChartArea({
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
   xDataKey?: string;
+  variant?: "panel" | "plain";
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
@@ -129,6 +131,7 @@ function ChartArea({
       config={config}
       data={data}
       className={cn("h-72 w-full", className)}
+      variant={variant}
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
