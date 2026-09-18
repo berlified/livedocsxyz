@@ -199,27 +199,10 @@ function Faq() {
 }
 
 function ThemeDemo() {
-  const [dark, setDark] = React.useState(true);
   return (
-    <div className={cn("overflow-hidden rounded-2xl border border-border", dark ? "" : "light")}>
+    <div className="overflow-hidden rounded-2xl border border-border">
       <div className="flex items-center justify-between gap-3 bg-card px-5 py-4">
         <p className="text-sm font-medium">Tokens do the theming. You ship the product.</p>
-        <div role="group" aria-label="Preview theme" className="flex rounded-full border border-border bg-background p-1">
-          {(["Light", "Dark"] as const).map((mode) => {
-            const isDark = mode === "Dark";
-            return (
-              <button
-                key={mode}
-                type="button"
-                aria-pressed={dark === isDark}
-                onClick={() => setDark(isDark)}
-                className={cn("h-7 rounded-full px-3 text-xs", dark === isDark ? "bg-accent font-medium text-foreground" : "text-muted-foreground")}
-              >
-                {mode}
-              </button>
-            );
-          })}
-        </div>
       </div>
       <div className="grid gap-3 bg-muted/20 p-4 sm:p-5 md:grid-cols-2">
         <div className="rounded-xl border border-border bg-card p-4">
@@ -241,15 +224,6 @@ function ThemeDemo() {
     </div>
   );
 }
-
-const quotes = [
-  { quote: "Replaced three chart libraries in an afternoon. The tooltips alone were worth the switch.", name: "Maya R.", role: "Frontend lead, fintech" },
-  { quote: "Loading states that actually look designed. Our skeletons finally match the product.", name: "Daniel K.", role: "Indie hacker" },
-  { quote: "Dropped the dashboard into our admin panel and clients assumed it was custom work.", name: "Sofia L.", role: "Design engineer" },
-  { quote: "Keyboard support out of the box saved us a full accessibility audit cycle.", name: "James T.", role: "Product engineer, SaaS" },
-  { quote: "Light and dark just work. I stopped thinking about chart theming entirely.", name: "Aisha B.", role: "Full-stack developer" },
-  { quote: "Source I can read and fork beats a black box I have to fight. MIT sealed it.", name: "Tom H.", role: "CTO, early-stage" },
-];
 
 export function LandingPage() {
   return (
@@ -379,21 +353,6 @@ export function LandingPage() {
             <p className="text-sm text-muted-foreground">{label}</p>
           </div>
         ))}
-      </section>
-
-      <section aria-labelledby="quotes-title" className="space-y-8 py-16 sm:py-24">
-        <SectionHeading eyebrow="Loved by builders" title="Trusted by teams shipping dashboards." />
-        <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {quotes.map((item) => (
-            <figure key={item.name} className="flex flex-col justify-between gap-6 rounded-2xl border border-border bg-card p-5">
-              <blockquote className="text-sm leading-6 text-foreground/90">“{item.quote}”</blockquote>
-              <figcaption>
-                <p className="text-sm font-medium">{item.name}</p>
-                <p className="text-xs text-muted-foreground">{item.role}</p>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
       </section>
 
       <section aria-labelledby="install-title" className="space-y-6 border-t border-border py-16 text-center sm:py-24">
