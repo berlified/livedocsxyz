@@ -57,6 +57,7 @@ import { RadialChart } from "@/components/ui/radial-chart";
 import { RangeChart } from "@/components/ui/range-chart";
 import { SankeyChart } from "@/components/ui/sankey-chart";
 import { Sparkline } from "@/components/ui/sparkline";
+import { ActivityChart } from "@/components/ui/activity-chart";
 import { Card } from "@/components/ui/card";
 import { TrendCard } from "@/components/ui/trend-card";
 
@@ -82,7 +83,7 @@ function PreviewPair({ children }: { children: React.ReactNode }) {
 
 export function ChartPreview() {
   return (
-    <AreaChart data={monthlyData} config={trafficConfig} className="w-full">
+    <AreaChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig} className="w-full">
       <AreaChart.Grid />
       <AreaChart.Tooltip />
       <AreaChart.Legend isClickable />
@@ -146,7 +147,7 @@ export function AreaChartExamples() {
 
 export function LineChartPreview() {
   return (
-    <LineChart data={monthlyData} config={trafficConfig} className="w-full">
+    <LineChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig} className="w-full">
       <LineChart.Grid />
       <LineChart.Tooltip />
       <LineChart.Legend isClickable />
@@ -181,7 +182,7 @@ export function LineChartExamples() {
 
 export function BarChartPreview() {
   return (
-    <BarChart data={monthlyData} config={trafficConfig} className="w-full">
+    <BarChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig} className="w-full">
       <BarChart.Grid />
       <BarChart.Tooltip />
       <BarChart.Legend isClickable />
@@ -232,7 +233,7 @@ export function BarChartExamples() {
 
 export function ComposedChartPreview() {
   return (
-    <ComposedChart data={composedDaily} config={composedDailyConfig} xDataKey="day" className="w-full" height={340}>
+    <ComposedChart title="Daily activity" value="48,210" description="Sessions · January" data={composedDaily} config={composedDailyConfig} xDataKey="day" className="w-full" height={340}>
       <ComposedChart.Grid />
       <ComposedChart.XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} ticks={["Jan 1", "Jan 5", "Jan 10", "Jan 15", "Jan 20", "Jan 25", "Jan 30"]} interval="preserveStartEnd" minTickGap={28} />
       <ComposedChart.Tooltip
@@ -628,5 +629,40 @@ export function UsageMeterPreview() {
         resetLabel="Clears on payout"
       />
     </PreviewPair>
+  );
+}
+
+export const activitySessions = [
+  { label: "D3", value: 1240 }, { label: "D6", value: 1860 }, { label: "D9", value: 2140 },
+  { label: "D12", value: 1780 }, { label: "D15", value: 2420 }, { label: "D18", value: 1980 },
+  { label: "D21", value: 2660 }, { label: "D24", value: 2310 }, { label: "D27", value: 2890 },
+  { label: "D30", value: 3120 },
+];
+
+export const activityConfig = {
+  value: { label: "Sessions", color: "var(--chart-2)" },
+};
+
+export function ActivityChartPreview() {
+  return (
+    <ActivityChart
+      title="Sessions"
+      value="48.2k"
+      description="Last 30 days"
+      data={activitySessions}
+      config={activityConfig}
+      className="w-full"
+    />
+  );
+}
+
+export function ActivityChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Variants</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <ActivityChart title="Sessions" value="48.2k" data={activitySessions} config={activityConfig} isLoading className="w-full" />
+      </ComponentPreview>
+    </section>
   );
 }

@@ -314,6 +314,7 @@ const byName: Record<string, keyof typeof glyphs | string> = {
   "waterfall-chart": "waterfall",
   "candlestick-chart": "candle",
   sparkline: "spark",
+  "activity-chart": "bar",
   chart: "primitives",
   "chart-reactions": "reaction",
 };

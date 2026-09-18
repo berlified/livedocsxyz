@@ -211,7 +211,13 @@
       "name": "candlestick-chart",
       "type": "registry:ui",
       "title": "Candlestick Chart",
-      "description": "OHLC candles with hollow up bodies, filled down bodies, crosshair tooltips on hover or focus, optional volume, and an accessible data table."
+      "description": "OHLC candles with solid green up and red down bodies, crosshair tooltips on hover or focus, optional volume, and an accessible data table."
+    },
+    {
+      "name": "activity-chart",
+      "type": "registry:ui",
+      "title": "Activity Chart",
+      "description": "Compact rounded-bar metric card with a Polar title, headline value, tooltip, and hover dimming."
     }
   ]
 }

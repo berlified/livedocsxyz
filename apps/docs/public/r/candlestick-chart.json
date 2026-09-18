@@ -3,7 +3,7 @@
   "name": "candlestick-chart",
   "type": "registry:ui",
   "title": "Candlestick Chart",
-  "description": "OHLC candles with hollow up bodies, filled down bodies, crosshair tooltips on hover or focus, optional volume, and an accessible data table.",
+  "description": "OHLC candles with solid green up and red down bodies, crosshair tooltips on hover or focus, optional volume, and an accessible data table.",
   "registryDependencies": [
     "https://livedocs.xyz/r/chart.json",
     "https://livedocs.xyz/r/chart-reactions.json",

@@ -347,6 +347,27 @@ export function ChartHoverTooltip({
   );
 }
 
+export function ChartHeading({
+  title,
+  value,
+  description,
+}: {
+  title?: string;
+  value?: string;
+  description?: string;
+}) {
+  if (!title && !value) return null;
+  return (
+    <div className="flex items-baseline justify-between gap-3">
+      <div className="min-w-0">
+        {title ? <p className="truncate text-[15px] font-medium tracking-tight">{title}</p> : null}
+        {description ? <p className="mt-1 truncate text-xs text-muted-foreground">{description}</p> : null}
+      </div>
+      {value ? <p className="shrink-0 tabular-nums text-2xl font-medium tracking-tight">{value}</p> : null}
+    </div>
+  );
+}
+
 export function ChartTooltipCursor({
   axisLabelFormatter,
 }: {

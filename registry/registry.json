@@ -594,7 +594,7 @@
       "name": "candlestick-chart",
       "type": "registry:ui",
       "title": "Candlestick Chart",
-      "description": "OHLC candles with hollow up bodies, filled down bodies, crosshair tooltips on hover or focus, optional volume, and an accessible data table.",
+      "description": "OHLC candles with solid green up and red down bodies, crosshair tooltips on hover or focus, optional volume, and an accessible data table.",
       "registryDependencies": [
         "https://livedocs.xyz/r/chart.json",
         "https://livedocs.xyz/r/chart-reactions.json",
@@ -606,6 +606,24 @@
           "path": "apps/docs/components/ui/candlestick-chart.tsx",
           "type": "registry:ui",
           "target": "components/ui/candlestick-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "activity-chart",
+      "type": "registry:ui",
+      "title": "Activity Chart",
+      "description": "Compact rounded-bar metric card with a Polar title, headline value, tooltip, and hover dimming.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/activity-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/activity-chart.tsx"
         }
       ]
     }

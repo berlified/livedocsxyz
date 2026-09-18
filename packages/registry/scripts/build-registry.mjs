@@ -35,6 +35,12 @@ const uiComponents = [
   "spotlight-chart",
   "lane-chart",
   "usage-meter",
+  "heatmap-chart",
+  "funnel-chart",
+  "scatter-chart",
+  "waterfall-chart",
+  "candlestick-chart",
+  "activity-chart",
 ];
 
 function syncDocsToRegistry() {

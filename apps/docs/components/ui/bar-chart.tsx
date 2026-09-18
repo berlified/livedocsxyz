@@ -14,6 +14,7 @@ import {
 import {
   ChartContainer,
   ChartGrid,
+  ChartHeading,
   ChartLegend,
   ChartTooltip,
   GradientFill,
@@ -88,6 +89,9 @@ function ChartBar({
   layout = "horizontal",
   stackType,
   variant,
+  title,
+  value,
+  description,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
@@ -101,6 +105,9 @@ function ChartBar({
   layout?: "horizontal" | "vertical";
   stackType?: "none" | "stacked" | "percent";
   variant?: "panel" | "plain";
+  title?: string;
+  value?: string;
+  description?: string;
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
@@ -122,14 +129,17 @@ function ChartBar({
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      <BarBody
-        data={data}
-        xDataKey={xDataKey}
-        series={series}
-        extras={extras}
-        layout={layout}
-        stackType={stackType}
-      />
+      <ChartHeading title={title} value={value} description={description} />
+      <div className="min-h-0 w-full flex-1">
+        <BarBody
+          data={data}
+          xDataKey={xDataKey}
+          series={series}
+          extras={extras}
+          layout={layout}
+          stackType={stackType}
+        />
+      </div>
     </ChartContainer>
   );
 }

@@ -38,6 +38,8 @@ import {
   SpotlightChartPreview,
   LaneChartPreview,
   UsageMeterPreview,
+  ActivityChartPreview,
+  ActivityChartExamples,
 } from "@/components/chart-previews";
 import {
   HeatmapChartPreview,
@@ -62,6 +64,24 @@ export function Example() {
     { label: "Churn", value: -5400 },
     { label: "Closing", value: 61100, kind: "total" },
   ]} reaction={{ metric: { current: 61100, previous: 48000 } }} />
+}`,
+  "activity-chart": `import { ActivityChart } from "@/components/ui/activity-chart"
+
+export function Example() {
+  return (
+    <ActivityChart
+      title="Sessions"
+      value="48.2k"
+      description="Last 30 days"
+      data={[
+        { label: "D3", value: 1240 },
+        { label: "D9", value: 2140 },
+        { label: "D15", value: 2420 },
+        { label: "D21", value: 2660 },
+        { label: "D27", value: 2890 },
+      ]}
+    />
+  )
 }`,
   "candlestick-chart": `import { CandlestickChart } from "@/components/ui/candlestick-chart"
 
@@ -133,7 +153,7 @@ import { AreaChart } from "@/components/ui/area-chart"
 
 export function Example() {
   return (
-    <AreaChart data={monthlyData} config={trafficConfig}>
+    <AreaChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig}>
       <AreaChart.Grid />
       <AreaChart.Tooltip />
       <AreaChart.Legend isClickable />
@@ -147,7 +167,7 @@ import { LineChart } from "@/components/ui/line-chart"
 
 export function Example() {
   return (
-    <LineChart data={monthlyData} config={trafficConfig}>
+    <LineChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig}>
       <LineChart.Grid />
       <LineChart.Tooltip />
       <LineChart.Legend isClickable />
@@ -161,7 +181,7 @@ import { BarChart } from "@/components/ui/bar-chart"
 
 export function Example() {
   return (
-    <BarChart data={monthlyData} config={trafficConfig}>
+    <BarChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig}>
       <BarChart.Grid />
       <BarChart.Tooltip />
       <BarChart.Legend isClickable />
@@ -175,7 +195,7 @@ import { ComposedChart } from "@/components/ui/composed-chart"
 
 export function Example() {
   return (
-    <ComposedChart data={monthlyData} config={trafficConfig}>
+    <ComposedChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig}>
       <ComposedChart.Grid />
       <ComposedChart.Tooltip />
       <ComposedChart.Bar dataKey="desktop" />
@@ -438,6 +458,7 @@ const previewByName: Record<string, ReactNode> = {
   "heatmap-chart": <HeatmapChartPreview />,
   "funnel-chart": <FunnelChartPreview />,
   "scatter-chart": <ScatterChartPreview />,
+  "activity-chart": <ActivityChartPreview />,
 };
 
 const examplesByName: Record<string, ReactNode> = {
@@ -455,6 +476,7 @@ const examplesByName: Record<string, ReactNode> = {
   "radar-chart": <RadarChartExamples />,
   "radial-chart": <RadialChartExamples />,
   "trend-card": <TrendCardExamples />,
+  "activity-chart": <ActivityChartExamples />,
 };
 
 const sourcePaths: Record<string, string> = {
@@ -485,6 +507,7 @@ const sourcePaths: Record<string, string> = {
   "waterfall-chart": "apps/docs/components/ui/waterfall-chart.tsx",
   "candlestick-chart": "apps/docs/components/ui/candlestick-chart.tsx",
   "chart-reactions": "apps/docs/components/ui/chart-reactions.tsx",
+  "activity-chart": "apps/docs/components/ui/activity-chart.tsx",
 };
 
 function readRegistrySource(name: string) {

@@ -15,6 +15,7 @@ import {
 import {
   ChartContainer,
   ChartGrid,
+  ChartHeading,
   ChartLegend,
   ChartTooltip,
   GradientFill,
@@ -103,6 +104,9 @@ function ChartArea({
   onSelectionChange,
   xDataKey = "month",
   variant,
+  title,
+  value,
+  description,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
@@ -114,6 +118,9 @@ function ChartArea({
   onSelectionChange?: (key?: string) => void;
   xDataKey?: string;
   variant?: "panel" | "plain";
+  title?: string;
+  value?: string;
+  description?: string;
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
@@ -135,12 +142,15 @@ function ChartArea({
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      <AreaBody
-        data={data}
-        xDataKey={xDataKey}
-        series={series}
-        extras={extras}
-      />
+      <ChartHeading title={title} value={value} description={description} />
+      <div className="min-h-0 w-full flex-1">
+        <AreaBody
+          data={data}
+          xDataKey={xDataKey}
+          series={series}
+          extras={extras}
+        />
+      </div>
     </ChartContainer>
   );
 }
