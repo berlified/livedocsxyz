@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import { Analytics } from "@vercel/analytics/next";
 
 import { ChartReactionProvider } from "@/components/chart-reaction-provider";
 
@@ -73,6 +74,7 @@ export default function RootLayout({
             <DocsShell>{children}</DocsShell>
           </ChartReactionProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );
