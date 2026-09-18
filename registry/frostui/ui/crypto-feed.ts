@@ -19,7 +19,7 @@ export function mulberry32(seed: number) {
 
 export function genTicks(seed: number, points: number, start: number, drift: number, vol: number, stepMs = 60000): CryptoTick[] {
   const rand = mulberry32(seed);
-  const now = Date.now();
+  const now = Math.floor(Date.now() / 60000) * 60000;
   let price = start;
   return Array.from({ length: points }, (_, index) => {
     price = Math.max(start * 0.2, price * (1 + drift + (rand() - 0.5) * vol));

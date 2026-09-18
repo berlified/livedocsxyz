@@ -224,6 +224,50 @@ function LazyDashboard() {
   );
 }
 
+const CRYPTO_COMPONENTS = new Set([
+  "live-price-chart",
+  "order-book",
+  "depth-chart",
+  "trades-feed",
+  "market-movers",
+]);
+
+function FooterChartColumns() {
+  const charts = components.filter((item) => !CRYPTO_COMPONENTS.has(item.name));
+  const crypto = components.filter((item) => CRYPTO_COMPONENTS.has(item.name));
+  const renderLinks = (items: typeof charts) => (
+    <ul className="mt-4 columns-2 gap-8 space-y-2.5 [column-fill:_balance]">
+      {items.map((item) => (
+        <li key={item.name} className="break-inside-avoid">
+          <Link href={`/docs/components/${item.name}`} className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground">
+            {item.title}
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+  return (
+    <>
+      <nav aria-label="Charts">
+        <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">Charts · {charts.length}</p>
+        {renderLinks(charts)}
+      </nav>
+      <nav aria-label="Crypto">
+        <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">Crypto · {crypto.length}</p>
+        <ul className="mt-4 space-y-2.5">
+          {crypto.map((item) => (
+            <li key={item.name}>
+              <Link href={`/docs/components/${item.name}`} className="text-sm text-muted-foreground no-underline transition-colors hover:text-foreground">
+                {item.title}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </>
+  );
+}
+
 function ThemeDemo() {
   return (
     <div className="overflow-hidden rounded-2xl border border-border">
@@ -426,7 +470,7 @@ export function LandingPage() {
       </section>
 
       <footer className="overflow-hidden border-t border-border pt-14">
-        <div className="grid gap-10 pb-14 sm:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr]">
+        <div className="grid gap-10 pb-14 sm:grid-cols-2 lg:grid-cols-[1.1fr_0.7fr_1.3fr_0.9fr]">
           <div className="space-y-4">
             <p className="text-sm font-semibold tracking-tight">livedocs</p>
             <p className="max-w-xs text-sm leading-6 text-muted-foreground">
@@ -471,28 +515,6 @@ export function LandingPage() {
                 { label: "Docs", href: "/docs" },
               ],
             },
-            {
-              heading: "Charts",
-              links: [
-                { label: "Area chart", href: "/docs/components/area-chart" },
-                { label: "Line chart", href: "/docs/components/line-chart" },
-                { label: "Bar chart", href: "/docs/components/bar-chart" },
-                { label: "Pie chart", href: "/docs/components/pie-chart" },
-                { label: "Funnel chart", href: "/docs/components/funnel-chart" },
-                { label: "Heatmap chart", href: "/docs/components/heatmap-chart" },
-              ],
-            },
-            {
-              heading: "More charts",
-              links: [
-                { label: "Live price chart", href: "/docs/components/live-price-chart" },
-                { label: "Candlestick chart", href: "/docs/components/candlestick-chart" },
-                { label: "Activity chart", href: "/docs/components/activity-chart" },
-                { label: "Market movers", href: "/docs/components/market-movers" },
-                { label: "Order book", href: "/docs/components/order-book" },
-                { label: "All components", href: "/docs/components" },
-              ],
-            },
           ].map((group) => (
             <nav key={group.heading} aria-label={group.heading}>
               <p className="text-xs font-medium uppercase tracking-[0.14em] text-muted-foreground">{group.heading}</p>
@@ -507,6 +529,7 @@ export function LandingPage() {
               </ul>
             </nav>
           ))}
+          <FooterChartColumns />
         </div>
         <p aria-hidden className="select-none whitespace-nowrap text-center text-[12vw] font-medium leading-[0.85] tracking-[-0.05em] text-foreground/[0.07]">livedocs</p>
       </footer>

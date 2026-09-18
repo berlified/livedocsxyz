@@ -42,28 +42,30 @@ export function TradesFeed({
 }) {
   const randRef = React.useRef<() => number>(mulberry32(seed));
   const idRef = React.useRef(1);
-  const [prints, setPrints] = React.useState<TradePrint[]>(() => {
+  const [prints, setPrints] = React.useState<TradePrint[]>([]);
+
+  React.useEffect(() => {
+    randRef.current = mulberry32(seed);
+    idRef.current = 1;
     const out: TradePrint[] = [];
     let price = basePrice;
+    const now = Date.now();
     for (let index = 0; index < rows; index++) {
       const print = nextPrint(idRef.current++, price, randRef.current);
-      print.t = Date.now() - (rows - index) * tickMs;
+      print.t = now - (rows - index) * tickMs;
       price = print.price;
       out.push(print);
     }
-    return [...out].reverse();
-  });
-
-  React.useEffect(() => {
+    setPrints([...out].reverse());
     const id = window.setInterval(() => {
       if (document.hidden) return;
       setPrints((current) => {
-        const price = current[0]?.price ?? basePrice;
-        return [nextPrint(idRef.current++, price, randRef.current), ...current].slice(0, rows);
+        const currentPrice = current[0]?.price ?? basePrice;
+        return [nextPrint(idRef.current++, currentPrice, randRef.current), ...current].slice(0, rows);
       });
     }, tickMs);
     return () => window.clearInterval(id);
-  }, [tickMs, rows, basePrice]);
+  }, [seed, tickMs, rows, basePrice]);
 
   void reaction;
 
