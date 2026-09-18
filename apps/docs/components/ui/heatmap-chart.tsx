@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChartContainer, ChartTooltipSurface, colorVar, type ChartConfig } from "@/components/ui/chart";
+import { ChartContainer, ChartTooltipSurface, type ChartConfig } from "@/components/ui/chart";
 import { ChartSkeleton, useChartReactions, useChartReducedMotion, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
@@ -26,10 +26,11 @@ export type HeatmapChartProps = {
   reaction?: ChartReactionOptions;
 };
 
-const defaultConfig = { value: { label: "Activity", color: "var(--chart-2, var(--primary))" } } satisfies ChartConfig;
+const defaultConfig = { value: { label: "Contributions", color: "var(--chart-2, var(--primary))" } } satisfies ChartConfig;
 const formatNumber = (value: number) => value.toLocaleString("en-US");
 const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const amounts = [8, 28, 48, 70, 95];
+const amounts = [0, 1, 2, 3, 4];
+const ordinal = (day: number) => day + (day % 10 === 1 && day % 100 !== 11 ? "st" : day % 10 === 2 && day % 100 !== 12 ? "nd" : day % 10 === 3 && day % 100 !== 13 ? "rd" : "th");
 const parseWeek = (value: string) => /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFinite(Date.parse(`${value}T00:00:00Z`));
 const monthName = (value: string) => new Date(`${value}T00:00:00Z`).toLocaleDateString("en-US", { month: "short", timeZone: "UTC" });
 
@@ -91,7 +92,7 @@ export function HeatmapChart({
   const low = finite.reduce((min, cell) => Math.min(min, cell.value! / scale), 0);
   const high = finite.reduce((max, cell) => Math.max(max, cell.value! / scale), 0);
   const level = (cell: HeatmapCell) => cell.value === null ? null : high === low || cell.value / scale === low ? 0 : Math.min(4, Math.max(1, Math.ceil((cell.value / scale - low) / (high - low) * 4)));
-  const fill = (index: number) => `color-mix(in oklab, ${colorVar("value")} ${amounts[index]}%, var(--card))`;
+  const fill = (index: number) => `var(--chart-heat-${index})`;
   const activeLevel = hoveredLevel ?? focusedLevel ?? selectedLevel;
   const activeIndex = dismissed ? null : hovered ?? focused;
   const active = activeIndex === null ? undefined : cells[activeIndex];
@@ -107,6 +108,19 @@ export function HeatmapChart({
     return label;
   };
   const describe = (cell: HeatmapCell) => `${cellLabel(cell)}: ${cell.value === null ? "No data" : formatValue(cell.value)}`;
+  const shortDate = (cell: HeatmapCell) => {
+    if (calendar && parseWeek(cell.x) && weekdays.includes(cell.y)) {
+      const date = new Date(`${cell.x}T00:00:00Z`);
+      date.setUTCDate(date.getUTCDate() + (weekdays.indexOf(cell.y) - date.getUTCDay() + 7) % 7);
+      return `${date.toLocaleDateString("en-US", { month: "long", timeZone: "UTC" })} ${ordinal(date.getUTCDate())}`;
+    }
+    return cellLabel(cell);
+  };
+  const sentence = (cell: HeatmapCell) => {
+    const raw = config.value?.label;
+    const noun = typeof raw === "string" ? raw.toLowerCase() : "contributions";
+    return cell.value === null ? `No ${noun} on ${shortDate(cell)}.` : `${formatValue(cell.value)} ${noun} on ${shortDate(cell)}.`;
+  };
   const describeLevel = (index: number) => index === 0 ? formatValue(low * scale) : `${formatValue((low + (high - low) * (index - 1) / 4) * scale)}–${formatValue((low + (high - low) * index / 4) * scale)}`;
   const gridSignature = JSON.stringify([xLabels, yLabels]);
 
@@ -149,18 +163,18 @@ export function HeatmapChart({
             <p id={`${id}-help`} className="sr-only">Use arrow keys to explore cells, Home and End to move within a row. Press Escape to dismiss details. Use the legend to highlight an intensity level.</p>
             <div ref={tooltipHost} className="relative">
             <div className="overflow-x-auto p-1" onScroll={() => setDismissed(true)}>
-              <div ref={gridRef} role="grid" aria-label={title} aria-describedby={`${id}-help`} aria-rowcount={yLabels.length + 1} aria-colcount={xLabels.length + 1} className={cn("grid", calendar ? "gap-[3px]" : "gap-1.5")} style={{ minWidth: Math.max(240, xLabels.length * (calendar ? 12 : 30) + (calendar ? 36 : 72)) }}>
-                <div role="row" className={cn("grid items-end", calendar ? "gap-[3px]" : "gap-1.5")} style={{ gridTemplateColumns: template }}>
+              <div ref={gridRef} role="grid" aria-label={title} aria-describedby={`${id}-help`} aria-rowcount={yLabels.length + 1} aria-colcount={xLabels.length + 1} className={cn("grid", calendar ? "gap-1" : "gap-1.5")} style={{ minWidth: Math.max(240, xLabels.length * (calendar ? 15 : 30) + (calendar ? 36 : 72)) }}>
+                <div role="row" className={cn("grid items-end", calendar ? "gap-1" : "gap-1.5")} style={{ gridTemplateColumns: template }}>
                   <span role="columnheader"><span className="sr-only">{calendar ? "Day" : "Row"}</span></span>
                   {xLabels.map((label, index) => {
                     const month = calendar && parseWeek(label) ? monthName(label) : label;
                     const show = !calendar || index === 0 || month !== (parseWeek(xLabels[index - 1]!) ? monthName(xLabels[index - 1]!) : xLabels[index - 1]);
-                    return <span key={label} role="columnheader" className={cn("h-6 pb-2 text-[10px] text-muted-foreground", !calendar && "truncate text-center")} aria-label={calendar ? `Week of ${label}` : label}><span aria-hidden className={cn(calendar && "block w-max", !show && "invisible")}>{show ? month : ""}</span></span>;
+                    return <span key={label} role="columnheader" className={cn("h-7 pb-2 text-muted-foreground", calendar ? "text-xs font-medium" : "truncate text-center text-[10px]")} aria-label={calendar ? `Week of ${label}` : label}><span aria-hidden className={cn(calendar && "block w-max", !show && "invisible")}>{show ? month : ""}</span></span>;
                   })}
                 </div>
                 {yLabels.map((label, rowIndex) => (
-                  <div key={label} role="row" className={cn("grid items-center", calendar ? "gap-[3px]" : "gap-1.5")} style={{ gridTemplateColumns: template }}>
-                    <span role="rowheader" className="truncate pr-1 text-[10px] text-muted-foreground" title={label}><span className={cn(calendar && !["Mon", "Wed", "Fri"].includes(label) && "sr-only")}>{label}</span></span>
+                  <div key={label} role="row" className={cn("grid items-center", calendar ? "gap-1" : "gap-1.5")} style={{ gridTemplateColumns: template }}>
+                    <span role="rowheader" className="truncate pr-1 text-xs text-muted-foreground" title={label}><span className={cn(calendar && !["Mon", "Wed", "Fri"].includes(label) && "sr-only")}>{label}</span></span>
                     {xLabels.map((x, columnIndex) => {
                       const index = rowIndex * xLabels.length + columnIndex;
                       const cell = cells[index]!;
@@ -174,8 +188,8 @@ export function HeatmapChart({
                             tabIndex={index === tabStop ? 0 : -1}
                             aria-label={describe(cell)}
                             aria-describedby={activeIndex === index ? `${id}-tooltip` : undefined}
-                            className={cn("relative block w-full border border-border/30 p-0 hover:z-10 hover:ring-1 hover:ring-ring focus-visible:z-10", calendar ? "aspect-square h-auto rounded-[3px]" : "h-8 rounded-md", animate ? "transition-[opacity,box-shadow] duration-200" : "transition-none", activeIndex === index && "z-10 ring-2 ring-ring ring-offset-2 ring-offset-card")}
-                            style={{ backgroundColor: intensity === null ? "var(--muted)" : fill(intensity), opacity: activeIndex !== null ? activeIndex === index ? 1 : 0.6 : activeLevel !== null && intensity !== activeLevel ? 0.6 : 1 }}
+                            className={cn("relative block w-full p-0 hover:z-10 hover:ring-1 hover:ring-ring focus-visible:z-10", calendar ? "aspect-square h-auto rounded" : "h-8 rounded-md", animate ? "transition-[opacity,box-shadow] duration-200" : "transition-none", activeIndex === index && "z-10 ring-2 ring-ring ring-offset-2 ring-offset-card")}
+                            style={{ backgroundColor: intensity === null ? "var(--chart-heat-0)" : fill(intensity), opacity: activeIndex !== null ? activeIndex === index ? 1 : 0.6 : activeLevel !== null && intensity !== activeLevel ? 0.6 : 1 }}
                             onMouseEnter={(event) => { setHovered(index); placeTooltip(event.currentTarget); }}
                             onMouseLeave={() => setHovered(null)}
                             onFocus={(event) => { setFocused(index); setCursor(index); placeTooltip(event.currentTarget); }}
@@ -183,7 +197,7 @@ export function HeatmapChart({
                             onKeyDown={(event) => navigate(event, index)}
                             onClick={(event) => { event.currentTarget.focus(); placeTooltip(event.currentTarget); onCellClick?.(cell); }}
                           >
-                            {cell.value === null ? <span aria-hidden className={cn("text-muted-foreground", calendar && "sr-only")}>–</span> : null}
+                            {cell.value === null && !calendar ? <span aria-hidden className="text-muted-foreground">–</span> : null}
                           </Button>
                         </div>
                       );
@@ -192,8 +206,12 @@ export function HeatmapChart({
                 ))}
               </div>
             </div>
-            {active ? <div className="pointer-events-none absolute z-50 w-52 max-w-full -translate-y-full" style={tooltipPoint}>
-              <ChartTooltipSurface id={`${id}-tooltip`} title={cellLabel(active)}><div className="flex items-center justify-between gap-6"><span className="text-muted-foreground">{config.value?.label ?? "Value"}</span><span className="font-mono font-bold tabular-nums">{active.value === null ? "No data" : formatValue(active.value)}</span></div></ChartTooltipSurface>
+            {active ? <div className="pointer-events-none absolute z-50 w-max max-w-full -translate-y-full" style={tooltipPoint}>
+              {calendar ? (
+                <div id={`${id}-tooltip`} role="tooltip" className="whitespace-nowrap rounded-lg bg-[var(--chart-tooltip-background)] px-3.5 py-2.5 text-sm text-[var(--chart-tooltip-foreground)] shadow-lg">{sentence(active)}</div>
+              ) : (
+                <div className="w-52"><ChartTooltipSurface id={`${id}-tooltip`} title={cellLabel(active)}><div className="flex items-center justify-between gap-6"><span className="text-muted-foreground">{config.value?.label ?? "Value"}</span><span className="font-mono font-bold tabular-nums">{active.value === null ? "No data" : formatValue(active.value)}</span></div></ChartTooltipSurface></div>
+              )}
             </div> : null}
             </div>
             <div className="mt-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-1 text-[11px] text-muted-foreground">
@@ -207,7 +225,7 @@ export function HeatmapChart({
                     onFocus={() => setFocusedLevel(index)} onBlur={() => setFocusedLevel(null)}
                     onKeyDown={(event) => { if (event.key === "Escape") { setSelectedLevel(null); setHoveredLevel(null); setFocusedLevel(null); } }}
                     onClick={() => setSelectedLevel((current) => current === index ? null : index)}>
-                    <span aria-hidden className="block size-3.5 rounded-[3px] border border-border/30" style={{ backgroundColor: fill(index) }} />
+                    <span aria-hidden className="block size-3.5 rounded-[3px]" style={{ backgroundColor: fill(index) }} />
                   </Button>
                 ))}
                 <span className="ml-1.5">More</span>

@@ -106,6 +106,29 @@ export function HeatmapChartExamples() {
   return (
     <section className="space-y-6">
       <h2 className="text-xl font-semibold">Variants</h2>
+      <ComponentPreview label="Last quarter" className="p-4">
+        <HeatmapChart
+          title="Recent contributions"
+          description="Last 13 weeks"
+          layout="calendar"
+          data={heatmapCells.slice(-91)}
+          config={heatmapConfig}
+        />
+      </ComponentPreview>
+      <ComponentPreview label="High activity" className="p-4">
+        <HeatmapChart
+          title="Launch week intensity"
+          layout="calendar"
+          columns={heatmapWeeks.slice(0, 26)}
+          data={heatmapWeeks.slice(0, 26).flatMap((x, week) =>
+            ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((y, day) => {
+              const seed = (week * 53 + day * 29) % 101;
+              return { x, y, value: seed < 12 ? 0 : seed < 30 ? 4 : seed < 55 ? 9 : seed < 80 ? 16 : 24 };
+            }),
+          )}
+          config={heatmapConfig}
+        />
+      </ComponentPreview>
       <ComponentPreview label="Missing values" className="p-4">
         <HeatmapChart
           title="Sparse activity"
@@ -119,10 +142,20 @@ export function HeatmapChartExamples() {
         <HeatmapChart
           title="Activity by time of day"
           layout="matrix"
-          data={["Morning", "Afternoon", "Evening"].flatMap((y, row) =>
-            ["Mon", "Tue", "Wed", "Thu", "Fri"].map((x, column) => ({ x, y, value: (row * 13 + column * 7) % 40 })),
+          data={["Morning", "Afternoon", "Evening", "Night"].flatMap((y, row) =>
+            ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((x, column) => ({ x, y, value: (row * 13 + column * 7) % 40 })),
           )}
           config={heatmapConfig}
+        />
+      </ComponentPreview>
+      <ComponentPreview label="Click to inspect" className="p-4">
+        <HeatmapChart
+          title="Review throughput"
+          description="Select any day to log it"
+          layout="calendar"
+          data={heatmapCells.slice(0, 182)}
+          config={{ value: { label: "Reviews", color: "var(--chart-2)" } }}
+          onCellClick={(cell) => console.log("heatmap cell", cell)}
         />
       </ComponentPreview>
       <h2 className="text-xl font-semibold">Empty</h2>
