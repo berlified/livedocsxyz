@@ -23,7 +23,7 @@ export type CandlestickChartProps = {
   className?: string;
 };
 
-const defaultConfig = { up: { label: "Up · close ≥ open", color: "var(--chart-2)" }, down: { label: "Down · close < open", color: "var(--destructive)" } } satisfies ChartConfig;
+const defaultConfig = { up: { label: "Up · close ≥ open", color: "var(--chart-up)" }, down: { label: "Down · close < open", color: "var(--destructive)" } } satisfies ChartConfig;
 const formatNumber = (value: number) => value.toLocaleString("en-US", { maximumFractionDigits: 2 });
 const validCandle = (row: CandlestickDatum) => [row.open, row.high, row.low, row.close].every(Number.isFinite) && row.low <= Math.min(row.open, row.close) && row.high >= Math.max(row.open, row.close);
 const validVolume = (value: number | undefined): value is number => value !== undefined && Number.isFinite(value) && value >= 0;
@@ -94,7 +94,7 @@ export function CandlestickChart({ data, title = "Price action", description, co
       <ChartContainer config={{ ...defaultConfig, ...config }} data={rows} variant="plain" isLoading={isLoading} loadingVariant="candlestick" reaction={reaction} className="mt-5 min-h-64">
         {!validRows.length ? <p role="status" className="flex min-h-64 items-center justify-center text-sm text-muted-foreground">{emptyLabel}</p> : (
           <>
-            <div className="mb-3 flex flex-wrap gap-4 text-[11px] text-muted-foreground"><span className="flex items-center gap-1.5"><span className="size-2 rounded-[2px] bg-chart-2" aria-hidden />Up</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-[2px] bg-destructive" aria-hidden />Down</span>{hasVolume ? <span>Volume below</span> : null}</div>
+            <div className="mb-3 flex flex-wrap gap-4 text-[11px] text-muted-foreground"><span className="flex items-center gap-1.5"><span className="size-2 rounded-[2px] bg-chart-up" aria-hidden />Up</span><span className="flex items-center gap-1.5"><span className="size-2 rounded-[2px] bg-destructive" aria-hidden />Down</span>{hasVolume ? <span>Volume below</span> : null}</div>
             <p id={`${id}-help`} className="sr-only">Use arrow keys, Home, and End to explore candles. Enter activates a candle; Escape dismisses details. Invalid OHLC records are shown as gaps.</p>
             <div ref={tooltipHost} className="relative">
             <div className="overflow-x-auto p-1" onScroll={() => setDismissed(true)}>

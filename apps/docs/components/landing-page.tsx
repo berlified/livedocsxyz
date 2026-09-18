@@ -280,20 +280,23 @@ export function LandingPage() {
           </div>
           <div className="mx-auto w-full max-w-4xl space-y-3 text-left">
             <CopyCommand command={getShadcnAddCommand("area-chart")} />
-            <div className="grid gap-3 lg:grid-cols-3 [&>*]:min-w-0">
-              <div className="overflow-hidden rounded-2xl border border-border bg-card p-4 lg:col-span-2">
-                <div className="flex items-baseline justify-between px-1">
-                  <p className="text-sm text-muted-foreground">Revenue</p>
-                  <p className="text-xl font-semibold tabular-nums tracking-tight">$128,430</p>
+            <div className="grid items-stretch gap-3 lg:grid-cols-3 [&>*]:min-w-0">
+              <div className="flex min-h-80 flex-col overflow-hidden rounded-2xl border border-border bg-card p-5 lg:col-span-2">
+                <p className="text-[15px] font-medium tracking-tight">Revenue</p>
+                <p className="mt-1 tabular-nums text-4xl font-medium tracking-tight sm:text-5xl">$128,430</p>
+                <p className="mt-2 flex items-center gap-2 text-[13px] text-muted-foreground">
+                  <span className="size-2 rounded-full border-2 border-chart-1" aria-hidden /> Sessions · last 30 days
+                </p>
+                <div className="mt-2 min-h-0 flex-1">
+                  <AreaChart data={heroData} config={heroConfig} xDataKey="day" variant="plain" className="h-full min-h-48 w-full">
+                    <AreaChart.Grid />
+                    <AreaChart.Tooltip />
+                    <AreaChart.Area dataKey="current" variant="gradient" />
+                    <AreaChart.Area dataKey="previous" strokeVariant="dashed" />
+                  </AreaChart>
                 </div>
-                <AreaChart data={heroData} config={heroConfig} xDataKey="day" variant="plain" className="mt-1 h-48 w-full">
-                  <AreaChart.Grid />
-                  <AreaChart.Tooltip />
-                  <AreaChart.Area dataKey="current" variant="gradient" />
-                  <AreaChart.Area dataKey="previous" strokeVariant="dashed" />
-                </AreaChart>
               </div>
-              <div className="grid gap-3">
+              <div className="grid content-stretch gap-3">
                 <div className="overflow-hidden rounded-2xl border border-border bg-card p-4">
                   <div className="flex items-baseline justify-between px-1">
                     <p className="text-sm text-muted-foreground">Sessions</p>

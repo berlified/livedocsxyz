@@ -3,7 +3,7 @@
   "title": "Country Chart",
   "category": "charts",
   "description": "Ranked market bars with a last-period marker on each row.",
-  "dependencies": [],
+  "dependencies": ["country-flag-icons"],
   "registryDependencies": [
     "https://livedocs.xyz/r/chart.json",
     "https://livedocs.xyz/r/card.json",

@@ -2,6 +2,8 @@
 
 import * as React from "react";
 
+import * as Flags from "country-flag-icons/react/3x2";
+
 import {
   ChartContainer,
   ChartHoverTooltip,
@@ -104,7 +106,12 @@ function CountryChartRoot({
                   )}
                 >
                   <span className="flex min-w-0 items-center gap-2">
-                    {row.code ? (
+                    {row.code && row.code in Flags ? (
+                      (() => {
+                        const Flag = Flags[row.code as keyof typeof Flags] as React.ComponentType<{ className?: string; title?: string }>;
+                        return <Flag className="h-3 w-4 shrink-0 overflow-hidden rounded-[2px]" title={row.region} />;
+                      })()
+                    ) : row.code ? (
                       <span className="rounded-md border border-border bg-muted/40 px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">
                         {row.code}
                       </span>

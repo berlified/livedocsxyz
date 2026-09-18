@@ -28,6 +28,7 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+  --color-chart-up: var(--chart-up);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -113,4 +114,20 @@ body {
 .toc-link[data-active="true"] {
   color: var(--foreground);
   border-left-color: var(--foreground);
+}
+
+@keyframes ruler-loop {
+  to {
+    transform: translateY(-60px);
+  }
+}
+
+.ruler-strip {
+  animation: ruler-loop 5s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ruler-strip {
+    animation: none;
+  }
 }

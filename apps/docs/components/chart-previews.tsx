@@ -180,14 +180,22 @@ export function LineChartExamples() {
   );
 }
 
+const barPreviewData = monthlyData.slice(-6);
+const barPreviewTotal = barPreviewData.reduce((sum, row) => sum + Number(row.desktop ?? 0), 0);
+
 export function BarChartPreview() {
   return (
-    <BarChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig} className="w-full">
+    <BarChart
+      title="Revenue"
+      value={`$${(barPreviewTotal / 1000).toFixed(1)}k`}
+      description="Last 6 months"
+      data={barPreviewData}
+      config={trafficConfig}
+      className="w-full"
+    >
       <BarChart.Grid />
       <BarChart.Tooltip />
-      <BarChart.Legend isClickable />
       <BarChart.Bar dataKey="desktop" isClickable />
-      <BarChart.Bar dataKey="mobile" isClickable />
     </BarChart>
   );
 }
@@ -632,12 +640,10 @@ export function UsageMeterPreview() {
   );
 }
 
-export const activitySessions = [
-  { label: "D3", value: 1240 }, { label: "D6", value: 1860 }, { label: "D9", value: 2140 },
-  { label: "D12", value: 1780 }, { label: "D15", value: 2420 }, { label: "D18", value: 1980 },
-  { label: "D21", value: 2660 }, { label: "D24", value: 2310 }, { label: "D27", value: 2890 },
-  { label: "D30", value: 3120 },
-];
+export const activitySessions = Array.from({ length: 30 }, (_, index) => ({
+  label: `D${index + 1}`,
+  value: Math.round(1100 + index * 62 + Math.sin(index * 0.7) * 320 + (index % 4) * 90),
+}));
 
 export const activityConfig = {
   value: { label: "Sessions", color: "var(--chart-2)" },
