@@ -13,12 +13,14 @@ import {
 import {
   ChartContainer,
   ChartGrid,
+  ChartHeading,
   ChartLegend,
   ChartTooltip,
   colorVar,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 type StrokeVariant = "solid" | "dashed";
@@ -75,18 +77,28 @@ function ChartLine({
   className,
   children,
   isLoading,
+  reaction,
   defaultSelectedDataKey,
   onSelectionChange,
   xDataKey = "month",
+  variant,
+  title,
+  value,
+  description,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
   className?: string;
   children: React.ReactNode;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
   xDataKey?: string;
+  variant?: "panel" | "plain";
+  title?: string;
+  value?: string;
+  description?: string;
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
@@ -98,19 +110,25 @@ function ChartLine({
 
   return (
     <ChartContainer
+      isLoading={isLoading}
+      loadingVariant="line"
+      reaction={reaction}
       config={config}
       data={data}
       className={cn("h-72 w-full", className)}
+      variant={variant}
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      <LineBody
-        data={data}
-        xDataKey={xDataKey}
-        series={series}
-        extras={extras}
-        isLoading={isLoading}
-      />
+      <ChartHeading title={title} value={value} description={description} />
+      <div className="min-h-0 w-full flex-1">
+        <LineBody
+          data={data}
+          xDataKey={xDataKey}
+          series={series}
+          extras={extras}
+        />
+      </div>
     </ChartContainer>
   );
 }
@@ -120,21 +138,22 @@ function LineBody({
   xDataKey,
   series,
   extras,
-  isLoading,
 }: {
   data: Record<string, unknown>[];
   xDataKey: string;
   series: React.ReactElement<LineSeriesProps>[];
   extras: React.ReactNode[];
-  isLoading?: boolean;
 }) {
   const { selected, setSelected } = useChart();
-
-  if (isLoading) {
-    return (
-      <div className="h-full w-full animate-pulse bg-muted/40" />
-    );
-  }
+  const [hovered, setHovered] = React.useState<string>();  const interaction = (key: string) => ({
+    onMouseEnter: () => setHovered(key),
+    onMouseLeave: () => setHovered(undefined),
+    onFocus: () => setHovered(key),
+    onBlur: () => setHovered(undefined),
+    tabIndex: 0,
+    "aria-label": key,
+    className: "transition-opacity duration-150 motion-reduce:transition-none [&_.recharts-curve]:transition-opacity [&_.recharts-curve]:duration-150 motion-reduce:[&_.recharts-curve]:transition-none",
+  });
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -147,7 +166,6 @@ function LineBody({
             strokeWidth = 2,
             curveType = "monotone",
             isClickable,
-            isGlowing,
             connectNulls,
             dot = false,
           } = item.props;
@@ -159,11 +177,14 @@ function LineBody({
               dataKey={dataKey}
               stroke={colorVar(dataKey)}
               strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeLinejoin="round"
               strokeDasharray={strokeVariant === "dashed" ? "6 4" : undefined}
               connectNulls={connectNulls}
-              dot={dot ? { r: 3, fill: colorVar(dataKey) } : false}
-              activeDot={{ r: 4, fill: colorVar(dataKey) }}
-              opacity={muted ? 0.2 : 1}
+              {...interaction(dataKey)}
+              dot={dot ? { r: 3, fill: colorVar(dataKey), ...interaction(dataKey) } : false}
+              activeDot={{ r: 4, fill: colorVar(dataKey), ...interaction(dataKey), opacity: hovered ? (hovered === dataKey ? 1 : 0.6) : muted ? 0.2 : 1 }}
+              opacity={hovered ? (hovered === dataKey ? 1 : 0.6) : muted ? 0.2 : 1}
               onClick={() => isClickable && setSelected(dataKey)}
               cursor={isClickable ? "pointer" : undefined}
             />

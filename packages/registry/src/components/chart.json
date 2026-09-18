@@ -2,14 +2,16 @@
   "name": "chart",
   "title": "Chart",
   "category": "charts",
-  "description": "Shared pixel-art chart primitives: tiled fills, crisp edges, and 8-bit chrome.",
+  "description": "Modern, smooth Geist-inspired chart primitives: config, container, tooltip, legend, grid, and theme tokens.",
   "dependencies": ["recharts"],
-  "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+  "registryDependencies": ["https://livedocs.xyz/r/utils.json", "https://livedocs.xyz/r/chart-reactions.json", "https://livedocs.xyz/r/button.json"],
   "files": ["apps/docs/components/ui/chart.tsx"],
   "examples": ["config", "tooltip", "legend"],
   "variants": ["default"],
-  "keywords": ["chart", "config", "tooltip", "legend", "recharts", "theme", "pixel", "pixel-art"],
+  "keywords": ["chart", "config", "tooltip", "legend", "recharts", "theme", "smooth", "geist"],
   "props": [
+    { "name": "isLoading", "type": "boolean", "description": "Replace chart contents with shared loading feedback" },
+    { "name": "reaction", "type": "ChartReactionOptions", "description": "Optional explicit emotion or metric comparison; inherits provider assets and resolver" },
     {
       "name": "config",
       "type": "ChartConfig",
@@ -32,7 +34,7 @@
     }
   ],
   "ai": {
-    "purpose": "Provide the shared pixel-art chart surface, config object, tooltip, and legend chips.",
+    "purpose": "Provide the shared modern, smooth Geist-inspired chart surface, config object, tooltip, and legend.",
     "useWhen": [
       "Installing any cartesian or polar chart",
       "Theming series with CSS variables",

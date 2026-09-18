@@ -1,5 +1,6 @@
 import type { RegistryComponent, RegistryIndex } from "./types";
 import chart from "./components/chart.json";
+import chartReactions from "./components/chart-reactions.json";
 import sparkline from "./components/sparkline.json";
 import areaChart from "./components/area-chart.json";
 import lineChart from "./components/line-chart.json";
@@ -20,6 +21,12 @@ import cashflowChart from "./components/cashflow-chart.json";
 import spotlightChart from "./components/spotlight-chart.json";
 import laneChart from "./components/lane-chart.json";
 import usageMeter from "./components/usage-meter.json";
+import heatmapChart from "./components/heatmap-chart.json";
+import funnelChart from "./components/funnel-chart.json";
+import scatterChart from "./components/scatter-chart.json";
+import waterfallChart from "./components/waterfall-chart.json";
+import candlestickChart from "./components/candlestick-chart.json";
+import activityChart from "./components/activity-chart.json";
 
 export type {
   ComponentAIGuidance,
@@ -30,6 +37,7 @@ export type {
 
 export const components: RegistryComponent[] = [
   chart,
+  chartReactions,
   sparkline,
   areaChart,
   lineChart,
@@ -50,6 +58,12 @@ export const components: RegistryComponent[] = [
   spotlightChart,
   laneChart,
   usageMeter,
+  heatmapChart,
+  funnelChart,
+  scatterChart,
+  waterfallChart,
+  candlestickChart,
+  activityChart,
 ] as RegistryComponent[];
 
 export const registry: RegistryIndex = {

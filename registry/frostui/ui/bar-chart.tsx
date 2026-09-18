@@ -5,6 +5,7 @@ import {
   Bar,
   BarChart as RechartsBarChart,
   Brush,
+  Cell,
   ResponsiveContainer,
   XAxis,
   YAxis,
@@ -13,6 +14,7 @@ import {
 import {
   ChartContainer,
   ChartGrid,
+  ChartHeading,
   ChartLegend,
   ChartTooltip,
   GradientFill,
@@ -21,6 +23,7 @@ import {
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 type BarVariant =
@@ -79,22 +82,32 @@ function ChartBar({
   className,
   children,
   isLoading,
+  reaction,
   defaultSelectedDataKey,
   onSelectionChange,
   xDataKey = "month",
   layout = "horizontal",
   stackType,
+  variant,
+  title,
+  value,
+  description,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
   className?: string;
   children: React.ReactNode;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
   xDataKey?: string;
   layout?: "horizontal" | "vertical";
   stackType?: "none" | "stacked" | "percent";
+  variant?: "panel" | "plain";
+  title?: string;
+  value?: string;
+  description?: string;
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
@@ -106,21 +119,27 @@ function ChartBar({
 
   return (
     <ChartContainer
+      isLoading={isLoading}
+      loadingVariant="bar"
+      reaction={reaction}
       config={config}
       data={data}
       className={cn("h-72 w-full", className)}
+      variant={variant}
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      <BarBody
-        data={data}
-        xDataKey={xDataKey}
-        series={series}
-        extras={extras}
-        isLoading={isLoading}
-        layout={layout}
-        stackType={stackType}
-      />
+      <ChartHeading title={title} value={value} description={description} />
+      <div className="min-h-0 w-full flex-1">
+        <BarBody
+          data={data}
+          xDataKey={xDataKey}
+          series={series}
+          extras={extras}
+          layout={layout}
+          stackType={stackType}
+        />
+      </div>
     </ChartContainer>
   );
 }
@@ -130,7 +149,6 @@ function BarBody({
   xDataKey,
   series,
   extras,
-  isLoading,
   layout,
   stackType,
 }: {
@@ -138,17 +156,11 @@ function BarBody({
   xDataKey: string;
   series: React.ReactElement<BarSeriesProps>[];
   extras: React.ReactNode[];
-  isLoading?: boolean;
   layout: "horizontal" | "vertical";
   stackType?: "none" | "stacked" | "percent";
 }) {
   const { id, selected, setSelected } = useChart();
-
-  if (isLoading) {
-    return (
-      <div className="h-full w-full animate-pulse bg-muted/40" />
-    );
-  }
+  const [hovered, setHovered] = React.useState<{ key: string; index: number }>();
 
   const stacked = stackType === "stacked" || stackType === "percent";
   const vertical = layout === "vertical";
@@ -167,7 +179,7 @@ function BarBody({
             const color = colorVar(key);
             return (
               <React.Fragment key={key}>
-                <GradientFill id={`${id}-${key}-fill`} color={color} />
+                <GradientFill id={`${id}-${key}-fill`} color={color} startOpacity={0.85} endOpacity={0.4} />
                 <HatchPattern id={`${id}-${key}-hatch`} color={color} />
                 <linearGradient id={`${id}-${key}-duo`} x1="0" x2="0" y1="0" y2="1">
                   <stop offset="0%" stopColor={color} stopOpacity={1} />
@@ -192,9 +204,8 @@ function BarBody({
             dataKey,
             variant = "default",
             isClickable,
-            isGlowing,
             stackId,
-            radius = 0,
+            radius = 4,
           } = item.props;
           const muted = selected && selected !== dataKey;
           const fill =
@@ -202,7 +213,11 @@ function BarBody({
               ? `url(#${id}-${dataKey}-hatch)`
               : variant === "stripped"
                 ? `url(#${id}-${dataKey}-strip)`
-                : `url(#${id}-${dataKey}-fill)`;
+                : variant === "duotone"
+                  ? `url(#${id}-${dataKey}-duo)`
+                  : variant === "gradient"
+                    ? `url(#${id}-${dataKey}-fill)`
+                    : colorVar(dataKey);
           return (
             <Bar
               key={dataKey}
@@ -210,10 +225,24 @@ function BarBody({
               fill={fill}
               radius={radius}
               stackId={stacked ? stackId ?? "stack" : stackId}
-              opacity={muted ? 0.25 : 1}
+              activeBar={false}
               onClick={() => isClickable && setSelected(dataKey)}
               cursor={isClickable ? "pointer" : undefined}
-            />
+            >
+              {data.map((row, index) => (
+                <Cell
+                  key={index}
+                  opacity={hovered ? (hovered.key === dataKey && hovered.index === index ? 1 : 0.6) : muted ? 0.25 : 1}
+                  onMouseEnter={() => setHovered({ key: dataKey, index })}
+                  onMouseLeave={() => setHovered(undefined)}
+                  onFocus={() => setHovered({ key: dataKey, index })}
+                  onBlur={() => setHovered(undefined)}
+                  tabIndex={0}
+                  aria-label={`${row[xDataKey]}: ${dataKey} ${row[dataKey]}`}
+                  className="transition-opacity duration-150 motion-reduce:transition-none"
+                />
+              ))}
+            </Bar>
           );
         })}
         {extras.some(

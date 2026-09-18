@@ -1,21 +1,20 @@
 "use client";
 
 import * as React from "react";
-import { Cell, Pie, PieChart as RechartsPieChart, ResponsiveContainer } from "recharts";
+import { Cell, Pie, PieChart as RechartsPieChart, ResponsiveContainer, type PieSectorShapeProps } from "recharts";
 
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-  GradientFill,
   PixelSwatch,
   colorVar,
-  pixelPatternId,
-  pixelPatternUrl,
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
 import { Card } from "@/components/ui/card";
+import { ChartInteractiveSector } from "@/components/ui/pie-chart";
+import { ChartSkeleton, useChartReducedMotion, useChartReactions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 export type RingSlice = { key: string; label: string; value: number };
@@ -26,26 +25,35 @@ function RingMetricRoot({
   data,
   config,
   className,
+  isLoading,
+  reaction,
 }: {
   title?: string;
   centerLabel?: string;
   data: RingSlice[];
   config: ChartConfig;
   className?: string;
+  isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   const total = data.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    <Card className={cn("p-5", className)}>
-      {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
+    <Card className={cn("@container/ring min-w-0 p-5", className)}>
+      <ChartSkeleton isLoading={isLoading}>
+      {title ? <p className="text-[15px] font-medium tracking-tight">{title}</p> : null}
       <ChartContainer
+        isLoading={isLoading}
+        loadingVariant="ring"
+        reaction={reaction}
         config={config}
         data={data as unknown as Record<string, unknown>[]}
-        className="mt-2 h-64 w-full justify-center"
+        className="mt-2 min-h-64 w-full min-w-0 justify-center [&_.recharts-surface:focus:not(:focus-visible)]:outline-none"
         variant="plain"
       >
         <RingBody data={data} total={total} centerLabel={centerLabel} />
       </ChartContainer>
+      </ChartSkeleton>
     </Card>
   );
 }
@@ -59,23 +67,22 @@ function RingBody({
   total: number;
   centerLabel?: string;
 }) {
-  const { id, selected, setSelected } = useChart();
+  const { selected, setSelected } = useChart();
+  const [focused, setFocused] = React.useState<string>();
+  const [hovered, setHovered] = React.useState<string>();
+  const activeKey = hovered ?? focused ?? selected;
+  const tooltipKey = hovered ?? focused;
+  const tooltipItem = data.find((item) => item.key === tooltipKey);
+  const reducedMotion = useChartReducedMotion();
+  const { animationsEnabled = true } = useChartReactions();
 
   return (
-    <div className="grid h-full items-center gap-4 sm:grid-cols-[1fr_8rem]">
-      <div className="relative h-full min-h-48">
+    <div className="grid min-w-0 items-center gap-6 @min-[26rem]/ring:grid-cols-[minmax(0,1fr)_minmax(10rem,1fr)]">
+      <div className="relative h-56 w-full min-w-0 max-w-56 justify-self-center">
         <ResponsiveContainer width="100%" height="100%">
           <RechartsPieChart>
-            <defs>
-              {data.map((item) => (
-                <GradientFill
-                  key={item.key}
-                  id={pixelPatternId(id, item.key)}
-                  color={colorVar(item.key)}
-                />
-              ))}
-            </defs>
-            <ChartTooltip content={<ChartTooltipContent />} />
+            <defs />
+            <ChartTooltip active={tooltipItem ? false : undefined} content={<ChartTooltipContent />} cursor={false} />
             <Pie
               data={data}
               dataKey="value"
@@ -85,25 +92,54 @@ function RingBody({
               paddingAngle={2}
               cornerRadius={0}
               stroke="var(--background)"
+              rootTabIndex={-1}
+              isAnimationActive={animationsEnabled && !reducedMotion}
+              animationBegin={0}
+              animationDuration={600}
+              shape={(props: PieSectorShapeProps) => {
+                const item = data[props.index];
+                if (!item) return <g />;
+                return (
+                  <ChartInteractiveSector
+                    geometry={props}
+                    label={`${item.label}: ${item.value.toLocaleString("en-US")}`}
+                    selected={selected === item.key}
+                    muted={Boolean(activeKey && activeKey !== item.key)}
+                    emphasized={activeKey === item.key}
+                    onActivate={() => setSelected(item.key)}
+                    onHoverChange={(active) => setHovered(active ? item.key : undefined)}
+                    onFocus={() => setFocused(item.key)}
+                    onBlur={() => setFocused(undefined)}
+                  />
+                );
+              }}
             >
               {data.map((item) => (
                 <Cell
                   key={item.key}
-                  fill={pixelPatternUrl(id, item.key)}
-                  opacity={selected && selected !== item.key ? 0.25 : 1}
-                  cursor="pointer"
-                  onClick={() => setSelected(item.key)}
+                  fill={colorVar(item.key)}
                 />
               ))}
             </Pie>
           </RechartsPieChart>
         </ResponsiveContainer>
+        {tooltipItem ? (
+          <div role="tooltip" className="pointer-events-none absolute left-1/2 top-0 z-10 w-max max-w-full -translate-x-1/2 rounded-sm bg-[var(--chart-tooltip-background,var(--popover))] px-3.5 py-3 text-xs text-[var(--chart-tooltip-foreground,var(--popover-foreground))] shadow-lg">
+            <div className="flex items-center justify-between gap-6">
+              <span className="flex items-center gap-2 text-[var(--chart-tooltip-muted,var(--muted-foreground))]">
+                <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: colorVar(tooltipItem.key) }} />
+                {tooltipItem.label}
+              </span>
+              <span className="font-mono font-bold tabular-nums">{tooltipItem.value.toLocaleString("en-US")}</span>
+            </div>
+          </div>
+        ) : null}
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <p className="font-mono text-2xl font-semibold tracking-tight">
+          <p className="tabular-nums text-3xl font-medium tracking-tight">
             {total.toLocaleString("en-US")}
           </p>
           {centerLabel ? (
-            <p className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+            <p className="text-xs text-muted-foreground">
               {centerLabel}
             </p>
           ) : null}
@@ -112,26 +148,32 @@ function RingBody({
       <ul className="space-y-2 text-sm">
         {data.map((item) => {
           const share = total ? (item.value / total) * 100 : 0;
-          const muted = selected && selected !== item.key;
+          const muted = activeKey && activeKey !== item.key;
           return (
             <li key={item.key}>
               <button
                 type="button"
                 onClick={() => setSelected(item.key)}
+                aria-pressed={selected === item.key}
+                onMouseEnter={() => setHovered(item.key)}
+                onMouseLeave={() => setHovered(undefined)}
+                onFocus={() => setFocused(item.key)}
+                onBlur={() => setFocused(undefined)}
                 className={cn(
-                  "flex w-full items-center justify-between gap-2 text-left transition-opacity",
-                  muted && "opacity-40"
+                  "flex w-full items-center justify-between gap-2 rounded-md text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
+                  muted && "opacity-60"
                 )}
+                style={{ transition: animationsEnabled && !reducedMotion ? "opacity 220ms ease" : "none" }}
               >
                 <span className="flex items-center gap-2 text-muted-foreground">
                   <PixelSwatch color={colorVar(item.key)} />
                   {item.label}
                 </span>
-                <span className="font-mono text-xs text-foreground">
+                <span className="tabular-nums text-xs text-foreground">
                   {item.value.toLocaleString("en-US")}
                 </span>
               </button>
-              <p className="pl-4 font-mono text-[10px] text-muted-foreground">
+              <p className="pl-4 tabular-nums text-[10px] text-muted-foreground">
                 {share.toFixed(1)}%
               </p>
             </li>

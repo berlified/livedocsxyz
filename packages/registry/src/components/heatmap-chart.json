@@ -1,0 +1,40 @@
+{
+  "name": "heatmap-chart",
+  "title": "Heatmap Chart",
+  "category": "charts",
+  "description": "Calendar contribution grid with month headings, five token-based intensity levels, an interactive legend, keyboard navigation, and reduced-motion-aware entrance. Supports categorical matrices.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/chart-reactions.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/button.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/heatmap-chart.tsx"],
+  "examples": ["analytics"],
+  "variants": ["default"],
+  "keywords": ["chart", "heatmap", "grid", "activity", "matrix", "calendar", "keyboard"],
+  "props": [
+    { "name": "data", "type": "HeatmapCell[]", "description": "x, y, value (null for missing)" },
+    { "name": "columns", "type": "string[]", "description": "Optional explicit column order" },
+    { "name": "rows", "type": "string[]", "description": "Optional explicit row order; calendar defaults to Sun–Sat" },
+    { "name": "layout", "type": "\"calendar\" | \"matrix\"", "description": "Auto-detects calendar for ISO week-start columns and weekday rows; use 52 weekly columns for a contribution year" },
+    { "name": "isLoading", "type": "boolean", "description": "Shared chart loading skeleton covering the title, description, and chart labels" },
+    { "name": "reaction", "type": "ChartReactionOptions", "description": "Per-chart reaction overrides" },
+    { "name": "title", "type": "string", "description": "Card heading" },
+    { "name": "description", "type": "string", "description": "Secondary caption" },
+    { "name": "config", "type": "ChartConfig", "description": "Series color config" },
+    { "name": "formatValue", "type": "(value: number) => string", "description": "Cell and legend formatter" },
+    { "name": "onCellClick", "type": "(cell: HeatmapCell) => void", "description": "Cell activation callback" },
+    { "name": "emptyLabel", "type": "string", "description": "Empty state message" },
+    { "name": "className", "type": "string", "description": "Card class passthrough" }
+  ],
+  "ai": {
+    "purpose": "Reveal intensity patterns across two categorical axes with accessible keyboard exploration.",
+    "useWhen": ["Engagement by hour/day", "Cohort retention grids", "Inventory density"],
+    "preferOver": ["A bar grid when the pattern matters more than exact values"],
+    "avoid": ["Continuous axes", "Single-dimension comparisons"],
+    "compositions": ["HeatmapChart above TrendCard"]
+  }
+}

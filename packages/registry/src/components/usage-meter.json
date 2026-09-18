@@ -5,6 +5,7 @@
   "description": "Quota remaining with a used track and a reset caption.",
   "dependencies": [],
   "registryDependencies": [
+    "https://livedocs.xyz/r/chart-reactions.json",
     "https://livedocs.xyz/r/card.json",
     "https://livedocs.xyz/r/utils.json"
   ],
@@ -13,6 +14,8 @@
   "variants": ["default"],
   "keywords": ["meter", "quota", "credits", "progress", "usage"],
   "props": [
+    { "name": "isLoading", "type": "boolean", "description": "Show shared loading feedback instead of quota values" },
+    { "name": "reaction", "type": "ChartReactionOptions", "description": "Optional explicit emotion or metric comparison; quota meaning is never inferred" },
     { "name": "value", "type": "number", "description": "Amount used" },
     { "name": "max", "type": "number", "description": "Quota" }
   ],

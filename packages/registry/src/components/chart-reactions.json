@@ -1,0 +1,25 @@
+{
+  "name": "chart-reactions",
+  "title": "Chart Reactions",
+  "category": "charts",
+  "description": "Shared configurable meme loading and explicit metric emotions with reduced-motion-safe poster and text fallbacks.",
+  "dependencies": [],
+  "registryDependencies": [],
+  "files": ["apps/docs/components/ui/chart-reactions.tsx"],
+  "examples": ["loading", "metric", "explicit"],
+  "variants": ["loading", "neutral", "sad", "disappointed", "happy", "surprised", "proud"],
+  "keywords": ["chart", "reaction", "meme", "gif", "loading", "emotion", "provider", "reduced motion"],
+  "props": [
+    { "name": "isLoading", "type": "boolean", "description": "Show shared loading feedback even without configured assets" },
+    { "name": "reaction", "type": "ChartReactionOptions", "description": "Optional explicit emotion or metric { current, previous, goal, lowerIsBetter }, resolver, assets, and enabled flag" },
+    { "name": "assets", "type": "Partial<Record<ChartEmotion, ChartReactionAsset>>", "description": "Provider asset mapping: optional src, alt, and static poster. No default requests" },
+    { "name": "animationsEnabled", "type": "boolean", "description": "Provider animation control; reduced motion always takes priority" }
+  ],
+  "ai": {
+    "purpose": "Provide opt-in data emotions and accessible loading without guessing categorical meaning or asset URLs.",
+    "useWhen": ["Chart loading", "Explicit metric comparisons", "Globally configured meme assets"],
+    "preferOver": ["Per-chart GIF URLs", "Duplicated loading skeletons"],
+    "avoid": ["Animated posters", "Inferring emotion from arbitrary chart data"],
+    "compositions": ["ChartReactionsProvider + ChartContainer", "ChartReaction + Sparkline or UsageMeter"]
+  }
+}

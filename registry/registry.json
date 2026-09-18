@@ -119,12 +119,25 @@
       ]
     },
     {
+      "name": "chart-reactions",
+      "type": "registry:ui",
+      "title": "Chart Reactions",
+      "description": "Configurable meme loading and explicit metric emotions with reduced-motion-safe fallbacks.",
+      "files": [
+        {
+          "path": "apps/docs/components/ui/chart-reactions.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/chart-reactions.tsx"
+        }
+      ]
+    },
+    {
       "name": "chart",
       "type": "registry:ui",
       "title": "Chart",
-      "description": "Shared chart primitives: config, container, tooltip, legend, grid, and theme tokens.",
+      "description": "Modern, smooth Geist-inspired chart primitives: config, container, tooltip, legend, grid, and theme tokens.",
       "dependencies": ["recharts"],
-      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json", "https://livedocs.xyz/r/chart-reactions.json", "https://livedocs.xyz/r/button.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/chart.tsx",
@@ -138,7 +151,7 @@
       "type": "registry:ui",
       "title": "Sparkline",
       "description": "Smooth SVG trend with a scrubbable marker, value tooltip, and size tones. No Recharts.",
-      "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+      "registryDependencies": ["https://livedocs.xyz/r/utils.json", "https://livedocs.xyz/r/chart-reactions.json"],
       "files": [
         {
           "path": "apps/docs/components/ui/sparkline.tsx",
@@ -488,6 +501,7 @@
       "title": "Usage Meter",
       "description": "Quota remaining with a used track and a reset caption.",
       "registryDependencies": [
+        "https://livedocs.xyz/r/chart-reactions.json",
         "https://livedocs.xyz/r/card.json",
         "https://livedocs.xyz/r/utils.json"
       ],
@@ -496,6 +510,120 @@
           "path": "apps/docs/components/ui/usage-meter.tsx",
           "type": "registry:ui",
           "target": "components/ui/usage-meter.tsx"
+        }
+      ]
+    },
+    {
+      "name": "heatmap-chart",
+      "type": "registry:ui",
+      "title": "Heatmap Chart",
+      "description": "Keyboard-navigable activity grid with intensity fills, legend scale, and null-safe cells.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/button.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/heatmap-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/heatmap-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "funnel-chart",
+      "type": "registry:ui",
+      "title": "Funnel Chart",
+      "description": "Connected curved funnel with conversion pills, keyboard-selectable stages, smooth hover emphasis, and reduced-motion-aware draw-in.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/badge.json",
+        "https://livedocs.xyz/r/chart-reactions.json",
+        "https://livedocs.xyz/r/button.json",
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/funnel-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/funnel-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "scatter-chart",
+      "type": "registry:ui",
+      "title": "Scatter Chart",
+      "description": "XY point plot with series groups, optional bubbles, mean quadrants, and labeled axes.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/scatter-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/scatter-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "waterfall-chart",
+      "type": "registry:ui",
+      "title": "Waterfall Chart",
+      "description": "Connected balance bridge with signed changes, absolute totals, keyboard exploration, and an accessible data table.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/chart-reactions.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/waterfall-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/waterfall-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "candlestick-chart",
+      "type": "registry:ui",
+      "title": "Candlestick Chart",
+      "description": "OHLC candles with solid green up and red down bodies, crosshair tooltips on hover or focus, optional volume, and an accessible data table.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/chart-reactions.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/candlestick-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/candlestick-chart.tsx"
+        }
+      ]
+    },
+    {
+      "name": "activity-chart",
+      "type": "registry:ui",
+      "title": "Activity Chart",
+      "description": "Compact rounded-bar metric card with a Polar title, headline value, tooltip, and hover dimming.",
+      "registryDependencies": [
+        "https://livedocs.xyz/r/chart.json",
+        "https://livedocs.xyz/r/card.json",
+        "https://livedocs.xyz/r/utils.json"
+      ],
+      "files": [
+        {
+          "path": "apps/docs/components/ui/activity-chart.tsx",
+          "type": "registry:ui",
+          "target": "components/ui/activity-chart.tsx"
         }
       ]
     }

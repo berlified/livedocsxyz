@@ -39,11 +39,16 @@ export function ComponentDocLayout({
 
       <section id="preview" className="scroll-mt-24 space-y-3">
         <h2 className="text-xl font-semibold tracking-tight">Preview</h2>
-        <ComponentPreview
-          className={component.category === "charts" ? "p-0" : undefined}
-        >
-          {preview}
-        </ComponentPreview>
+        <div className="overflow-hidden rounded-xl border border-border">
+          <ComponentPreview
+            className={component.category === "charts" ? "p-0" : undefined}
+          >
+            {preview}
+          </ComponentPreview>
+          <div id="source" className="scroll-mt-24">
+            <CodeBlock language="tsx" title={`${component.name}.tsx`} code={source} collapsible className="rounded-none border-x-0 border-b-0" />
+          </div>
+        </div>
       </section>
 
       {examples}
@@ -68,7 +73,7 @@ export function ComponentDocLayout({
 
       <section id="props" className="scroll-mt-24 space-y-3">
         <h2 className="text-xl font-semibold tracking-tight">Props</h2>
-        <div className="overflow-x-auto rounded-none border-2 border-border">
+        <div className="overflow-x-auto rounded-xl border border-border">
           <table className="w-full min-w-[36rem] text-left text-sm">
             <thead className="bg-card text-muted-foreground">
               <tr>
@@ -100,44 +105,7 @@ export function ComponentDocLayout({
         </div>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-xl font-semibold tracking-tight">Agent guidance</h2>
-        <div className="space-y-4 rounded-none border-2 border-border bg-card p-5 text-sm shadow-[4px_4px_0_0_var(--border)]">
-          <div>
-            <p className="mb-1 font-medium">Purpose</p>
-            <p className="text-muted-foreground">{component.ai.purpose}</p>
-          </div>
-          <div>
-            <p className="mb-1 font-medium">Use when</p>
-            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
-              {component.ai.useWhen.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p className="mb-1 font-medium">Compositions</p>
-            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
-              {component.ai.compositions.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-          <div>
-            <p className="mb-1 font-medium">Avoid</p>
-            <ul className="list-disc space-y-1 pl-5 text-muted-foreground">
-              {component.ai.avoid.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
 
-      <section id="source" className="scroll-mt-24 space-y-3">
-        <h2 className="text-xl font-semibold tracking-tight">Source</h2>
-        <CodeBlock language="tsx" title={`${component.name}.tsx`} code={source} />
-      </section>
     </div>
   );
 }

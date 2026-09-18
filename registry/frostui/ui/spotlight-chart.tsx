@@ -3,6 +3,8 @@
 import * as React from "react";
 import {
   Area,
+  AreaRevealShape,
+  type AreaRevealShapeProps,
   AreaChart as RechartsAreaChart,
   CartesianGrid,
   ReferenceDot,
@@ -23,7 +25,21 @@ import {
 } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { ChartSkeleton } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
+
+function InteractiveAreaShape({ onMouseEnter, onMouseLeave, onFocus, onBlur, onClick, ...props }: AreaRevealShapeProps) {
+  return (
+    <g
+      onMouseEnter={onMouseEnter as unknown as React.MouseEventHandler<SVGGElement>}
+      onMouseLeave={onMouseLeave as unknown as React.MouseEventHandler<SVGGElement>}
+      onFocus={onFocus as unknown as React.FocusEventHandler<SVGGElement>}
+      onBlur={onBlur as unknown as React.FocusEventHandler<SVGGElement>}
+      onClick={onClick as unknown as React.MouseEventHandler<SVGGElement>}>
+      <AreaRevealShape {...props} />
+    </g>
+  );
+}
 
 function SpotlightChartRoot({
   title,
@@ -36,6 +52,8 @@ function SpotlightChartRoot({
   markerLabel,
   xDataKey = "day",
   className,
+  isLoading,
+  reaction,
 }: {
   title?: string;
   value?: string;
@@ -47,6 +65,8 @@ function SpotlightChartRoot({
   markerLabel?: string;
   xDataKey?: string;
   className?: string;
+  isLoading?: boolean;
+  reaction?: import("@/components/ui/chart-reactions").ChartReactionOptions;
 }) {
   const peak =
     markerIndex ??
@@ -57,11 +77,12 @@ function SpotlightChartRoot({
     }, 0);
 
   return (
-    <Card className={cn("p-5", className)}>
-      {title ? <p className="text-sm text-muted-foreground">{title}</p> : null}
+    <Card className={cn("p-5 sm:p-6", className)}>
+      <ChartSkeleton isLoading={isLoading}>
+      {title ? <p className="text-[15px] font-medium tracking-tight">{title}</p> : null}
       {value ? (
-        <div className="mt-2 flex items-end gap-2">
-          <p className="font-mono text-3xl font-semibold tracking-tight">{value}</p>
+        <div className="mt-1 flex items-end gap-2">
+          <p className="tabular-nums text-4xl font-medium tracking-tight">{value}</p>
           {delta ? (
             <Badge
               variant="outline"
@@ -76,7 +97,7 @@ function SpotlightChartRoot({
           ) : null}
         </div>
       ) : null}
-      <ChartContainer config={config} data={data} className="mt-4 h-52 w-full" variant="plain">
+      <ChartContainer isLoading={isLoading} loadingVariant="area" reaction={reaction} config={config} data={data} className="mt-4 h-52 w-full" variant="plain">
         <SpotlightBody
           data={data}
           xDataKey={xDataKey}
@@ -84,6 +105,7 @@ function SpotlightChartRoot({
           markerLabel={markerLabel}
         />
       </ChartContainer>
+      </ChartSkeleton>
     </Card>
   );
 }
@@ -100,6 +122,17 @@ function SpotlightBody({
   markerLabel?: string;
 }) {
   const { id } = useChart();
+  const [hovered, setHovered] = React.useState<string>();
+  const interaction = (key: string) => ({
+    onMouseEnter: () => setHovered(key),
+    onMouseLeave: () => setHovered(undefined),
+    onFocus: () => setHovered(key),
+    onBlur: () => setHovered(undefined),
+    tabIndex: 0,
+    "aria-label": key,
+    className: "transition-opacity duration-150 motion-reduce:transition-none [&_.recharts-curve]:transition-opacity [&_.recharts-curve]:duration-150 motion-reduce:[&_.recharts-curve]:transition-none",
+    opacity: hovered && hovered !== key ? 0.6 : 1,
+  });
   const peakRow = data[peak];
   const peakX = peakRow?.[xDataKey];
   const peakY = Number(peakRow?.current ?? 0);
@@ -119,12 +152,15 @@ function SpotlightBody({
           tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
         />
         <Tooltip
-          cursor={{ stroke: "var(--border)", strokeDasharray: "3 3" }}
+          cursor={false}
           content={<ChartTooltipContent />}
         />
         <Area
-          type="linear"
+          shape={InteractiveAreaShape}
+          type="monotone"
           dataKey="previous"
+          {...interaction("previous")}
+          activeDot={{ r: 4, ...interaction("previous") }}
           stroke={colorVar("previous")}
           fill="none"
           strokeWidth={1.5}
@@ -132,8 +168,11 @@ function SpotlightBody({
           isAnimationActive={false}
         />
         <Area
-          type="linear"
+          shape={InteractiveAreaShape}
+          type="monotone"
           dataKey="current"
+          {...interaction("current")}
+          activeDot={{ r: 4, ...interaction("current") }}
           stroke={colorVar("current")}
           fill={pixelPatternUrl(id, "current")}
           fillOpacity={1}
@@ -144,6 +183,7 @@ function SpotlightBody({
           <ReferenceDot
             x={peakX as string | number}
             y={peakY}
+            {...interaction("current")}
             r={5}
             fill={colorVar("current")}
             stroke="var(--background)"

@@ -22,7 +22,7 @@ export function DocsSidebar({
   return (
     <nav className="space-y-6" aria-label="Documentation">
       <div>
-        <p className="mb-2 px-2.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+        <p className="mb-2 px-2.5 text-xs font-medium text-muted-foreground">
           Guides
         </p>
         <div className="space-y-0.5">
@@ -40,7 +40,7 @@ export function DocsSidebar({
 
       {groups.map((group) => (
         <div key={group.id}>
-          <p className="mb-2 px-2.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <p className="mb-2 px-2.5 text-xs font-medium text-muted-foreground">
             {group.title}
           </p>
           <div className="space-y-0.5">
@@ -59,7 +59,7 @@ export function DocsSidebar({
 
       {upcomingCategories.length > 0 ? (
         <div>
-          <p className="mb-2 px-2.5 text-[10px] font-semibold uppercase tracking-[0.08em] text-muted-foreground">
+          <p className="mb-2 px-2.5 text-xs font-medium text-muted-foreground">
             Roadmap
           </p>
           <ul className="space-y-1 px-2.5 text-sm text-muted-foreground">

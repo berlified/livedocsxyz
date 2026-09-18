@@ -3,6 +3,8 @@
 import * as React from "react";
 import {
   Area,
+  AreaRevealShape,
+  type AreaRevealShapeProps,
   AreaChart as RechartsAreaChart,
   Brush,
   ResponsiveContainer,
@@ -13,6 +15,7 @@ import {
 import {
   ChartContainer,
   ChartGrid,
+  ChartHeading,
   ChartLegend,
   ChartTooltip,
   GradientFill,
@@ -21,7 +24,22 @@ import {
   useChart,
   type ChartConfig,
 } from "@/components/ui/chart";
+import { type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
+
+function InteractiveAreaShape({ onMouseEnter, onMouseLeave, onFocus, onBlur, onClick, ...props }: AreaRevealShapeProps) {
+  return (
+    <g
+      onMouseEnter={onMouseEnter as unknown as React.MouseEventHandler<SVGGElement>}
+      onMouseLeave={onMouseLeave as unknown as React.MouseEventHandler<SVGGElement>}
+      onFocus={onFocus as unknown as React.FocusEventHandler<SVGGElement>}
+      onBlur={onBlur as unknown as React.FocusEventHandler<SVGGElement>}
+      onClick={onClick as unknown as React.MouseEventHandler<SVGGElement>}
+    >
+      <AreaRevealShape {...props} />
+    </g>
+  );
+}
 
 type AreaVariant = "default" | "gradient" | "hatched";
 type StrokeVariant = "solid" | "dashed";
@@ -81,18 +99,28 @@ function ChartArea({
   className,
   children,
   isLoading,
+  reaction,
   defaultSelectedDataKey,
   onSelectionChange,
   xDataKey = "month",
+  variant,
+  title,
+  value,
+  description,
 }: {
   data: Record<string, unknown>[];
   config: ChartConfig;
   className?: string;
   children: React.ReactNode;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
   defaultSelectedDataKey?: string;
   onSelectionChange?: (key?: string) => void;
   xDataKey?: string;
+  variant?: "panel" | "plain";
+  title?: string;
+  value?: string;
+  description?: string;
 }) {
   const childArray = React.Children.toArray(children);
   const series = childArray.filter(
@@ -104,19 +132,25 @@ function ChartArea({
 
   return (
     <ChartContainer
+      isLoading={isLoading}
+      loadingVariant="area"
+      reaction={reaction}
       config={config}
       data={data}
       className={cn("h-72 w-full", className)}
+      variant={variant}
       defaultSelectedDataKey={defaultSelectedDataKey}
       onSelectionChange={onSelectionChange}
     >
-      <AreaBody
-        data={data}
-        xDataKey={xDataKey}
-        series={series}
-        extras={extras}
-        isLoading={isLoading}
-      />
+      <ChartHeading title={title} value={value} description={description} />
+      <div className="min-h-0 w-full flex-1">
+        <AreaBody
+          data={data}
+          xDataKey={xDataKey}
+          series={series}
+          extras={extras}
+        />
+      </div>
     </ChartContainer>
   );
 }
@@ -126,21 +160,23 @@ function AreaBody({
   xDataKey,
   series,
   extras,
-  isLoading,
 }: {
   data: Record<string, unknown>[];
   xDataKey: string;
   series: React.ReactElement<AreaSeriesProps>[];
   extras: React.ReactNode[];
-  isLoading?: boolean;
 }) {
   const { id, selected, setSelected } = useChart();
-
-  if (isLoading) {
-    return (
-      <div className="h-full w-full animate-pulse bg-muted/40" />
-    );
-  }
+  const [hovered, setHovered] = React.useState<string>();
+  const interaction = (key: string) => ({
+    onMouseEnter: () => setHovered(key),
+    onMouseLeave: () => setHovered(undefined),
+    onFocus: () => setHovered(key),
+    onBlur: () => setHovered(undefined),
+    tabIndex: 0,
+    "aria-label": key,
+    className: "transition-opacity duration-150 motion-reduce:transition-none [&_.recharts-curve]:transition-opacity [&_.recharts-curve]:duration-150 motion-reduce:[&_.recharts-curve]:transition-none",
+  });
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -164,30 +200,35 @@ function AreaBody({
             variant = "gradient",
             strokeVariant = "solid",
             strokeWidth = 2,
-            curveType = "monotone",
+            curveType,
+            type,
             isClickable,
-            isGlowing,
             connectNulls,
           } = item.props;
           const muted = selected && selected !== dataKey;
           const fill =
             variant === "hatched"
               ? `url(#${id}-${dataKey}-hatch)`
-              : `url(#${id}-${dataKey}-fill)`;
+              : variant === "default"
+                ? colorVar(dataKey)
+                : `url(#${id}-${dataKey}-fill)`;
           return (
             <Area
+              shape={InteractiveAreaShape}
               key={dataKey}
-              type={curveType}
+              type={curveType ?? type ?? "monotone"}
               dataKey={dataKey}
               stroke={colorVar(dataKey)}
               fill={fill}
+              fillOpacity={variant === "default" ? 0.5 : 1}
               strokeWidth={strokeWidth}
               strokeDasharray={strokeVariant === "dashed" ? "6 4" : undefined}
               connectNulls={connectNulls}
-              opacity={muted ? 0.2 : 1}
+              {...interaction(dataKey)}
+              opacity={hovered ? (hovered === dataKey ? 1 : 0.6) : muted ? 0.2 : 1}
               onClick={() => isClickable && setSelected(dataKey)}
               cursor={isClickable ? "pointer" : undefined}
-              activeDot={{ r: 4, strokeWidth: 2, fill: "var(--background)" }}
+              activeDot={{ r: 4, strokeWidth: 2, fill: "var(--background)", ...interaction(dataKey), opacity: hovered ? (hovered === dataKey ? 1 : 0.6) : muted ? 0.2 : 1 }}
             />
           );
         })}

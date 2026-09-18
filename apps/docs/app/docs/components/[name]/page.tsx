@@ -38,9 +38,90 @@ import {
   SpotlightChartPreview,
   LaneChartPreview,
   UsageMeterPreview,
+  ActivityChartPreview,
+  ActivityChartExamples,
 } from "@/components/chart-previews";
+import {
+  HeatmapChartPreview,
+  FunnelChartPreview,
+  ScatterChartPreview,
+  WaterfallChartPreview,
+  WaterfallChartExamples,
+  CandlestickChartPreview,
+  CandlestickChartExamples,
+  ChartReactionsPreview,
+  ChartReactionsExamples,
+  FunnelConversionExamples,
+} from "@/components/chart-previews-extended";
 
 const usageByName: Record<string, string> = {
+  "waterfall-chart": `import { WaterfallChart } from "@/components/ui/waterfall-chart"
+
+export function Example() {
+  return <WaterfallChart title="Revenue bridge" data={[
+    { label: "Opening", value: 48000, kind: "total" },
+    { label: "New", value: 18500 },
+    { label: "Churn", value: -5400 },
+    { label: "Closing", value: 61100, kind: "total" },
+  ]} reaction={{ metric: { current: 61100, previous: 48000 } }} />
+}`,
+  "activity-chart": `import { ActivityChart } from "@/components/ui/activity-chart"
+
+export function Example() {
+  return (
+    <ActivityChart
+      title="Sessions"
+      value="48.2k"
+      description="Last 30 days"
+      data={[
+        { label: "D3", value: 1240 },
+        { label: "D9", value: 2140 },
+        { label: "D15", value: 2420 },
+        { label: "D21", value: 2660 },
+        { label: "D27", value: 2890 },
+      ]}
+    />
+  )
+}`,
+  "candlestick-chart": `import { CandlestickChart } from "@/components/ui/candlestick-chart"
+
+export function Example() {
+  return <CandlestickChart title="Price action" showVolume data={[
+    { label: "Monday", open: 142, high: 149, low: 140, close: 147, volume: 12000 },
+    { label: "Tuesday", open: 147, high: 151, low: 143, close: 145, volume: 17000 },
+    { label: "Wednesday", open: 145, high: 153, low: 144, close: 151, volume: 21500 },
+  ]} />
+}`,
+  "chart-reactions": `"use client"
+
+import { ChartReactionsProvider } from "@/components/ui/chart-reactions"
+import { WaterfallChart } from "@/components/ui/waterfall-chart"
+
+export function Dashboard() {
+  return (
+    <ChartReactionsProvider
+      enabled
+      animationsEnabled
+      assets={{
+        neutral: { src: "/reactions/neutral.gif", poster: "/reactions/neutral.png", alt: "No change" },
+        sad: { src: "/reactions/sad.gif", poster: "/reactions/sad.png", alt: "Significant decline" },
+        disappointed: { src: "/reactions/disappointed.gif", poster: "/reactions/disappointed.png", alt: "Below expectations" },
+        happy: { src: "/reactions/happy.gif", poster: "/reactions/happy.png", alt: "Making progress" },
+        surprised: { src: "/reactions/surprised.gif", poster: "/reactions/surprised.png", alt: "Unexpected growth" },
+        proud: { src: "/reactions/proud.gif", poster: "/reactions/proud.png", alt: "Goal achieved" },
+        loading: { src: "/reactions/loading.gif", poster: "/reactions/loading.png", alt: "Loading chart" },
+      }}
+    >
+      <WaterfallChart data={[
+        { label: "Before", value: 100, kind: "total" },
+        { label: "Growth", value: 20 },
+        { label: "After", value: 120, kind: "total" },
+      ]} reaction={{ metric: { current: 120, previous: 100, goal: 150 } }} />
+      <WaterfallChart data={[]} isLoading />
+      <WaterfallChart data={[{ label: "Goal", value: 150, kind: "total" }]} reaction={{ emotion: "proud" }} />
+    </ChartReactionsProvider>
+  )
+}`,
   chart: `import { monthlyData, trafficConfig } from "@/components/ui/chart"
 import { AreaChart } from "@/components/ui/area-chart"
 
@@ -72,7 +153,7 @@ import { AreaChart } from "@/components/ui/area-chart"
 
 export function Example() {
   return (
-    <AreaChart data={monthlyData} config={trafficConfig}>
+    <AreaChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig}>
       <AreaChart.Grid />
       <AreaChart.Tooltip />
       <AreaChart.Legend isClickable />
@@ -86,7 +167,7 @@ import { LineChart } from "@/components/ui/line-chart"
 
 export function Example() {
   return (
-    <LineChart data={monthlyData} config={trafficConfig}>
+    <LineChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig}>
       <LineChart.Grid />
       <LineChart.Tooltip />
       <LineChart.Legend isClickable />
@@ -100,7 +181,7 @@ import { BarChart } from "@/components/ui/bar-chart"
 
 export function Example() {
   return (
-    <BarChart data={monthlyData} config={trafficConfig}>
+    <BarChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig}>
       <BarChart.Grid />
       <BarChart.Tooltip />
       <BarChart.Legend isClickable />
@@ -114,7 +195,7 @@ import { ComposedChart } from "@/components/ui/composed-chart"
 
 export function Example() {
   return (
-    <ComposedChart data={monthlyData} config={trafficConfig}>
+    <ComposedChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig}>
       <ComposedChart.Grid />
       <ComposedChart.Tooltip />
       <ComposedChart.Bar dataKey="desktop" />
@@ -308,9 +389,51 @@ export function Example() {
     />
   )
 }`,
+  "heatmap-chart": `import { heatmapCells, heatmapConfig } from "@/components/chart-previews-extended"
+import { HeatmapChart } from "@/components/ui/heatmap-chart"
+
+export function Example() {
+  return (
+    <HeatmapChart
+      title="Orders by hour"
+      data={heatmapCells}
+      config={heatmapConfig}
+    />
+  )
+}`,
+  "funnel-chart": `import { funnelStages, funnelConfig } from "@/components/chart-previews-extended"
+import { FunnelChart } from "@/components/ui/funnel-chart"
+
+export function Example() {
+  return (
+    <FunnelChart
+      title="Acquisition funnel"
+      stages={funnelStages}
+      config={funnelConfig}
+    />
+  )
+}`,
+  "scatter-chart": `import { scatterCohorts, scatterConfig } from "@/components/chart-previews-extended"
+import { ScatterChart } from "@/components/ui/scatter-chart"
+
+export function Example() {
+  return (
+    <ScatterChart
+      title="Spend vs retention"
+      data={scatterCohorts}
+      config={scatterConfig}
+      xLabel="Spend ($)"
+      yLabel="Retention (%)"
+      meanLine
+    />
+  )
+}`,
 };
 
 const previewByName: Record<string, ReactNode> = {
+  "waterfall-chart": <WaterfallChartPreview />,
+  "candlestick-chart": <CandlestickChartPreview />,
+  "chart-reactions": <ChartReactionsPreview />,
   chart: <ChartPreview />,
   sparkline: <SparklinePreview />,
   "area-chart": <AreaChartPreview />,
@@ -332,9 +455,17 @@ const previewByName: Record<string, ReactNode> = {
   "spotlight-chart": <SpotlightChartPreview />,
   "lane-chart": <LaneChartPreview />,
   "usage-meter": <UsageMeterPreview />,
+  "heatmap-chart": <HeatmapChartPreview />,
+  "funnel-chart": <FunnelChartPreview />,
+  "scatter-chart": <ScatterChartPreview />,
+  "activity-chart": <ActivityChartPreview />,
 };
 
 const examplesByName: Record<string, ReactNode> = {
+  "waterfall-chart": <WaterfallChartExamples />,
+  "candlestick-chart": <CandlestickChartExamples />,
+  "chart-reactions": <ChartReactionsExamples />,
+  "funnel-chart": <FunnelConversionExamples />,
   "area-chart": <AreaChartExamples />,
   chart: <ChartExamples />,
   sparkline: <SparklineExamples />,
@@ -345,6 +476,7 @@ const examplesByName: Record<string, ReactNode> = {
   "radar-chart": <RadarChartExamples />,
   "radial-chart": <RadialChartExamples />,
   "trend-card": <TrendCardExamples />,
+  "activity-chart": <ActivityChartExamples />,
 };
 
 const sourcePaths: Record<string, string> = {
@@ -369,6 +501,13 @@ const sourcePaths: Record<string, string> = {
   "spotlight-chart": "apps/docs/components/ui/spotlight-chart.tsx",
   "lane-chart": "apps/docs/components/ui/lane-chart.tsx",
   "usage-meter": "apps/docs/components/ui/usage-meter.tsx",
+  "heatmap-chart": "apps/docs/components/ui/heatmap-chart.tsx",
+  "funnel-chart": "apps/docs/components/ui/funnel-chart.tsx",
+  "scatter-chart": "apps/docs/components/ui/scatter-chart.tsx",
+  "waterfall-chart": "apps/docs/components/ui/waterfall-chart.tsx",
+  "candlestick-chart": "apps/docs/components/ui/candlestick-chart.tsx",
+  "chart-reactions": "apps/docs/components/ui/chart-reactions.tsx",
+  "activity-chart": "apps/docs/components/ui/activity-chart.tsx",
 };
 
 function readRegistrySource(name: string) {

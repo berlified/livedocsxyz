@@ -42,8 +42,6 @@ function guideCopy(href: string) {
       return "Light, dark, and semantic color tokens";
     case "/docs/tokens":
       return "Background, border, chart, and type tokens";
-    case "/docs/agents":
-      return "How agents should pick and compose charts";
     default:
       return "Documentation";
   }
@@ -55,7 +53,9 @@ function readRecents(): SearchHit[] {
     const raw = window.localStorage.getItem(RECENTS_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw) as SearchHit[];
-    return parsed.filter((item) => item?.href && item?.title).slice(0, 5);
+    return parsed
+      .filter((item) => item?.href && item?.title)
+      .slice(0, 5);
   } catch {
     return [];
   }
@@ -216,6 +216,23 @@ export function SearchDialog({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [open, onOpenChange]);
 
+  React.useEffect(() => {
+    if (!open) return;
+    const previousActive = document.activeElement as HTMLElement | null;
+    const dialog = inputRef.current?.closest<HTMLElement>("[role=dialog]");
+    const onKeyDown = (event: FocusEvent) => {
+      if (!dialog?.contains(event.target as Node)) {
+        event.preventDefault();
+        inputRef.current?.focus();
+      }
+    };
+    document.addEventListener("focusin", onKeyDown);
+    return () => {
+      document.removeEventListener("focusin", onKeyDown);
+      previousActive?.focus?.();
+    };
+  }, [open]);
+
   if (!open) return null;
 
   const grouped = results.reduce<Array<{ group: SearchHit["group"]; items: Array<SearchHit & { index: number }> }>>(
@@ -235,7 +252,7 @@ export function SearchDialog({
     <div className="fixed inset-0 z-[80]">
       <button
         type="button"
-        className="absolute inset-0 bg-black/70"
+        className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
         aria-label="Close search"
         onClick={() => onOpenChange(false)}
       />
@@ -243,17 +260,17 @@ export function SearchDialog({
         role="dialog"
         aria-modal="true"
         aria-label="Search documentation"
-        className="relative mx-auto mt-[8vh] flex w-[min(40rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-none border-2 border-border bg-card shadow-[6px_6px_0_0_var(--border)]"
+        className="relative mx-auto mt-[8vh] flex w-[min(40rem,calc(100vw-2rem))] flex-col overflow-hidden rounded-xl border border-border bg-card shadow-xl"
         style={{ height: "min(32rem, 75vh)" }}
       >
-        <div className="flex shrink-0 items-center gap-2 border-b-2 border-border px-3">
+        <div className="flex shrink-0 items-center gap-2 border-b border-border px-3">
           <Search className="size-4 text-muted-foreground" aria-hidden />
           <input
             ref={inputRef}
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search charts, guides, props…"
-            className="h-12 w-full bg-transparent font-mono text-sm text-foreground outline-none placeholder:text-muted-foreground"
+            className="h-12 w-full bg-transparent text-sm text-foreground outline-none placeholder:text-muted-foreground"
             aria-label="Search"
             aria-autocomplete="list"
             aria-controls="search-results"
@@ -266,7 +283,7 @@ export function SearchDialog({
           {query ? (
             <button
               type="button"
-              className="font-mono text-[10px] uppercase tracking-wide text-muted-foreground hover:text-foreground"
+              className="text-xs text-muted-foreground hover:text-foreground"
               onClick={() => {
                 setQuery("");
                 inputRef.current?.focus();
@@ -275,7 +292,7 @@ export function SearchDialog({
               Clear
             </button>
           ) : null}
-          <kbd className="rounded-none border-2 border-border bg-background px-1.5 py-0.5 font-mono text-[10px] uppercase text-muted-foreground">
+          <kbd className="rounded-md border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] uppercase text-muted-foreground">
             esc
           </kbd>
         </div>
@@ -284,11 +301,12 @@ export function SearchDialog({
           ref={listRef}
           id="search-results"
           role="listbox"
+          aria-label="Search results"
           className="min-h-0 flex-1 overflow-y-auto p-2"
         >
           {results.length === 0 ? (
             <div className="px-3 py-10 text-center">
-              <p className="font-mono text-sm text-foreground">No matches</p>
+              <p className="text-sm text-foreground">No matches</p>
               <p className="mt-1 text-xs text-muted-foreground">
                 Try a chart name, a keyword like donut, or a guide.
               </p>
@@ -296,7 +314,7 @@ export function SearchDialog({
           ) : (
             grouped.map((section) => (
               <div key={section.group} className="mb-2">
-                <p className="px-2 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                <p className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                   {section.group}
                 </p>
                 <div className="space-y-1">
@@ -313,10 +331,10 @@ export function SearchDialog({
                         onMouseEnter={() => setActive(item.index)}
                         onClick={() => go(item)}
                         className={cn(
-                          "flex w-full items-center gap-3 rounded-none border-2 px-3 py-2 text-left",
+                          "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left",
                           isActive
-                            ? "border-foreground bg-primary text-primary-foreground"
-                            : "border-transparent hover:bg-accent"
+                            ? "bg-accent text-accent-foreground"
+                            : "hover:bg-accent/60"
                         )}
                       >
                         <div className="min-w-0 flex-1">
@@ -325,23 +343,12 @@ export function SearchDialog({
                               {highlight(item.title, query)}
                             </span>
                             {item.meta ? (
-                              <Badge
-                                variant="outline"
-                                className={cn(
-                                  "border-current/30 px-1.5 py-px",
-                                  isActive && "border-primary-foreground/40 text-primary-foreground"
-                                )}
-                              >
+                              <Badge variant="outline" className="px-1.5 py-px text-[10px] text-muted-foreground">
                                 {item.meta}
                               </Badge>
                             ) : null}
                           </div>
-                          <p
-                            className={cn(
-                              "truncate text-xs",
-                              isActive ? "text-primary-foreground/80" : "text-muted-foreground"
-                            )}
-                          >
+                          <p className="truncate text-xs text-muted-foreground">
                             {item.description}
                           </p>
                         </div>
@@ -357,7 +364,7 @@ export function SearchDialog({
           )}
         </div>
 
-        <div className="flex shrink-0 items-center justify-between gap-3 border-t-2 border-border bg-background px-3 py-2 font-mono text-[10px] uppercase tracking-wide text-muted-foreground">
+        <div className="flex shrink-0 items-center justify-between gap-3 border-t border-border bg-background px-3 py-2 text-[10px] uppercase tracking-wide text-muted-foreground">
           <span className="flex items-center gap-3">
             <span>↑↓ Move</span>
             <span className="inline-flex items-center gap-1">

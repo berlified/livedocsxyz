@@ -1,0 +1,41 @@
+{
+  "name": "scatter-chart",
+  "title": "Scatter Chart",
+  "category": "charts",
+  "description": "XY point plot with series groups, optional bubbles, mean quadrants, and labeled axes.",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/scatter-chart.tsx"],
+  "examples": ["analytics"],
+  "variants": ["default"],
+  "keywords": ["chart", "scatter", "correlation", "xy", "bubble", "distribution", "quadrant"],
+  "props": [
+    { "name": "data", "type": "ScatterPoint[]", "description": "x, y, series, label" },
+    { "name": "series", "type": "string[]", "description": "Explicit series order" },
+    { "name": "config", "type": "ChartConfig", "description": "Per-series color config" },
+    { "name": "title", "type": "string", "description": "Card heading" },
+    { "name": "description", "type": "string", "description": "Secondary caption" },
+    { "name": "xLabel", "type": "string", "description": "X axis label" },
+    { "name": "yLabel", "type": "string", "description": "Y axis label" },
+    { "name": "xDomain", "type": "[number | \"auto\", number | \"auto\"]", "description": "X axis domain" },
+    { "name": "yDomain", "type": "[number | \"auto\", number | \"auto\"]", "description": "Y axis domain" },
+    { "name": "bubbleKey", "type": "string", "description": "Numeric field driving bubble area" },
+    { "name": "meanLine", "type": "boolean", "description": "Horizontal mean reference" },
+    { "name": "quadrantLines", "type": "boolean", "description": "Mean x/y quadrant guides" },
+    { "name": "onPointClick", "type": "(point: ScatterPoint) => void", "description": "Point activation callback" },
+    { "name": "emptyLabel", "type": "string", "description": "Empty state message" },
+    { "name": "isLoading", "type": "boolean", "description": "Skeleton state" },
+    { "name": "className", "type": "string", "description": "Card class passthrough" }
+  ],
+  "ai": {
+    "purpose": "Reveal correlation and clusters between two numeric measures.",
+    "useWhen": ["Spend vs retention", "Price vs demand", "Cohort comparisons"],
+    "preferOver": ["A line chart for unpaired observations"],
+    "avoid": ["Single measure", "Categorical x with few levels"],
+    "compositions": ["ScatterChart with quadrantLines beside CountryChart"]
+  }
+}

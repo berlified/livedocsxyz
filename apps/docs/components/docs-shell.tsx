@@ -9,6 +9,7 @@ import { useTheme } from "next-themes";
 import { LivedocsLogo } from "@/components/livedocs-logo";
 import { SiteFooter } from "@/components/site-footer";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import { DocsSidebar } from "@/components/docs-sidebar";
 import { PageToc } from "@/components/page-toc";
 import { SearchDialog } from "@/components/search-dialog";
@@ -33,6 +34,15 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
   React.useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
+
+  React.useEffect(() => {
+    if (!mobileOpen) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [mobileOpen]);
 
   React.useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -71,11 +81,11 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
           <button
             type="button"
             onClick={() => setSearchOpen(true)}
-            className="ml-2 hidden h-9 min-w-0 w-full max-w-md items-center gap-2 rounded-none border-2 border-border bg-background px-3 text-left text-sm text-muted-foreground shadow-[2px_2px_0_0_var(--border)] transition-colors hover:bg-accent hover:text-foreground sm:flex"
+            className="ml-2 hidden h-9 min-w-0 w-full max-w-md items-center gap-2 rounded-full border border-border bg-background px-3.5 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:flex"
           >
             <Search className="size-3.5 shrink-0" aria-hidden />
             <span className="flex-1 truncate">Search charts and docs…</span>
-            <kbd className="rounded-none border-2 border-border bg-card px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+            <kbd className="rounded-full border border-border bg-card px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground">
               ⌘K
             </kbd>
           </button>
@@ -165,7 +175,7 @@ export function DocsShell({ children }: { children: React.ReactNode }) {
         <div className="fixed inset-0 z-50 lg:hidden">
           <button
             type="button"
-            className="absolute inset-0 bg-black/70"
+            className="absolute inset-0 bg-foreground/40 backdrop-blur-sm"
             aria-label="Close navigation"
             onClick={() => setMobileOpen(false)}
           />
@@ -213,7 +223,7 @@ export function DocsSidebarLink({
   return (
     <Link
       href={href}
-      className={`block rounded-md px-2.5 py-1.5 text-sm no-underline transition-colors ${
+      className={`block rounded-md px-2.5 py-1.5 text-sm no-underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
         active
           ? "bg-primary text-primary-foreground"
           : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
@@ -234,12 +244,21 @@ export function CatalogLink({
   description: string;
 }) {
   return (
-    <Link href={href} className="catalog-item group">
-      <div className="min-w-0">
-        <p className="text-sm font-medium">{title}</p>
-        <p className="mt-1 text-sm text-muted-foreground">{description}</p>
-      </div>
-      <ArrowUpRight className="catalog-arrow mt-0.5 size-4 shrink-0 text-muted-foreground" />
+    <Link
+      href={href}
+      className="group block h-full min-w-0 rounded-xl no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+    >
+      <Card className="h-full min-w-0 shadow-none transition-colors group-hover:border-muted-foreground/30 group-hover:bg-accent/50 group-focus-visible:border-muted-foreground/30">
+        <CardContent className="flex h-full items-start gap-3 p-4">
+          <div className="min-w-0 flex-1">
+            <h3 className="truncate text-sm font-medium tracking-tight">{title}</h3>
+            <p className="mt-2 line-clamp-2 min-h-10 break-words text-sm leading-5 text-muted-foreground">
+              {description}
+            </p>
+          </div>
+          <ArrowUpRight aria-hidden="true" className="mt-0.5 size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground group-focus-visible:text-foreground" />
+        </CardContent>
+      </Card>
     </Link>
   );
 }

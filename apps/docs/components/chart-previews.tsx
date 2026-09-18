@@ -8,6 +8,8 @@ import {
   cashflowConfig,
   cashflowMonths,
   cohortMix,
+  composedDaily,
+  composedDailyConfig,
   dailyOverlay,
   laneConfig,
   laneRows,
@@ -27,6 +29,8 @@ import {
   ringConfig,
   ringMembers,
   ringPayments,
+  salesByCategoryConfig,
+  salesByCategory,
   sankeyConfig,
   sankeyLinks,
   sankeyNodes,
@@ -53,10 +57,21 @@ import { RadialChart } from "@/components/ui/radial-chart";
 import { RangeChart } from "@/components/ui/range-chart";
 import { SankeyChart } from "@/components/ui/sankey-chart";
 import { Sparkline } from "@/components/ui/sparkline";
+import { ActivityChart } from "@/components/ui/activity-chart";
 import { Card } from "@/components/ui/card";
 import { TrendCard } from "@/components/ui/trend-card";
 
 import { ComponentPreview } from "@/components/component-preview";
+
+export {
+  WaterfallChartPreview,
+  WaterfallChartExamples,
+  CandlestickChartPreview,
+  CandlestickChartExamples,
+  ChartReactionsPreview,
+  ChartReactionsExamples,
+  FunnelConversionExamples,
+} from "@/components/financial-chart-previews";
 
 function PreviewPair({ children }: { children: React.ReactNode }) {
   return (
@@ -68,7 +83,7 @@ function PreviewPair({ children }: { children: React.ReactNode }) {
 
 export function ChartPreview() {
   return (
-    <AreaChart data={monthlyData} config={trafficConfig} className="w-full">
+    <AreaChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig} className="w-full">
       <AreaChart.Grid />
       <AreaChart.Tooltip />
       <AreaChart.Legend isClickable />
@@ -132,7 +147,7 @@ export function AreaChartExamples() {
 
 export function LineChartPreview() {
   return (
-    <LineChart data={monthlyData} config={trafficConfig} className="w-full">
+    <LineChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig} className="w-full">
       <LineChart.Grid />
       <LineChart.Tooltip />
       <LineChart.Legend isClickable />
@@ -167,7 +182,7 @@ export function LineChartExamples() {
 
 export function BarChartPreview() {
   return (
-    <BarChart data={monthlyData} config={trafficConfig} className="w-full">
+    <BarChart title="Traffic" value="128,430" description="Sessions · last 30 days" data={monthlyData} config={trafficConfig} className="w-full">
       <BarChart.Grid />
       <BarChart.Tooltip />
       <BarChart.Legend isClickable />
@@ -218,13 +233,16 @@ export function BarChartExamples() {
 
 export function ComposedChartPreview() {
   return (
-    <ComposedChart data={monthlyData} config={trafficConfig} className="w-full">
+    <ComposedChart title="Daily activity" value="48,210" description="Sessions · January" data={composedDaily} config={composedDailyConfig} xDataKey="day" className="w-full" height={340}>
       <ComposedChart.Grid />
-      <ComposedChart.Tooltip />
+      <ComposedChart.XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} ticks={["Jan 1", "Jan 5", "Jan 10", "Jan 15", "Jan 20", "Jan 25", "Jan 30"]} interval="preserveStartEnd" minTickGap={28} />
+      <ComposedChart.Tooltip
+        labelFormatter={(label) => new Date(Date.UTC(2026, 0, Number(String(label).split(" ")[1]))).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", timeZone: "UTC" })}
+      />
       <ComposedChart.Legend isClickable />
-      <ComposedChart.Bar dataKey="desktop" isClickable />
-      <ComposedChart.Area dataKey="mobile" />
-      <ComposedChart.Line dataKey="tablet" />
+      <ComposedChart.Area dataKey="average" />
+      <ComposedChart.Bar dataKey="daily" maxBarSize={10} />
+      <ComposedChart.Line dataKey="trend" />
     </ComposedChart>
   );
 }
@@ -236,6 +254,15 @@ export function ComposedChartExamples() {
       <ComponentPreview label="Bar + area + line" className="p-4">
         <ComposedChartPreview />
       </ComponentPreview>
+      <ComponentPreview label="Area behind bars" className="p-4">
+        <ComposedChart data={monthlyData} config={trafficConfig} className="w-full">
+          <ComposedChart.Grid />
+          <ComposedChart.Tooltip />
+          <ComposedChart.Legend isClickable />
+          <ComposedChart.Area dataKey="desktop" />
+          <ComposedChart.Bar dataKey="mobile" isClickable />
+        </ComposedChart>
+      </ComponentPreview>
     </section>
   );
 }
@@ -243,15 +270,17 @@ export function ComposedChartExamples() {
 export function PieChartPreview() {
   return (
     <PieChart
-      data={shareData}
-      config={shareConfig}
-      dataKey="visitors"
-      nameKey="browser"
-      innerRadius={64}
+      data={salesByCategory}
+      config={salesByCategoryConfig}
+      dataKey="sales"
+      nameKey="category"
+      legendTitle="Sales by Category"
+      innerRadius={0}
+      paddingAngle={0}
+      cornerRadius={0}
       className="w-full"
     >
       <PieChart.Tooltip />
-      <PieChart.Legend isClickable />
     </PieChart>
   );
 }
@@ -389,14 +418,14 @@ export function SparklineExamples() {
         </div>
       </ComponentPreview>
       <ComponentPreview label="Card" className="p-4">
-        <Card className="w-full max-w-sm p-4">
+        <Card className="w-full max-w-sm p-5 sm:p-6">
           <p className="text-sm text-muted-foreground">Volume</p>
           <p className="mt-1 font-mono text-2xl font-semibold tracking-tight">$48,210</p>
           <Sparkline
             className="mt-3 bg-transparent"
             size="md"
             tone="up"
-            showValue={false}
+            showValue
           />
         </Card>
       </ComponentPreview>
@@ -600,5 +629,40 @@ export function UsageMeterPreview() {
         resetLabel="Clears on payout"
       />
     </PreviewPair>
+  );
+}
+
+export const activitySessions = [
+  { label: "D3", value: 1240 }, { label: "D6", value: 1860 }, { label: "D9", value: 2140 },
+  { label: "D12", value: 1780 }, { label: "D15", value: 2420 }, { label: "D18", value: 1980 },
+  { label: "D21", value: 2660 }, { label: "D24", value: 2310 }, { label: "D27", value: 2890 },
+  { label: "D30", value: 3120 },
+];
+
+export const activityConfig = {
+  value: { label: "Sessions", color: "var(--chart-2)" },
+};
+
+export function ActivityChartPreview() {
+  return (
+    <ActivityChart
+      title="Sessions"
+      value="48.2k"
+      description="Last 30 days"
+      data={activitySessions}
+      config={activityConfig}
+      className="w-full"
+    />
+  );
+}
+
+export function ActivityChartExamples() {
+  return (
+    <section className="space-y-6">
+      <h2 className="text-xl font-semibold">Variants</h2>
+      <ComponentPreview label="Loading" className="p-4">
+        <ActivityChart title="Sessions" value="48.2k" data={activitySessions} config={activityConfig} isLoading className="w-full" />
+      </ComponentPreview>
+    </section>
   );
 }

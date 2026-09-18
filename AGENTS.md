@@ -56,7 +56,7 @@ Never use raw hex values in component styles.
 
 | Component | When to use |
 | --- | --- |
-| `Chart` | Shared pixel-art config, tooltip, legend, and theme tokens |
+| `Chart` | Modern, smooth Geist-inspired chart primitives with shared config, tooltip, legend, and theme tokens |
 | `Sparkline` | Quiet trend graphs, inline balances, and empty-state charts |
 | `AreaChart` | Compound area series with gradient, hatch, glow, brush |
 | `LineChart` | Compound lines with dashes, dots, and curve types |

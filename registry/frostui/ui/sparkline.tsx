@@ -2,6 +2,7 @@
 
 import * as React from "react";
 
+import { ChartReaction, ChartSkeleton, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 const SAMPLE = Array.from({ length: 42 }, (_, index) => {
@@ -29,6 +30,8 @@ const toneClass = {
 
 export type SparklineProps = React.ComponentProps<"div"> & {
   data?: number[];
+  isLoading?: boolean;
+  reaction?: ChartReactionOptions;
   markerIndex?: number;
   markerLabel?: string;
   interactive?: boolean;
@@ -57,13 +60,14 @@ function toPoints(data: number[], width: number, height: number) {
   });
 }
 
-function pixelPath(points: Array<{ x: number; y: number }>) {
+function smoothPath(points: Array<{ x: number; y: number }>) {
   if (points.length === 0) return "";
   return points
     .map((point, index) => {
-      const x = Math.round(point.x);
-      const y = Math.round(point.y);
-      return `${index === 0 ? "M" : "L"}${x} ${y}`;
+      if (index === 0) return `M${point.x} ${point.y}`;
+      const previous = points[index - 1] ?? point;
+      const middle = (previous.x + point.x) / 2;
+      return `C${middle} ${previous.y} ${middle} ${point.y} ${point.x} ${point.y}`;
     })
     .join(" ");
 }
@@ -79,11 +83,17 @@ function Sparkline({
     value.toLocaleString("en-US", { maximumFractionDigits: 1 }),
   size = "lg",
   tone = "neutral",
+  isLoading,
+  reaction,
   ...props
 }: SparklineProps) {
+  const settings = useChartReactions();
+  isLoading = isLoading || Boolean(settings.isLoading);
   const uid = React.useId().replace(/:/g, "");
   const fallbackIndex = markerIndex ?? Math.max(0, data.length - 1);
   const [active, setActive] = React.useState(fallbackIndex);
+  const [hovered, setHovered] = React.useState(false);
+  const [focused, setFocused] = React.useState(false);
   const svgRef = React.useRef<SVGSVGElement>(null);
 
   React.useEffect(() => {
@@ -94,7 +104,7 @@ function Sparkline({
   const height = 280;
   const baseline = height - 18;
   const points = toPoints(data, width, height);
-  const line = pixelPath(points);
+  const line = smoothPath(points);
   const last = points[points.length - 1];
   const area = last
     ? `${line} L${last.x} ${baseline} L${points[0]?.x ?? 0} ${baseline} Z`
@@ -102,9 +112,11 @@ function Sparkline({
   const marker = points[Math.min(Math.max(active, 0), Math.max(points.length - 1, 0))];
 
   const moveTo = (clientX: number) => {
-    if (!interactive || points.length < 2 || !svgRef.current) return;
-    const rect = svgRef.current.getBoundingClientRect();
-    const x = ((clientX - rect.left) / rect.width) * width;
+    if (!interactive || !points.length || !svgRef.current) return;
+    setHovered(true);
+    const matrix = svgRef.current.getScreenCTM();
+    if (!matrix) return;
+    const x = (clientX - matrix.e) / matrix.a;
     let nearest = 0;
     let best = Infinity;
     points.forEach((point, index) => {
@@ -117,7 +129,10 @@ function Sparkline({
     setActive(nearest);
   };
 
-  const reset = () => setActive(markerIndex ?? Math.max(0, data.length - 1));
+  const reset = () => {
+    setHovered(false);
+    setActive(fallbackIndex);
+  };
 
   const onKeyDown = (event: React.KeyboardEvent<SVGSVGElement>) => {
     if (!interactive || points.length < 2) return;
@@ -138,147 +153,139 @@ function Sparkline({
     }
   };
 
-  const caption = markerLabel ?? (marker ? format(marker.value) : "");
+  const inspecting = interactive && (hovered || focused);
+  const tooltipVisible = Boolean(marker && (inspecting ? showValue : Boolean(markerLabel) || showValue));
 
   return (
     <div
       className={cn(
-        "relative w-full rounded-none border-2 border-border bg-background shadow-[4px_4px_0_0_var(--border)]",
+        "relative w-full rounded-lg border border-border bg-card text-card-foreground",
         className
       )}
       {...props}
     >
-      <svg
-        ref={svgRef}
-        viewBox={`0 0 ${width} ${height}`}
-        className={cn("block w-full select-none", sizeClass[size], toneClass[tone])}
-        style={{ shapeRendering: "crispEdges", imageRendering: "pixelated" }}
-        role="img"
-        aria-label={caption || "Trend"}
-        tabIndex={interactive ? 0 : undefined}
-        onPointerDown={(event) => {
-          if (!interactive) return;
-          if (event.pointerType !== "mouse") {
-            event.currentTarget.setPointerCapture(event.pointerId);
-          }
-          moveTo(event.clientX);
-        }}
-        onPointerMove={(event) => {
-          if (!interactive) return;
-          if (
-            event.pointerType === "mouse" ||
-            event.currentTarget.hasPointerCapture(event.pointerId)
-          ) {
+      {!isLoading ? <ChartReaction reaction={reaction} className="absolute bottom-1 left-1 z-10" /> : null}
+      <ChartSkeleton isLoading={isLoading}>
+        <svg
+          ref={svgRef}
+          viewBox={`0 0 ${width} ${height}`}
+          className={cn("block w-full select-none rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring", sizeClass[size], toneClass[tone])}
+          role={interactive && points.length ? "slider" : "img"}
+          aria-label="Trend"
+          aria-describedby={tooltipVisible ? `${uid}-tooltip` : undefined}
+          aria-valuemin={interactive && points.length ? 1 : undefined}
+          aria-valuemax={interactive && points.length ? points.length : undefined}
+          aria-valuenow={interactive && marker ? points.indexOf(marker) + 1 : undefined}
+          aria-valuetext={interactive && marker ? format(marker.value) : undefined}
+          tabIndex={interactive && points.length ? 0 : undefined}
+          onPointerDown={(event) => {
+            if (!interactive) return;
+            if (event.pointerType !== "mouse") {
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }
             moveTo(event.clientX);
-          }
-        }}
-        onPointerUp={(event) => {
-          if (event.pointerType !== "mouse") reset();
-        }}
-        onPointerLeave={reset}
-        onKeyDown={onKeyDown}
-      >
-        {area ? (
-          <>
-            <defs>
-              <pattern
-                id={`${uid}-area`}
-                width="8"
-                height="8"
-                patternUnits="userSpaceOnUse"
-              >
-                <rect width="8" height="8" fill="currentColor" fillOpacity="0.16" />
-                <rect width="4" height="4" fill="currentColor" />
-                <rect
-                  x="4"
-                  y="4"
-                  width="4"
-                  height="4"
-                  fill="currentColor"
-                  fillOpacity="0.72"
-                />
-              </pattern>
-            </defs>
-            <path d={area} fill={`url(#${uid}-area)`} />
-          </>
-        ) : null}
-        <line
-          x1="0"
-          x2={width}
-          y1={baseline}
-          y2={baseline}
-          className="stroke-border"
-          strokeDasharray="4 4"
-        />
-        <path
-          d={line}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3"
-          strokeLinejoin="miter"
-          strokeLinecap="square"
-        />
-        {last ? (
-          <rect
-            x={last.x - 3}
-            y={last.y - 3}
-            width="6"
-            height="6"
-            fill="currentColor"
-            className="opacity-40"
-          />
-        ) : null}
-        {marker ? (
-          <g>
-            <line
-              x1={marker.x}
-              x2={marker.x}
-              y1="20"
-              y2={baseline}
-              className="stroke-border"
-              strokeWidth="2"
-            />
-            <rect
-              x={marker.x - 5}
-              y={marker.y - 5}
-              width="10"
-              height="10"
-              fill="currentColor"
-            />
-            <rect
-              x={marker.x - 3}
-              y={marker.y - 3}
-              width="6"
-              height="6"
-              fill="var(--background)"
-            />
-          </g>
-        ) : null}
-      </svg>
-      {marker && (markerLabel || showValue) ? (
-        <div
-          className="pointer-events-none absolute top-1 max-w-[calc(100%-1rem)] -translate-x-1/2"
-          style={{
-            left: `${Math.min(86, Math.max(14, (marker.x / width) * 100))}%`,
           }}
+          onPointerMove={(event) => {
+            if (!interactive) return;
+            if (
+              event.pointerType === "mouse" ||
+              event.currentTarget.hasPointerCapture(event.pointerId)
+            ) {
+              moveTo(event.clientX);
+            }
+          }}
+          onPointerUp={(event) => {
+            if (event.pointerType !== "mouse") reset();
+          }}
+          onPointerLeave={reset}
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          onKeyDown={onKeyDown}
         >
-          <div className="rounded-none border-2 border-border bg-background px-2 py-1 font-mono shadow-[3px_3px_0_0_var(--border)]">
-            {markerLabel ? (
-              <p className="text-[11px] text-muted-foreground">{markerLabel}</p>
-            ) : null}
-            {showValue ? (
-              <p
-                className={cn(
-                  "font-mono text-[11px] font-medium text-foreground",
-                  markerLabel && "mt-0.5"
-                )}
-              >
-                {format(marker.value)}
-              </p>
-            ) : null}
+          {area ? (
+            <>
+              <defs>
+                <linearGradient id={`${uid}-area`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="currentColor" stopOpacity={0.24} />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <path d={area} fill={`url(#${uid}-area)`} />
+            </>
+          ) : null}
+          <line
+            x1="0"
+            x2={width}
+            y1={baseline}
+            y2={baseline}
+            className="stroke-border"
+            strokeDasharray="4 4"
+          />
+          <path
+            d={line}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            vectorEffect="non-scaling-stroke"
+            strokeLinejoin="round"
+            strokeLinecap="round"
+          />
+          {last ? (
+            <circle
+              cx={last.x}
+              cy={last.y}
+              r="3"
+              fill="currentColor"
+              className="opacity-40"
+            />
+          ) : null}
+          {marker ? (
+            <g>
+              <line
+                x1={marker.x}
+                x2={marker.x}
+                y1="20"
+                y2={baseline}
+                className="stroke-border"
+                strokeWidth="2"
+              />
+              <circle
+                cx={marker.x}
+                cy={marker.y}
+                r="4"
+                fill="currentColor"
+                stroke="var(--card)"
+                strokeWidth="2"
+              />
+            </g>
+          ) : null}
+        </svg>
+        {tooltipVisible && marker ? (
+          <div
+            id={`${uid}-tooltip`}
+            className="pointer-events-none absolute top-1 max-w-[calc(100%-1rem)] -translate-x-1/2"
+            style={{
+              left: `${Math.min(86, Math.max(14, (marker.x / width) * 100))}%`,
+            }}
+          >
+            <div className="rounded-lg border border-border bg-popover px-2.5 py-1.5 tabular-nums shadow-sm">
+              {markerLabel && !inspecting ? (
+                <p className="text-xs text-muted-foreground">{markerLabel}</p>
+              ) : null}
+              {showValue ? (
+                <p
+                  className={cn(
+                    "text-xs font-medium text-foreground",
+                    markerLabel && !inspecting && "mt-0.5"
+                  )}
+                >
+                  {format(marker.value)}
+                </p>
+              ) : null}
+            </div>
           </div>
-        </div>
-      ) : null}
+        ) : null}
+      </ChartSkeleton>
     </div>
   );
 }

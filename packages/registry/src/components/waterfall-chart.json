@@ -1,0 +1,31 @@
+{
+  "name": "waterfall-chart",
+  "title": "Waterfall Chart",
+  "category": "charts",
+  "description": "Connected balance bridge with signed changes, absolute totals, keyboard exploration, and an accessible data table.",
+  "dependencies": [],
+  "registryDependencies": ["https://livedocs.xyz/r/chart.json", "https://livedocs.xyz/r/chart-reactions.json", "https://livedocs.xyz/r/card.json", "https://livedocs.xyz/r/utils.json"],
+  "files": ["apps/docs/components/ui/waterfall-chart.tsx"],
+  "examples": ["revenue-bridge", "negative-balances", "empty", "loading"],
+  "variants": ["default"],
+  "keywords": ["waterfall", "bridge", "revenue", "balance", "profit", "changes", "totals"],
+  "props": [
+    { "name": "data", "type": "WaterfallDatum[]", "description": "Ordered label, value, and kind (change or total). Changes accumulate; totals reset the balance. Nonfinite changes leave the balance unchanged." },
+    { "name": "title", "type": "string", "description": "Accessible chart heading" },
+    { "name": "description", "type": "string", "description": "Secondary caption" },
+    { "name": "config", "type": "ChartConfig", "description": "increase, decrease, and total semantic colors and labels" },
+    { "name": "formatValue", "type": "(value: number) => string", "description": "Axis, details, and data table formatter" },
+    { "name": "onBarClick", "type": "(datum: WaterfallDatum, index: number) => void", "description": "Pointer or keyboard activation with original data index" },
+    { "name": "isLoading", "type": "boolean", "description": "Shared loading reaction" },
+    { "name": "reaction", "type": "ChartReactionOptions", "description": "Per-chart emotion, metric, asset, and resolver overrides" },
+    { "name": "emptyLabel", "type": "string", "description": "Message when no finite records remain" },
+    { "name": "className", "type": "string", "description": "Card classes" }
+  ],
+  "ai": {
+    "purpose": "Explain how signed contributions move an opening balance to a closing balance.",
+    "useWhen": ["Revenue reconciliation", "Profit bridges", "Headcount movement"],
+    "preferOver": ["Unconnected bars for cumulative changes"],
+    "avoid": ["Unordered independent categories"],
+    "compositions": ["WaterfallChart next to a revenue TrendCard"]
+  }
+}

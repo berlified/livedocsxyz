@@ -3,6 +3,8 @@
 import * as React from "react";
 import {
   Area,
+  AreaRevealShape,
+  type AreaRevealShapeProps,
   CartesianGrid,
   ComposedChart as RechartsComposedChart,
   Line,
@@ -23,7 +25,22 @@ import {
 } from "@/components/ui/chart";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
+import { ChartSkeleton, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
+
+function InteractiveAreaShape({ onMouseEnter, onMouseLeave, onFocus, onBlur, onClick, ...props }: AreaRevealShapeProps) {
+  return (
+    <g
+      onMouseEnter={onMouseEnter as unknown as React.MouseEventHandler<SVGGElement>}
+      onMouseLeave={onMouseLeave as unknown as React.MouseEventHandler<SVGGElement>}
+      onFocus={onFocus as unknown as React.FocusEventHandler<SVGGElement>}
+      onBlur={onBlur as unknown as React.FocusEventHandler<SVGGElement>}
+      onClick={onClick as unknown as React.MouseEventHandler<SVGGElement>}
+    >
+      <AreaRevealShape {...props} />
+    </g>
+  );
+}
 
 function MetricChartRoot({
   title,
@@ -36,6 +53,7 @@ function MetricChartRoot({
   xDataKey = "month",
   className,
   isLoading,
+  reaction,
 }: {
   title: string;
   value: string;
@@ -47,16 +65,18 @@ function MetricChartRoot({
   xDataKey?: string;
   className?: string;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
 }) {
   const [active, setActive] = React.useState(series[0]?.key);
 
   return (
-    <Card className={cn("p-5", className)}>
+    <Card className={cn("p-5 sm:p-6", className)}>
+      <ChartSkeleton isLoading={isLoading}>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm text-muted-foreground">{title}</p>
-          <div className="mt-2 flex items-center gap-2.5">
-            <p className="font-mono text-4xl font-semibold leading-none tracking-tight">{value}</p>
+          <p className="text-[15px] font-medium tracking-tight">{title}</p>
+          <div className="mt-1 flex items-center gap-2.5">
+            <p className="tabular-nums text-4xl font-medium leading-none tracking-tight">{value}</p>
             {delta ? (
               <Badge
                 variant="outline"
@@ -72,7 +92,7 @@ function MetricChartRoot({
           </div>
         </div>
         <div
-          className="inline-flex flex-wrap rounded-none border-2 border-border bg-background p-0.5"
+          className="inline-flex flex-wrap gap-0.5 rounded-lg border border-border bg-muted/40 p-0.5"
           role="radiogroup"
           aria-label="Series"
         >
@@ -86,7 +106,7 @@ function MetricChartRoot({
                 aria-checked={selected}
                 onClick={() => setActive(item.key)}
                 className={cn(
-                  "flex items-center gap-1.5 rounded-none px-2 py-1 font-mono text-[10px] uppercase tracking-wide text-muted-foreground",
+                  "flex items-center gap-1.5 rounded-md px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                   selected && "bg-accent text-foreground"
                 )}
               >
@@ -100,24 +120,23 @@ function MetricChartRoot({
 
       <div className="mt-4 h-72">
         <ChartContainer
+          isLoading={isLoading}
+          loadingVariant="line"
+          reaction={reaction}
           config={config}
           data={data}
           className="h-full w-full"
           variant="plain"
-          defaultSelectedDataKey={active}
         >
-          {isLoading ? (
-            <div className="h-full animate-pulse bg-muted/40" />
-          ) : (
-            <MetricBody
-              data={data}
-              xDataKey={xDataKey}
-              series={series}
-              active={active}
-            />
-          )}
+          <MetricBody
+            data={data}
+            xDataKey={xDataKey}
+            series={series}
+            active={active}
+          />
         </ChartContainer>
       </div>
+      </ChartSkeleton>
     </Card>
   );
 }
@@ -135,6 +154,17 @@ function MetricBody({
 }) {
   const id = React.useId().replace(/:/g, "");
   const last = data[data.length - 1];
+  const [hovered, setHovered] = React.useState<string>();
+  const interaction = (key: string) => ({
+    onMouseEnter: () => setHovered(key),
+    onMouseLeave: () => setHovered(undefined),
+    onFocus: () => setHovered(key),
+    onBlur: () => setHovered(undefined),
+    tabIndex: 0,
+    "aria-label": key,
+    className: "transition-opacity duration-150 motion-reduce:transition-none [&_.recharts-curve]:transition-opacity [&_.recharts-curve]:duration-150 motion-reduce:[&_.recharts-curve]:transition-none",
+    opacity: hovered ? (hovered === key ? 1 : 0.6) : active && active !== key ? 0.55 : 1,
+  });
 
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -166,19 +196,24 @@ function MetricBody({
           tick={{ fill: "var(--muted-foreground)", fontSize: 11 }}
         />
         <Tooltip
-          cursor={{ stroke: "var(--border)", strokeDasharray: "3 3" }}
+          cursor={false}
           content={<ChartTooltipContent />}
         />
         {series.map((item) => {
           const muted = Boolean(active && active !== item.key);
           return (
             <Area
+              shape={InteractiveAreaShape}
               key={`${item.key}-fill`}
               type="monotone"
               dataKey={item.key}
               stroke="none"
               fill={`url(#${id}-${item.key})`}
               fillOpacity={muted ? 0 : 1}
+              pointerEvents={muted ? "none" : undefined}
+              {...interaction(item.key)}
+              tabIndex={muted ? -1 : 0}
+              activeDot={false}
               isAnimationActive={false}
             />
           );
@@ -193,13 +228,14 @@ function MetricBody({
               stroke={colorVar(item.key)}
               strokeWidth={muted ? 1.5 : 2.5}
               strokeDasharray={muted ? "5 5" : undefined}
-              opacity={muted ? 0.55 : 1}
+              {...interaction(item.key)}
               dot={false}
               activeDot={
                 muted
                   ? false
                   : {
                       r: 5,
+                      ...interaction(item.key),
                       fill: colorVar(item.key),
                       stroke: "var(--background)",
                       strokeWidth: 2,
@@ -213,6 +249,7 @@ function MetricBody({
           <ReferenceDot
             x={last[xDataKey] as string | number}
             y={Number(last[active])}
+            {...interaction(active)}
             r={4.5}
             fill={colorVar(active)}
             stroke="var(--background)"

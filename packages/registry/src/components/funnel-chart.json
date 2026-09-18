@@ -1,0 +1,39 @@
+{
+  "name": "funnel-chart",
+  "title": "Funnel Chart",
+  "description": "Horizontal symmetric funnel with smooth narrowing flow, layered halos, stage totals, conversion pills, and reduced-motion-aware staggered entrance.",
+  "category": "charts",
+  "dependencies": [],
+  "registryDependencies": [
+    "https://livedocs.xyz/r/chart.json",
+    "https://livedocs.xyz/r/chart-reactions.json",
+    "https://livedocs.xyz/r/button.json",
+    "https://livedocs.xyz/r/badge.json",
+    "https://livedocs.xyz/r/card.json",
+    "https://livedocs.xyz/r/utils.json"
+  ],
+  "files": ["apps/docs/components/ui/funnel-chart.tsx"],
+  "examples": ["growth"],
+  "variants": ["default"],
+  "keywords": ["chart", "funnel", "conversion", "stages", "acquisition", "dropoff"],
+  "props": [
+    { "name": "stages", "type": "FunnelStage[]", "description": "key, label, value, meta" },
+    { "name": "config", "type": "ChartConfig", "description": "Per-stage color config" },
+    { "name": "title", "type": "string", "description": "Card heading" },
+    { "name": "description", "type": "string", "description": "Secondary caption" },
+    { "name": "showConversion", "type": "boolean", "description": "Overall conversion and whole-percent stage pills relative to the first stage" },
+    { "name": "onStageClick", "type": "(stage: FunnelStage) => void", "description": "Activation callback for a valid nonnegative stage" },
+    { "name": "formatValue", "type": "(value: number) => string", "description": "Stage value formatter" },
+    { "name": "isLoading", "type": "boolean", "description": "Shared chart loading skeleton covering the title, description, overall conversion, and stage labels" },
+    { "name": "reaction", "type": "ChartReactionOptions", "description": "Per-chart reaction overrides; global assets and motion settings are inherited" },
+    { "name": "emptyLabel", "type": "string", "description": "Empty state message" },
+    { "name": "className", "type": "string", "description": "Card class passthrough" }
+  ],
+  "ai": {
+    "purpose": "Show sequential stage volume with linear proportions and conversion relative to the first stage.",
+    "useWhen": ["Signup to paid flow", "Checkout steps", "Hiring pipeline"],
+    "preferOver": ["A pie when order and dropoff matter"],
+    "avoid": ["Non-ordered stages", "Many near-equal stages"],
+    "compositions": ["FunnelChart beside LaneChart"]
+  }
+}

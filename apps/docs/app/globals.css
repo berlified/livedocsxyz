@@ -2,6 +2,8 @@
 @import "../../../registry/frostui/style/theme.css";
 
 @theme inline {
+  --font-sans: var(--font-acid-grotesk, "Acid Grotesk"), Arial, Helvetica, sans-serif;
+  --font-mono: var(--font-geist-mono), monospace;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -74,8 +76,13 @@ body {
 }
 
 .preview-canvas {
-  border-top: 1px solid var(--border);
   background: var(--background);
+}
+
+.landing-hero {
+  background:
+    radial-gradient(1200px 400px at 50% -100px, color-mix(in oklab, var(--chart-1) 8%, transparent), transparent 70%),
+    var(--background);
 }
 
 .preview-section {
@@ -90,53 +97,6 @@ body {
   font-size: 0.875rem;
   font-weight: 500;
   color: var(--muted-foreground);
-}
-
-.catalog-grid {
-  display: grid;
-  width: 100%;
-  min-width: 0;
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-}
-
-.catalog-column {
-  background: var(--background);
-  padding: 1.25rem;
-  min-width: 0;
-}
-
-.catalog-item {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.75rem 0;
-  border-top: 1px solid var(--border);
-  text-decoration: none;
-  color: inherit;
-  transition: color 150ms ease;
-}
-
-.catalog-item:first-of-type {
-  border-top: none;
-}
-
-.catalog-item:hover {
-  color: var(--foreground);
-}
-
-.catalog-item:hover .catalog-arrow {
-  opacity: 1;
-  transform: translate(1px, -1px);
-}
-
-.catalog-arrow {
-  opacity: 0.45;
-  transition: opacity 150ms ease, transform 150ms ease;
 }
 
 .toc-link {

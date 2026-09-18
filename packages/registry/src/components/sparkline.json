@@ -4,12 +4,14 @@
   "category": "charts",
   "description": "Smooth SVG trend with a scrubbable marker, value tooltip, and size tones. No Recharts.",
   "dependencies": [],
-  "registryDependencies": ["https://livedocs.xyz/r/utils.json"],
+  "registryDependencies": ["https://livedocs.xyz/r/utils.json", "https://livedocs.xyz/r/chart-reactions.json"],
   "files": ["apps/docs/components/ui/sparkline.tsx"],
   "examples": ["default", "marker"],
   "variants": ["default"],
   "keywords": ["chart", "sparkline", "trend", "balance", "empty state"],
   "props": [
+    { "name": "isLoading", "type": "boolean", "description": "Show shared loading feedback instead of the sparkline" },
+    { "name": "reaction", "type": "ChartReactionOptions", "description": "Optional explicit emotion or metric comparison; inherits provider settings" },
     {
       "name": "data",
       "type": "number[]",

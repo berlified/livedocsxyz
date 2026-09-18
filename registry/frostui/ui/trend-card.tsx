@@ -7,6 +7,7 @@ import {
   LineChart as RechartsLineChart,
   ResponsiveContainer,
   Tooltip,
+  XAxis,
 } from "recharts";
 
 import {
@@ -18,6 +19,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ChartSkeleton, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 function TrendCardRoot({
@@ -34,6 +36,7 @@ function TrendCardRoot({
   xDataKey = "day",
   className,
   isLoading,
+  reaction,
 }: {
   title: string;
   value: string;
@@ -48,7 +51,19 @@ function TrendCardRoot({
   xDataKey?: string;
   className?: string;
   isLoading?: boolean;
+  reaction?: ChartReactionOptions;
 }) {
+  const [hovered, setHovered] = React.useState<string>();
+  const interaction = (key: string) => ({
+    onMouseEnter: () => setHovered(key),
+    onMouseLeave: () => setHovered(undefined),
+    onFocus: () => setHovered(key),
+    onBlur: () => setHovered(undefined),
+    tabIndex: 0,
+    "aria-label": key,
+    className: "transition-opacity duration-150 motion-reduce:transition-none [&_.recharts-curve]:transition-opacity [&_.recharts-curve]:duration-150 motion-reduce:[&_.recharts-curve]:transition-none",
+    opacity: hovered ? (hovered === key ? 1 : 0.6) : key === compareKey ? 0.65 : 1,
+  });
   const deltaClass =
     tone === "down"
       ? "border-destructive/30 bg-destructive/15 text-destructive"
@@ -57,10 +72,11 @@ function TrendCardRoot({
         : "border-border text-muted-foreground";
 
   return (
-    <Card className={cn("relative overflow-hidden p-4", className)}>
+    <Card className={cn("relative overflow-hidden p-5 sm:p-6", className)}>
+      <ChartSkeleton isLoading={isLoading}>
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-1.5">
-          <p className="text-sm text-muted-foreground">{title}</p>
+          <p className="text-[15px] font-medium tracking-tight">{title}</p>
           <span className="text-muted-foreground" title={title}>
             <Info className="size-3.5" aria-hidden />
           </span>
@@ -74,8 +90,8 @@ function TrendCardRoot({
         ) : null}
       </div>
 
-      <div className="mt-3 flex items-end gap-2">
-        <p className="font-mono text-3xl font-semibold tracking-tight">{value}</p>
+      <div className="mt-3 flex flex-wrap items-end gap-2">
+        <p className="mt-1 tabular-nums text-4xl font-medium tracking-tight">{value}</p>
         {delta ? (
           <Badge variant="outline" className={cn("mb-1", deltaClass)}>
             {delta}
@@ -83,50 +99,53 @@ function TrendCardRoot({
         ) : null}
       </div>
       {baseline ? (
-        <p className="mt-1 font-mono text-xs text-muted-foreground">{baseline}</p>
+        <p className="mt-1 tabular-nums text-xs text-muted-foreground">{baseline}</p>
       ) : null}
 
       <ChartContainer
+        isLoading={isLoading}
+        loadingVariant="bar"
+        reaction={reaction}
         config={config}
         data={data}
-        className="mt-3 h-24 w-full"
+        className="mt-4 h-24 w-full"
         variant="plain"
       >
-        {isLoading ? (
-          <div className="h-full animate-pulse bg-muted/40" />
-        ) : (
-          <ResponsiveContainer width="100%" height="100%">
-            <RechartsLineChart data={data} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
-              <Tooltip
-                cursor={{ stroke: "var(--foreground)", strokeDasharray: "4 4", strokeWidth: 2 }}
-                content={<ChartTooltipContent />}
-              />
-              <Line
-                type="linear"
-                dataKey={compareKey}
-                stroke={colorVar(compareKey)}
-                strokeWidth={2}
-                dot={false}
-                opacity={0.45}
-                isAnimationActive={false}
-              />
-              <Line
-                type="linear"
-                dataKey={currentKey}
-                stroke={colorVar(currentKey)}
-                strokeWidth={3}
-                dot={false}
-                isAnimationActive={false}
-                activeDot={{ r: 0 }}
-              />
-            </RechartsLineChart>
-          </ResponsiveContainer>
-        )}
+        <ResponsiveContainer width="100%" height="100%">
+          <RechartsLineChart data={data} margin={{ top: 8, right: 4, left: 4, bottom: 0 }}>
+            <XAxis dataKey={xDataKey} hide />
+            <Tooltip
+              cursor={false}
+              content={<ChartTooltipContent />}
+            />
+            <Line
+              type="monotone"
+              dataKey={compareKey}
+              stroke={colorVar(compareKey)}
+              strokeWidth={2}
+              dot={false}
+              {...interaction(compareKey)}
+              activeDot={{ r: 4, ...interaction(compareKey) }}
+              isAnimationActive={false}
+            />
+            <Line
+              type="monotone"
+              dataKey={currentKey}
+              stroke={colorVar(currentKey)}
+              strokeWidth={3}
+              dot={false}
+              isAnimationActive={false}
+              {...interaction(currentKey)}
+              activeDot={{ r: 0 }}
+            />
+          </RechartsLineChart>
+        </ResponsiveContainer>
       </ChartContainer>
       <p className="mt-1 flex justify-between text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
         <span>{String(data[0]?.[xDataKey] ?? "")}</span>
         <span>Now</span>
       </p>
+      </ChartSkeleton>
     </Card>
   );
 }
