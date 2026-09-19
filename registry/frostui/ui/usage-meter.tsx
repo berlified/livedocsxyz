@@ -4,7 +4,7 @@ import * as React from "react";
 
 import { Card } from "@/components/ui/card";
 import { ChartHoverTooltip, ChartTooltipSurface } from "@/components/ui/chart";
-import { ChartReaction, ChartSkeleton, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartSkeleton, useChartReactions } from "@/components/ui/chart-reactions";
 import { cn } from "@/lib/utils";
 
 function UsageMeterRoot({
@@ -15,7 +15,6 @@ function UsageMeterRoot({
   resetLabel,
   className,
   isLoading,
-  reaction,
 }: {
   title: string;
   value: number;
@@ -24,7 +23,6 @@ function UsageMeterRoot({
   resetLabel?: string;
   className?: string;
   isLoading?: boolean;
-  reaction?: ChartReactionOptions;
 }) {
   const settings = useChartReactions();
   isLoading = isLoading || Boolean(settings.isLoading);
@@ -40,7 +38,6 @@ function UsageMeterRoot({
 
   return (
     <Card className={cn("p-5", className)}>
-      {!isLoading ? <ChartReaction reaction={reaction} /> : null}
       <ChartSkeleton isLoading={isLoading}>
         <p className="text-[15px] font-medium tracking-tight">{title}</p>
         <p className="mt-1 tabular-nums text-4xl font-medium tracking-tight">

@@ -506,13 +506,13 @@ function SparklineCardExample() {
     <Card className="w-full max-w-sm p-5 sm:p-6">
       <p className="text-sm text-muted-foreground">Volume</p>
       <p className="mt-1 font-mono text-2xl font-semibold tracking-tight">{money(last)}</p>
-      <Sparkline
-        className="mt-3 bg-transparent"
-        size="md"
-        data={data}
-        tone="up"
-        showValue
-      />
+          <Sparkline
+            className="mt-3 bg-transparent"
+            size="md"
+            data={data}
+            tone="up"
+            showValue
+          />
     </Card>
   );
 }

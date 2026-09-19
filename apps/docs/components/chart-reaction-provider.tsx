@@ -7,9 +7,9 @@ export const chartReactionConfig: ChartReactionsSettings = {
   enabled: true,
   animationsEnabled: true,
   assets: {
-    loading: { src: "/sad.gif", alt: "Loading chart…" },
+    loading: { alt: "Loading chart…" },
     neutral: { alt: "No change" },
-    sad: { alt: "Significant decline" },
+    sad: { src: "/sad.gif", alt: "Significant decline" },
     disappointed: { alt: "Below expectations" },
     happy: { alt: "Making progress" },
     surprised: { alt: "Unexpected growth" },

@@ -2,7 +2,8 @@
 
 import * as React from "react";
 
-import { ChartReaction, ChartSkeleton, useChartReactions, type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartSkeleton, useChartReactions } from "@/components/ui/chart-reactions";
+import { SadTooltipGif } from "@/components/ui/chart";
 import { cn } from "@/lib/utils";
 
 const SAMPLE = Array.from({ length: 42 }, (_, index) => {
@@ -31,7 +32,6 @@ const toneClass = {
 export type SparklineProps = React.ComponentProps<"div"> & {
   data?: number[];
   isLoading?: boolean;
-  reaction?: ChartReactionOptions;
   markerIndex?: number;
   markerLabel?: string;
   interactive?: boolean;
@@ -84,7 +84,6 @@ function Sparkline({
   size = "lg",
   tone = "neutral",
   isLoading,
-  reaction,
   ...props
 }: SparklineProps) {
   const settings = useChartReactions();
@@ -164,7 +163,6 @@ function Sparkline({
       )}
       {...props}
     >
-      {!isLoading ? <ChartReaction reaction={reaction} className="absolute bottom-1 left-1 z-10" /> : null}
       <ChartSkeleton isLoading={isLoading}>
         <svg
           ref={svgRef}
@@ -268,20 +266,23 @@ function Sparkline({
               left: `${Math.min(86, Math.max(14, (marker.x / width) * 100))}%`,
             }}
           >
-            <div className="rounded-lg border border-border bg-popover px-2.5 py-1.5 tabular-nums shadow-sm">
-              {markerLabel && !inspecting ? (
-                <p className="text-xs text-muted-foreground">{markerLabel}</p>
-              ) : null}
-              {showValue ? (
-                <p
-                  className={cn(
-                    "text-xs font-medium text-foreground",
-                    markerLabel && !inspecting && "mt-0.5"
-                  )}
-                >
-                  {format(marker.value)}
-                </p>
-              ) : null}
+            <div className="flex items-center gap-2 rounded-lg border border-border bg-popover px-2.5 py-1.5 tabular-nums shadow-sm">
+              <SadTooltipGif />
+              <div>
+                {markerLabel && !inspecting ? (
+                  <p className="text-xs text-muted-foreground">{markerLabel}</p>
+                ) : null}
+                {showValue ? (
+                  <p
+                    className={cn(
+                      "text-xs font-medium text-foreground",
+                      markerLabel && !inspecting && "mt-0.5"
+                    )}
+                  >
+                    {format(marker.value)}
+                  </p>
+                ) : null}
+              </div>
             </div>
           </div>
         ) : null}

@@ -15,7 +15,6 @@
   "keywords": ["meter", "quota", "credits", "progress", "usage"],
   "props": [
     { "name": "isLoading", "type": "boolean", "description": "Show shared loading feedback instead of quota values" },
-    { "name": "reaction", "type": "ChartReactionOptions", "description": "Optional explicit emotion or metric comparison; quota meaning is never inferred" },
     { "name": "value", "type": "number", "description": "Amount used" },
     { "name": "max", "type": "number", "description": "Quota" }
   ],

@@ -5,7 +5,7 @@ import * as RechartsPrimitive from "recharts";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ChartReaction, ChartReactionScope, ChartSkeleton, useChartReaction, useChartReactions, useChartReducedMotion, type ChartReactionOptions } from "@/components/ui/chart-reactions";
+import { ChartReactionScope, ChartSkeleton, useChartReaction, useChartReactions, useChartReducedMotion, type ChartReactionOptions } from "@/components/ui/chart-reactions";
 
 export type ChartConfig = Record<
   string,
@@ -128,7 +128,6 @@ export function ChartContainer({
           <ChartSkeleton isLoading={isLoading}>
             <ChartReactionScope active={Boolean(emotion)}>{children}</ChartReactionScope>
           </ChartSkeleton>
-          {emotion ? <ChartReaction isLoading={isLoading} reaction={reaction} className={isLoading ? "absolute bottom-2 right-2" : "mt-2 shrink-0 self-end"} /> : null}
         </div>
       </div>
     </ChartContext.Provider>
@@ -247,8 +246,9 @@ export function ChartTooltipContent({
       className
     )}>
       {header !== undefined && header !== null && header !== "" ? (
-        <p className="mb-2 text-[11px] font-bold">{header}</p>
+        <p className="mb-2 pr-12 text-[11px] font-bold">{header}</p>
       ) : null}
+      <div className="absolute right-3 top-3"><SadTooltipGif /></div>
       <div className="space-y-2">
         {rows.map(({ item, key, index }) => {
           const series = config[key];
@@ -279,6 +279,17 @@ export function ChartTooltipContent({
   );
 }
 
+export function SadTooltipGif({ className }: { className?: string }) {
+  const settings = useChartReactions();
+  const reducedMotion = useChartReducedMotion();
+  if (settings.isLoading || reducedMotion) return null;
+  if (settings.reaction?.emotion !== "sad") return null;
+  const asset = { ...settings.assets?.sad, ...settings.reaction?.assets?.sad };
+  const src = asset.src?.trim();
+  if (!src) return null;
+  return <img src={src} alt="" width={40} height={40} className={cn("size-10 shrink-0 rounded-md object-cover", className)} />;
+}
+
 export function ChartTooltipSurface({
   title,
   children,
@@ -300,8 +311,9 @@ export function ChartTooltipSurface({
       )}
     >
       {title !== undefined && title !== null && title !== "" ? (
-        <p className="mb-2 text-[11px] font-bold">{title}</p>
+        <p className="mb-2 pr-12 text-[11px] font-bold">{title}</p>
       ) : null}
+      <div className="absolute right-3 top-3"><SadTooltipGif /></div>
       <div className="space-y-2">{children}</div>
     </div>
   );

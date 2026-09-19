@@ -164,13 +164,6 @@ export function ChartSkeleton({ children, isLoading = false, className }: { chil
   const ref = React.useRef<HTMLDivElement>(null);
   const labelRef = React.useRef<HTMLSpanElement>(null);
   const boxes = useLoadingTextPlaceholders(ref, owner);
-  const [mediaFailed, setMediaFailed] = React.useState(false);
-  const [mounted, setMounted] = React.useState(false);
-  React.useEffect(() => { setMounted(true); }, []);
-  const loadingAsset = { ...settings.assets?.loading, ...settings.reaction?.assets?.loading };
-  const sadLoading = settings.reaction?.emotion === "sad";
-  const loadingSrc = !animate || !sadLoading ? undefined : !mediaFailed && loadingAsset.src?.trim() ? loadingAsset.src.trim() : undefined;
-  const loadingPoster = !animate || !sadLoading || loadingSrc ? undefined : loadingAsset.poster?.trim() || undefined;
   React.useEffect(() => {
     if (!animate) return;
     const animation = labelRef.current?.animate?.(
@@ -191,16 +184,6 @@ export function ChartSkeleton({ children, isLoading = false, className }: { chil
           maskImage: "linear-gradient(90deg, rgb(0 0 0 / 30%) 0%, rgb(0 0 0 / 30%) 35%, black 50%, rgb(0 0 0 / 30%) 65%, rgb(0 0 0 / 30%) 100%)",
           maskSize: "250% 100%", maskPosition: "50% 0%",
         } : undefined}>{children}</div>
-        {owner && mounted && (loadingSrc || loadingPoster) ? (
-          <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[1] overflow-hidden rounded-lg">
-            <img
-              src={loadingSrc ?? loadingPoster}
-              alt=""
-              className="h-full w-full object-cover opacity-75"
-              onError={() => setMediaFailed(true)}
-            />
-          </div>
-        ) : null}
         {owner ? <style>{`[data-chart-loading-text="true"],[data-chart-loading-text="true"] *{-webkit-text-fill-color:transparent!important;text-shadow:none!important}[data-chart-loading-text="true"] :is(text,tspan,textPath){fill:transparent!important;stroke:transparent!important}`}</style> : null}
         {owner && boxes.length ? (
           <div aria-hidden="true" className="pointer-events-none absolute inset-0 z-[2] overflow-hidden">
